@@ -4,7 +4,8 @@ import logging
 import pylons.test
 
 from mematool.config.environment import load_environment
-from mematool.model.meta import Session, metadata
+from mematool.model.meta import Session, metadata, Base
+
 
 log = logging.getLogger(__name__)
 
@@ -16,3 +17,13 @@ def setup_app(command, conf, vars):
 
     # Create the tables if they don't already exist
     metadata.create_all(bind=Session.bind)
+
+
+
+    log.info("Creating tables")
+    #Base.metadata.drop_all(checkfirst=True, bind=Session.bind)
+    Base.metadata.create_all(bind=Session.bind)
+    log.info("Successfully setup")
+
+
+    Session.commit()
