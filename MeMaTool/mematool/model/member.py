@@ -3,6 +3,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relation
 from mematool.model.meta import Base
 
+import ldap
+import hashlib
+from base64 import encodestring as encode
+from base64 import decodestring as decode
+
+
+
 
 class Member(Base):
 	__tablename__ = 'member'
