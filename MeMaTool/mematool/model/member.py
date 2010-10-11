@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relation
 from mematool.model.meta import Base
 
-import ldap
+from mematool.lib.syn2cat.ldapConnector import LdapConnector
 import hashlib
 from base64 import encodestring as encode
 from base64 import decodestring as decode
@@ -44,5 +44,46 @@ class Member(Base):
 		self.leavingDate = "" # membership canceled
 		pass
 
+
 	def __repr__(self):
 		return "<Member('idmember=%s, dtusername=%s')>" % (self.idmember, self.dtusername)
+
+
+	def loadFromLdap(self):
+		if self.dtusername and self.dtusername != "":
+			self.ldapcon = LdapConnector()
+			member = self.ldapcon.getMember(self.dtusername)
+
+			if 'cn' in member:
+				self.cn = member['cn']
+			if 'sn' in member:
+				self.sn = member['sn']
+			if 'gn' in member:
+				self.gn = member['gn']
+			if 'homePostalAddress' in member:
+				self.address = member['homePostalAddress']
+			if 'homePhone'  in member:
+				self.phone = member['homePhone']
+			if 'mobile'  in member:
+				self.mobile = member['mobile']
+			if 'mail'  in member:
+				self.mail = member['mail']
+			if 'userPassword'  in member:
+				self.userPassword = '' # don't save it for now
+			if 'certificate'  in member:
+				self.userCertificate = member['certificate']
+			if 'gidNumber'  in member:
+				self.gidNumber = member['gidNumber']
+			if 'homeDirectory'  in member:
+				self.homeDirectory = member['homeDirectory']
+			if 'birthDate'  in member:
+				self.birthDate = member['birthDate']
+			if 'arrivalDate'  in member:
+				self.arrivalDate = member['arrivalDate']
+			if 'leavingDate'  in member:
+				self.leavingDate = member['leavingDate']
+			
+
+			return True
+
+		return False
