@@ -31,6 +31,9 @@ class LdapConnector(object):
 
 		result = self.con.search_s( config.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs )
 
+		if not result:
+			raise LookupError('No such user !')
+
 		member = {}
 
 		for dn, attr in result:
@@ -53,3 +56,17 @@ class LdapConnector(object):
 				members.append( attr['uid'][0] )
 
 		return members
+
+
+	def saveMember(self, member):
+		mod_attrs = [ (ldap.MOD_REPLACE, 'cn', str(member.cn)),
+				(ldap.MOD_REPLACE, 'sn', str(member.sn)),
+	                        (ldap.MOD_REPLACE, 'homeDirectory', str(member.homeDirectory)),
+	                        (ldap.MOD_REPLACE, 'mobile', str(member.mobile)),
+	                        (ldap.MOD_REPLACE, 'givenName', str(member.gn))
+			]
+
+
+		result = self.con.modify_s('uid=' + member.dtusername + ',' + config.get('ldap.basedn_users'), mod_attrs)
+
+		return result
