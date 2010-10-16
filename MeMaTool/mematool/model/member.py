@@ -3,10 +3,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relation
 from mematool.model.meta import Base
 
+from mematool.lib.base import Session
+
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
 import hashlib
 from base64 import encodestring as encode
 from base64 import decodestring as decode
+import os
 
 
 
@@ -28,8 +31,11 @@ class Member(Base):
 	mobile = '' # mobile
 	mail = '' # mail
 	userPassword = '' # SSHA password
+	sambaNTPassword = '' # NT Password
 	userCertificate = '' # x509 certificate
+	uidNumber = '' # user id (uidNumber)
 	gidNumber = '' # group id (gidNumber)
+	loginShell = '' # login shell
 	homeDirectory = '' # homeDirectory
 	birthDate = '' # birthDate
 	arrivalDate = '' # member since
@@ -62,12 +68,14 @@ class Member(Base):
 			self.mobile = member['mobile']
 		if 'mail'  in member:
 			self.mail = member['mail']
-		if 'userPassword'  in member:
-			self.userPassword = '' # don't save it for now
 		if 'certificate'  in member:
 			self.userCertificate = member['certificate']
 		if 'gidNumber'  in member:
 			self.gidNumber = member['gidNumber']
+		if 'uidNumber'  in member:
+                        self.uidNumber = member['uidNumber']
+                if 'loginShell'  in member:
+                        self.loginShell = member['loginShell']
 		if 'homeDirectory'  in member:
 			self.homeDirectory = member['homeDirectory']
 		if 'birthDate'  in member:
@@ -88,3 +96,15 @@ class Member(Base):
 			self.mobile = '0'
 
 		self.ldapcon.saveMember(self)
+
+		m = Session.query(Member).filter(Member.idmember == self.idmember).one()
+		m.dtusername = self.dtusername
+		Session.commit()
+
+
+	def setPassword(self, password):
+		salt = os.urandom(4)
+		h = hashlib.sha1(password)
+		h.update(salt)
+		self.userPassword = "{SSHA}" + encode(h.digest() + salt)
+		self.sambaNTPassword = hashlib.new('md4', password.encode('utf-16le')).hexdigest().upper()

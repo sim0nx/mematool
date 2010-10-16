@@ -62,28 +62,36 @@ class MembersController(BaseController):
                         elif (not 'cn' in request.params or
                                 not 'sn' in request.params or
                                 not 'gn' in request.params or
+				not 'birthDate' in request.params or
+				not 'address' in request.params or
+				not 'phone' in request.params or
+				not 'mobile' in request.params or
+				not 'mail' in request.params or
+				not 'loginShell' in request.params or
                                 not 'homeDirectory' in request.params or
-                                not 'mobile' in request.params):
+				not 'arrivalDate' in request.params or
+				not 'leavingDate' in request.params):
                                 redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
+			elif ( ('userPassword' in request.params
+				and 'userPassword2' in request.params)
+				and
+				(# @BUG these checks do not work !!
+				  request.params['userPassword'] != request.params['userPassword2']
+				  or request.params['userPassword'] == ''
+				  or request.params['userPassword2'] == ''
+				)
+				and request.params['userPassword'] != '********' ):
+				redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
 
 
-			member = {'member_id':request.params['member_id'],
-					'cn':request.params['cn'],
-					'sn':request.params['sn'],
-					'gn':request.params['gn'],
-					'homeDirectory':request.params['homeDirectory'],
-					'mobile':request.params['mobile']
-				}
-
-
-                        return f(self, member)
+                        return f(self)
 
                 return new_f
 
 
 	@checkMember
-	def doEditMember(self, m):
-		member_q = Session.query(Member).filter(Member.dtusername == m['member_id'])
+	def doEditMember(self):
+		member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
 
 		try:
 			member = member_q.one()
@@ -91,11 +99,14 @@ class MembersController(BaseController):
                         try:
                                 member.loadFromLdap()
 
-				member.cn = m['cn']
-				member.sn = m['sn']
-				member.gn = m['gn']
-				member.homeDirectory = m['homeDirectory']
-				member.mobile = m['mobile']
+				member.cn = request.params['cn']
+				member.sn = request.params['sn']
+				member.gn = request.params['gn']
+				member.homeDirectory = request.params['homeDirectory']
+				member.mobile = request.params['mobile']
+
+				if 'userPassword' in request.params:
+					member.setPassword(request.params['userPassword'])
 
 				member.save()
 

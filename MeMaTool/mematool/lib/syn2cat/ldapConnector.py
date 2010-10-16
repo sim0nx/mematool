@@ -66,6 +66,12 @@ class LdapConnector(object):
 	                        (ldap.MOD_REPLACE, 'givenName', str(member.gn))
 			]
 
+		if member.userPassword:
+			mod_attrs.append((ldap.MOD_REPLACE, 'userPassword', str(member.userPassword)))
+
+		if member.sambaNTPassword:
+			mod_attrs.append((ldap.MOD_REPLACE, 'sambaNTPassword', str(member.sambaNTPassword)))
+
 
 		result = self.con.modify_s('uid=' + member.dtusername + ',' + config.get('ldap.basedn_users'), mod_attrs)
 
