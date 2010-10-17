@@ -7,8 +7,7 @@ from mematool.lib.base import Session
 
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
 import hashlib
-from base64 import encodestring as encode
-from base64 import decodestring as decode
+from binascii import b2a_base64, a2b_base64
 import os
 
 
@@ -106,5 +105,5 @@ class Member(Base):
 		salt = os.urandom(4)
 		h = hashlib.sha1(password)
 		h.update(salt)
-		self.userPassword = "{SSHA}" + encode(h.digest() + salt)
+		self.userPassword = '{SSHA}' + b2a_base64(h.digest() + salt)[:-1]
 		self.sambaNTPassword = hashlib.new('md4', password.encode('utf-16le')).hexdigest().upper()
