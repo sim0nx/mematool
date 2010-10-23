@@ -1,0 +1,11 @@
+.table_row {
+	color:black;
+}
+
+.table_row:hover{
+	color:gray;
+}
+
+.table_content {
+	border:1px solid black;
+}
