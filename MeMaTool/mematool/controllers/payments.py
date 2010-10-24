@@ -47,6 +47,8 @@ class PaymentsController(BaseController):
 		if (not 'member_id' in request.params):
 			redirect(url(controller='payments', action='showOutstanding'))
 
+		c.heading = 'Payments'
+
 		payment_q = Session.query(Payment).filter(Payment.limember == request.params['member_id'])
 
                 try:

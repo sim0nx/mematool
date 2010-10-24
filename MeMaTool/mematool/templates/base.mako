@@ -7,7 +7,12 @@
             	${self.css()}
         </head>
         <body>
-			${self.body()}
+		${self.header()}
+		${self.heading()}
+		${self.menu()}
+		${self.breadcrumbs()}
+		${next.body()}
+		${self.footer()}
         </body>
 </html>
 
@@ -22,3 +27,9 @@
 <%def name="css()">
 	${css_link('/css/main.css', 'screen')}
 </%def>
+
+<%def name="heading()"><h1>${hasattr(c, 'heading') and c.heading or 'No Title'}</h1></%def>
+<%def name="header()"><a name="top"></a></%def>
+<%def name="menu()"></%def>
+<%def name="breadcrumbs()"></%def>
+<%def name="footer()"><p><a href="#top">Top ^</a></p></%def>

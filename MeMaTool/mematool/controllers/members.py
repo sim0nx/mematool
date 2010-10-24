@@ -25,7 +25,7 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from mematool.lib.base import BaseController, render, Session
-from mematool.model.member import Member
+from mematool.model import Member
 
 log = logging.getLogger(__name__)
 
@@ -143,6 +143,7 @@ class MembersController(BaseController):
 		members_q = Session.query(Member)
 
 		try:
+			c.heading = 'All members'
 			members = members_q.all()
 
 			for m in members:
