@@ -42,11 +42,10 @@ class MembersController(BaseController):
 	def index(self):
 		return self.showAllMembers()
 
-		members_q = Session.query(Member)
-		members = members_q.all()
-		c.members = members
-
-		return render('/members/index.mako')
+		#members_q = Session.query(Member)
+		#members = members_q.all()
+		#c.members = members
+		#return render('/members/index.mako')
 
 
 	def editMember(self):
