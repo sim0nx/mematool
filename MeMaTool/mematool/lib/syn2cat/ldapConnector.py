@@ -89,11 +89,10 @@ class LdapConnector(object):
 
 		
 
-		if member.userPassword:
+		if member.userPassword and member.userPassword != '':
 			mod_attrs.append((ldap.MOD_REPLACE, 'userPassword', str(member.userPassword)))
-
-		if member.sambaNTPassword:
-			mod_attrs.append((ldap.MOD_REPLACE, 'sambaNTPassword', str(member.sambaNTPassword)))
+			if member.sambaNTPassword and member.sambaNTPassword != '':
+				mod_attrs.append((ldap.MOD_REPLACE, 'sambaNTPassword', str(member.sambaNTPassword)))
 
 		if member.sshPublicKey:
 			if member.sshPublicKey == 'removed':

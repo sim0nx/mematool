@@ -134,7 +134,7 @@ class MembersController(BaseController):
 				elif 'sshPublicKey' in vars(member):
 					member.sshPublicKey = 'removed'
 
-				if 'userPassword' in request.params:
+				if 'userPassword' in request.params and request.params['userPassword'] != '':
 					member.setPassword(request.params['userPassword'])
 
 				member.save()
