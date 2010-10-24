@@ -42,38 +42,48 @@ class PaymentsController(BaseController):
 		""" Show which users still need to pay their membership fees and if a reminder has already been sent """
 		return render('/payments/showOutstanding.mako')
     	
-	def showPayments(self):
+	def listPayments(self):
 		""" Show a specific user's payments """
 		if (not 'member_id' in request.params):
 			redirect(url(controller='payments', action='showOutstanding'))
 
-		c.heading = 'Payments'
+		c.heading = 'Payments for user %s' % request.params['member_id']
 
 		payment_q = Session.query(Payment).filter(Payment.limember == request.params['member_id'])
 
                 try:
-                        payment = payment_q.one()
-			for i in payment:
-				print "%s" % payment[i]
+                        payments = payment_q.all()
+			c.payments = payments
+			c.member_id = request.params['member_id']
 		except NoResultFound:
 			print "oops"
 		    
-		return render('/payments/showPayments.mako')
+		return render('/payments/listPayments.mako')
 
-	def addPayment(self):
-		""" Add a payment to a specific user """
-		if (not 'member_id' in request.params):
-			#display dropdown on null value
-			print "no member id supplied"
+	def editPayment(self):
+		""" Add or edit a payment to/of a specific user """
+
+		if (not 'idpayment' in request.params):
+			#new payment
+			c.payment.limember = request.params['member_id']
+			member_id = request.params['member_id']
 		else:
-			#select name from dropdown
-			print "You selected member id %s" % request.params['member_id']
+			payment_q = Session.query(Payment).filter(Payment.idpayment == request.params['idpayment'])
+			try:
+				payment = payment_q.one()
+				c.payment = payment
+				member_id = payment.limember
+			except NoResultFound:
+				print "oops"
 
-		return render('/payments/addPayment.mako')
+		c.heading = 'Adding payment for user %s' % member_id
 
+		return render('/payments/editPayment.mako')
+
+	#@checkdecorator	# check that payments are not in the future
 	def savePayment(self):
 		# do stuff
 		session['flash'] = 'Payment successfully saved.'
 		session.save()
 
-		redirect(url(controller='payments',action='showPayments'))
+		redirect(url(controller='payments',action='listPayments'))

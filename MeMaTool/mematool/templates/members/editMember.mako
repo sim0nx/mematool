@@ -158,5 +158,5 @@
 </table>
 
 
-<input type="hidden" name="member_id" value="${c.member.dtusername}">
+<input type="hidden" name="member_id" value="${c.member.idmember}">
 </form>

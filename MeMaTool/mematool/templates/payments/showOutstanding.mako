@@ -1,12 +1,12 @@
 <%inherit file="/base.mako" />
 
 <%def name="menu()">
-## Then add our page links
-<p>
-  <a href="${h.url_for(controller='page', action='list', id=None)}">Some additional link</a>
-</p>
 ## Include the parent footer too
 ${parent.menu()}
+## Then add our page links
+<p>
+  <a href="${url(controller='page', action='list', id=None)}">Some additional link</a>
+</p>
 </%def>
 
 <table class="table_content" width="95%">
