@@ -1,8 +1,8 @@
 """The application's model objects"""
 from mematool.model.meta import Session, metadata, Base
 
-
 from mematool.model.member import Member
+from mematool.model.payment import Payment
 
 
 def init_model(engine):

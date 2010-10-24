@@ -52,7 +52,7 @@ class MembersController(BaseController):
 		if (not 'member_id' in request.params):
 			redirect(url(controller='members', action='showAllMembers'))
 
-		member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
+		member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
 
 		try:
 			member = member_q.one()
@@ -107,7 +107,7 @@ class MembersController(BaseController):
 
 	@checkMember
 	def doEditMember(self):
-		member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
+		member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
 
 		try:
 			member = member_q.one()
@@ -152,6 +152,7 @@ class MembersController(BaseController):
 		members_q = Session.query(Member)
 
 		try:
+			c.heading = 'All members'
 			members = members_q.all()
 
 			for m in members:

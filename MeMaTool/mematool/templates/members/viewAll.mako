@@ -54,8 +54,8 @@
 		<td>${m.mobile}</td>
 		<td>${peapPossible}</td>
 		<td>${sshPublicKey}</td>
-		<td><a href="${url(controller='members', action='editMember', member_id=m.dtusername)}">edit</a></td>
-		<td><a href="${url(controller='payments', action='showPayments', member_id=m.dtusername)}">payments</a></td>
+		<td><a href="${url(controller='members', action='editMember', member_id=m.idmember)}">edit</a></td>
+		<td><a href="${url(controller='payments', action='showPayments', member_id=m.idmember)}">payments</a></td>
         </tr>
 % endfor
 
