@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 class PaymentsController(BaseController):
 
 	def __init__(self):
-		return
+		pass
 
 	def index(self):
 		return self.showOutstanding()
@@ -46,8 +46,16 @@ class PaymentsController(BaseController):
 		""" Show a specific user's payments """
 		if (not 'member_id' in request.params):
 			redirect(url(controller='payments', action='showOutstanding'))
+
+		payment_q = Session.query(Payment).filter(Payment.limember == request.params['member_id'])
+
+                try:
+                        payment = payment_q.one()
+			for i in payment:
+				print "%s" % payment[i]
+		except NoResultFound:
+			print "oops"
 		    
-		print "%s" % Session.query(Payment)
 		return render('/payments/showPayments.mako')
 
 	def addPayment(self):
@@ -57,6 +65,6 @@ class PaymentsController(BaseController):
 			print "no member id supplied"
 		else:
 			#select name from dropdown
-			print "you selected member id %s" % request.params['member_id']
+			print "You selected member id %s" % request.params['member_id']
 
 		return render('/payments/addPayment.mako')
