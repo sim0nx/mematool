@@ -26,29 +26,20 @@ from sqlalchemy.orm import sessionmaker, relation
 from mematool.model.meta import Base
 from mematool.lib.base import Session
 
-class Payment(Base):
-	__tablename__ = 'payment'
+class Paymentmethod(Base):
+	__tablename__ = 'paymentmethod'
 	__table_args__ = (
 		{'mysql_engine':'InnoDB'}
 		)
 
-	idpayment = Column(Integer, primary_key=True)
-	dtreason = Column(String(255))
-	dtdate = Column(DateTime)
-	dtamount = Column(Integer)
-	lipaymentmethod = Column(Integer)	
+	idpaymentmethod = Column(Integer, primary_key=True)
+	dtname = Column(String(255))
 
-	# defined in the member model
-	limember = Column(Integer, ForeignKey('member.idmember'))
-	#limember = relation(Member, backref=backref('payments', order_by=idpayment))
-
-	#def __init__(self,reason,date,amount,limethod,limember):
 	def __init__(self):
-		pass	
+		pass
 
 	def __repr__(self):
 		return "<Payment('idpayment=%d, limember=%d')>" % (self.idpayment, self.limember)
-
 
 	def save(self):
 		Session.commit()

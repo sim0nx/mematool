@@ -3,6 +3,7 @@ from mematool.model.meta import Session, metadata, Base
 
 from mematool.model.member import Member
 from mematool.model.payment import Payment
+from mematool.model.paymentmethod import Paymentmethod
 
 
 def init_model(engine):

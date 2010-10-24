@@ -10,24 +10,36 @@
 <table class="table_content" width="95%">
         <tr>
                 <td class="table_label"><label for="dtamount">Amount payed</label></td>
-		<td><input type="text" name="dtamount" class="input" /></td>
+		<td><input type="text" name="dtamount" class="input" value="${c.payment.dtamount}" /></td>
         </tr>
         <tr>
-                <td class="table_label"><label for="dtdate">Amount payed</label></td>
-		<td><input type="text" name="dtdate" class="input" /></td>
+                <td class="table_label"><label for="dtdate">Date payed</label></td>
+		<td><input type="text" name="dtdate" class="input" value="${c.payment.dtdate}"/>(replace by datepicker)</td>
         </tr>
         <tr>
-                <td class="table_label"><label for="dtreason">Amount payed</label></td>
-		<td><textarea name="dtreason" class="input" ></textarea></td>
+                <td class="table_label"><label for="dtreason">Reason for payment</label></td>
+		<td><textarea name="dtreason" class="input" >${c.payment.dtreason}</textarea></td>
         </tr>
         <tr>
-                <td class="table_label"><label for="lipaymentmethod">Amount payed</label></td>
-		<td><input type="text" name="lipaymentmethod" class="input" /></td>
+                <td class="table_label"><label for="lipaymentmethod">payment method</label></td>
+		<td><select name="lipaymentmethod">
+			<option value="1">PayPal</option> <!-- added temporarily -->
+		% for m in c.methods:
+			<option value="${m.idpaymentmethod}">${m.dtname}</option>
+		% endfor	
+		 </select></td>
         </tr>
 	<tr>
 		<td class="table_label"/>
-		<td style="text-align:left;"><button name="send" label="Add payment">Add payment</button></td>
+		<td style="text-align:left;"><button name="send" label="Add payment">
+		% if (c.payment.idpayment == ''):
+			Add
+		% else:
+			Edit
+		% endif
+		payment</button></td>
 	</tr>
-	<input type="hidden" name="member_id" value="${c.payment.limember}">
+	<input type="hidden" name="limember" value="${c.payment.limember}">
+	<input type="hidden" name="idpayment" value="${c.payment.idpayment}">
 </table>
 </form>

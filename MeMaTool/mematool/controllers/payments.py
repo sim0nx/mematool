@@ -24,7 +24,7 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from mematool.lib.base import BaseController, render, Session
-from mematool.model.payment import Payment
+from mematool.model import Payment, Member, Paymentmethod
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -49,12 +49,23 @@ class PaymentsController(BaseController):
 
 		c.heading = 'Payments for user %s' % request.params['member_id']
 
+		## ideally, fetch monthly from member and the rest from payment (one to many relation)
+		## http://www.sqlalchemy.org/docs/05/reference/ext/declarative.html
 		payment_q = Session.query(Payment).filter(Payment.limember == request.params['member_id'])
 
+		## having problems establishing relations
+		member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
+		
+		## using a join while trying to figure out how to make relations work (can't get this to work either)
+		#query = Session.query(Member,Payment).filter(Payment.limember == Member.idmember).filter(Member.idmember == request.params['member_id'])
+
                 try:
-                        payments = payment_q.all()
-			c.payments = payments
+			#member,payments = query.all()
+			c.member = member_q.one()
+			c.until = '06.2011'
+			c.payments = payment_q.all()
 			c.member_id = request.params['member_id']
+
 		except NoResultFound:
 			print "oops"
 		    
@@ -64,7 +75,7 @@ class PaymentsController(BaseController):
 		""" Add or edit a payment to/of a specific user """
 
 		if (not 'idpayment' in request.params):
-			#new payment
+			c.payment = Payment()
 			c.payment.limember = request.params['member_id']
 			member_id = request.params['member_id']
 		else:
@@ -76,14 +87,33 @@ class PaymentsController(BaseController):
 			except NoResultFound:
 				print "oops"
 
+		c.methods = Session.query(Paymentmethod).all()
 		c.heading = 'Adding payment for user %s' % member_id
 
 		return render('/payments/editPayment.mako')
 
+
 	#@checkdecorator	# check that payments are not in the future
 	def savePayment(self):
-		# do stuff
-		session['flash'] = 'Payment successfully saved.'
+		""" Save a new or edited payment """
+
+		rp = request.params
+		if (rp['idpayment'] != 0):
+			np = Session.query(Payment).filter(Payment.idpayment == request.params['idpayment']).one()
+		else:
+			np = Payment()
+
+		np.dtreason = rp['dtreason']
+		np.dtdate = rp['dtdate']
+		np.dtamount = rp['dtamount']
+		np.lipaymentmethod = rp['lipaymentmethod']
+		np.limember = rp['limember']
+
+		Session.add(np)
+		np.save() # defined in Payment model
+		## how to test for success?
+
+		session['flash'] = 'Payment saved successfully.'
 		session.save()
 
-		redirect(url(controller='payments',action='listPayments'))
+		redirect(url(controller='payments', action='listPayments', member_id=rp['limember']))

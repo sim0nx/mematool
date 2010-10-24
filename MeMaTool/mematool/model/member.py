@@ -21,8 +21,9 @@
 
 from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, DateTime, ForeignKeyConstraint
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relation
+from sqlalchemy.orm import sessionmaker, relation, backref
 from mematool.model.meta import Base
+#from mematool.model.payment import Payment
 
 from mematool.lib.base import Session
 
@@ -30,8 +31,6 @@ from mematool.lib.syn2cat.ldapConnector import LdapConnector
 import hashlib
 from binascii import b2a_base64, a2b_base64
 import os
-
-
 
 
 class Member(Base):
@@ -42,6 +41,7 @@ class Member(Base):
 
 	idmember = Column(Integer, primary_key=True)
 	dtusername = Column(String(255))
+	dtmonthly = Column(Integer)
 	# ldap
 	cn = ''    # fullname
 	sn = ''    # family name
@@ -61,6 +61,9 @@ class Member(Base):
 	birthDate = '' # birthDate
 	arrivalDate = '' # member since
 	leavingDate = '' # membership canceled
+
+	# This does not seem to work
+	#payments = relation(Payment, order_by=Payment.idpayment, primaryjoin=Payment.limember == Member.idmember, backref="limember")
 	
 
 
