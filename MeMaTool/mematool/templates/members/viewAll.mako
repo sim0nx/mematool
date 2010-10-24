@@ -25,9 +25,15 @@
                 <th class="table_title">
                         ${_('Mobile')}
                 </th>
-				<th colspan="3" class="table_title">
-						${_('Tools')}
-				</th>
+		<th class="table_title">
+			${_('PEAP enabled')}
+		</th>
+		<th class="table_title">
+			${_('SSH Key')}
+		</th>
+		<th colspan="3" class="table_title">
+			${_('Tools')}
+		</th>
         </tr>
 <%
 	x = 0
@@ -36,6 +42,8 @@
 	<%
 			x += 1
 			color = "#99ffcc" if x % 2 else "white"
+			peapPossible = h.literal('<font color="red">no</font>') if not m.sambaNTPassword else h.literal('<font color="green">yes</font>')
+			sshPublicKey = 'no' if not m.sshPublicKey else h.literal('<font color="green">yes</font>')
 	%>
 	<tr style="background-color:${color};" class="table_row">
 		<td>${m.dtusername}</td>
@@ -44,6 +52,8 @@
 	        <td>${m.gn}</td>
 		<td>${m.homeDirectory}</td>
 		<td>${m.mobile}</td>
+		<td>${peapPossible}</td>
+		<td>${sshPublicKey}</td>
 		<td><a href="${url(controller='members', action='editMember', member_id=m.dtusername)}">edit</a></td>
 		<td><a href="${url(controller='payments', action='showPayments', member_id=m.dtusername)}">payments</a></td>
         </tr>

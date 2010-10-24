@@ -53,6 +53,7 @@ class Member(Base):
 	userPassword = '' # SSHA password
 	sambaNTPassword = '' # NT Password
 	userCertificate = '' # x509 certificate
+	sshPublicKey = '' # SSH public key
 	uidNumber = '' # user id (uidNumber)
 	gidNumber = '' # group id (gidNumber)
 	loginShell = '' # login shell
@@ -88,8 +89,12 @@ class Member(Base):
 			self.mobile = member['mobile']
 		if 'mail'  in member:
 			self.mail = member['mail']
+		if 'sambaNTPassword' in member and member['sambaNTPassword'] != '':
+			self.sambaNTPassword = 'yes'
 		if 'certificate'  in member:
 			self.userCertificate = member['certificate']
+		if 'sshPublicKey' in member:
+			self.sshPublicKey = member['sshPublicKey']
 		if 'gidNumber'  in member:
 			self.gidNumber = member['gidNumber']
 		if 'uidNumber'  in member:

@@ -125,6 +125,14 @@
         </tr>
         <tr>
                 <td class="table_title">
+                        ${_('SSH Public Key')}
+                </td>
+                <td>
+                        <textarea rows='10' cols='60' name="sshPublicKey">${c.member.sshPublicKey}</textarea>
+                </td>
+        </tr>
+        <tr>
+                <td class="table_title">
                         ${_('Password')}
                 </td>
                 <td>
