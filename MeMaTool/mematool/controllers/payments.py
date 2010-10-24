@@ -24,22 +24,39 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from mematool.lib.base import BaseController, render, Session
+from mematool.model.payment import Payment
+
 from sqlalchemy.orm.exc import NoResultFound
 
 log = logging.getLogger(__name__)
 
 class PaymentsController(BaseController):
 
-    def index(self):
-        return self.showOutstanding()
+	def __init__(self):
+		return
+
+	def index(self):
+		return self.showOutstanding()
         
-    def showOutstanding(self):
-    	return render('/payments/showOutstanding.mako')
+	def showOutstanding(self):
+		""" Show which users still need to pay their membership fees and if a reminder has already been sent """
+		return render('/payments/showOutstanding.mako')
     	
-    	
-  	def showPayments(self):
-  		if (not 'member_id' in request.params):
+	def showPayments(self):
+		""" Show a specific user's payments """
+		if (not 'member_id' in request.params):
 			redirect(url(controller='payments', action='showOutstanding'))
-		
-		
-  		return render('/payments/showPayments.mako')
+		    
+		print "%s" % Session.query(Payment)
+		return render('/payments/showPayments.mako')
+
+	def addPayment(self):
+		""" Add a payment to a specific user """
+		if (not 'member_id' in request.params):
+			#display dropdown on null value
+			print "no member id supplied"
+		else:
+			#select name from dropdown
+			print "you selected member id %s" % request.params['member_id']
+
+		return render('/payments/addPayment.mako')

@@ -4,7 +4,7 @@
 <html>
         <head>
         	<title>syndicat MeMaTool</title>
-            ${self.css()}
+            	${self.css()}
         </head>
         <body>
 			${self.body()}

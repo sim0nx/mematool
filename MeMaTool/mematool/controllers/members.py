@@ -25,7 +25,7 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from mematool.lib.base import BaseController, render, Session
-from mematool.model import Member
+from mematool.model.member import Member
 
 log = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ class MembersController(BaseController):
 		if (not 'member_id' in request.params):
 			redirect(url(controller='members', action='showAllMembers'))
 
-		member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
+		member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
 
 		try:
 			member = member_q.one()
@@ -111,7 +111,7 @@ class MembersController(BaseController):
 
 	@checkMember
 	def doEditMember(self):
-		member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
+		member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
 
 		try:
 			member = member_q.one()
