@@ -37,9 +37,9 @@ class PaymentsController(BaseController):
     	return render('/payments/showOutstanding.mako')
     	
     	
-  	def showPayments(self):
-  		if (not 'member_id' in request.params):
-			redirect(url(controller='payments', action='showOutstanding'))
+    def showPayments(self):
+      if (not 'member_id' in request.params):
+        redirect(url(controller='payments', action='showOutstanding'))
 		
 		
-  		return render('/payments/showPayments.mako')
+      return render('/payments/showPayments.mako')
