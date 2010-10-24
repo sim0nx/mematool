@@ -8,9 +8,10 @@
         </head>
         <body>
 		${self.header()}
-		${self.heading()}
 		${self.menu()}
+		${self.heading()}
 		${self.breadcrumbs()}
+		${self.flash()}
 		${next.body()}
 		${self.footer()}
         </body>
@@ -33,3 +34,24 @@
 <%def name="menu()"></%def>
 <%def name="breadcrumbs()"></%def>
 <%def name="footer()"><p><a href="#top">Top ^</a></p></%def>
+
+<%def name="flash()">
+    % if session.has_key('flash'):
+    <div id="flash"><p>${session.get('flash')}</p></div>
+    <%
+        del session['flash']
+        session.save()
+    %>
+    % endif
+</%def>
+
+<% 
+	# We should be able to dynmically get all available controllers and list them (where?) 
+%>
+<%def name="menu()">
+	<p>
+	  <a href="${h.url_for(controller='members', action='showAllMembers', id=None)}">Members</a>
+	| <a href="${h.url_for(controller='payments', action='showOutstanding',id=None)}">Payments</a>
+	</p>
+</%def>
+

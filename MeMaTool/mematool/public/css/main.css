@@ -9,3 +9,11 @@
 .table_content {
 	border:1px solid black;
 }
+
+#flash {
+    background: #ffc;
+    padding: 5px;
+    border: 1px dotted #000;
+    margin-bottom: 20px;
+}
+#flash p { margin: 0px; padding: 0px; }

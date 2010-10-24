@@ -70,3 +70,10 @@ class PaymentsController(BaseController):
 			print "You selected member id %s" % request.params['member_id']
 
 		return render('/payments/addPayment.mako')
+
+	def savePayment(self):
+		# do stuff
+		session['flash'] = 'Payment successfully saved.'
+		session.save()
+
+		redirect(url(controller='payments',action='showPayments'))

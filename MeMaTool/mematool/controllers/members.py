@@ -139,6 +139,9 @@ class MembersController(BaseController):
 
 				member.save()
 
+				session['flash'] = 'Member details successfully edited'
+				session.save()
+
 				redirect(url(controller='members', action='showAllMembers'))
 
                         except LookupError:
