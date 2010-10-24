@@ -136,7 +136,7 @@
                         ${_('Password')}
                 </td>
                 <td>
-                        <input type="password" name="userPassword" value="********" class="input">
+                        <input type="password" name="userPassword" value="" class="input">
                 </td>
         </tr>
         <tr>
@@ -144,7 +144,7 @@
                         ${_('Repeat Password')}
                 </td>
                 <td>
-                        <input type="password" name="userPassword2" value="********" class="input">
+                        <input type="password" name="userPassword2" value="" class="input">
                 </td>
         </tr>
 	<tr>

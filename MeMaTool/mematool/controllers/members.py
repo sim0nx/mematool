@@ -76,6 +76,8 @@ class MembersController(BaseController):
 
 
         def checkMember(f):
+		# @TODO add more tests on the content
+		# @TODO actually display errors !
                 def new_f(self):
                         if (not 'member_id' in request.params):
                                 redirect(url(controller='members', action='showAllMembers'))
@@ -92,15 +94,9 @@ class MembersController(BaseController):
 				not 'arrivalDate' in request.params or
 				not 'leavingDate' in request.params):
                                 redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
-			elif ( ('userPassword' in request.params
-				and 'userPassword2' in request.params)
+			elif ( ('userPassword' in request.params and 'userPassword2' in request.params)
 				and
-				(# @BUG these checks do not work !!
-				  request.params['userPassword'] != request.params['userPassword2']
-				  or request.params['userPassword'] == ''
-				  or request.params['userPassword2'] == ''
-				)
-				and request.params['userPassword'] != '********' ):
+				(request.params['userPassword'] != request.params['userPassword2'])):
 				redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
 
 
@@ -124,6 +120,19 @@ class MembersController(BaseController):
 				member.gn = request.params['gn']
 				member.homeDirectory = request.params['homeDirectory']
 				member.mobile = request.params['mobile']
+				member.birthDate = request.params['birthDate']
+				member.address = request.params['address']
+				member.phone = request.params['phone']
+				member.mail = request.params['mail']
+				member.loginShell = request.params['loginShell']
+				member.arrivalDate = request.params['arrivalDate']
+				member.leavingDate = request.params['leavingDate']
+
+				if 'sshPublicKey' in request.params and request.params['sshPublicKey'] != '':
+					# @TODO don't blindly save it
+					member.sshPublicKey = request.params['sshPublicKey']
+				elif 'sshPublicKey' in vars(member):
+					member.sshPublicKey = 'removed'
 
 				if 'userPassword' in request.params:
 					member.setPassword(request.params['userPassword'])
