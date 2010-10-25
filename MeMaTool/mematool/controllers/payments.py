@@ -42,6 +42,11 @@ class PaymentsController(BaseController):
 	def __init__(self):
 		pass
 
+	def __before__(self, action, **param):
+		# called before accessing any method
+		# also remember that any private methods (def _functionname) cannot be accessed as action
+		pass
+
 	def index(self):
 		return self.showOutstanding()
         
@@ -60,7 +65,7 @@ class PaymentsController(BaseController):
 		## http://www.sqlalchemy.org/docs/05/reference/ext/declarative.html
 		payment_q = Session.query(Payment).filter(Payment.limember == request.params['member_id'])
 
-		## having problems establishing relations
+		## having problems establishing relations, thus doing a second query
 		member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
 		
 		## using a join while trying to figure out how to make relations work (can't get this to work either)
@@ -77,6 +82,7 @@ class PaymentsController(BaseController):
 			print "oops"
 		    
 		return render('/payments/listPayments.mako')
+
 
 	def editPayment(self):
 		""" Add or edit a payment to/of a specific user """
