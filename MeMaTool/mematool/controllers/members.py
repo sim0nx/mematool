@@ -57,6 +57,8 @@ class MembersController(BaseController):
 		try:
 			member = member_q.one()
 
+			c.heading = 'Edit member'
+
 			try:
 				member.loadFromLdap()
 

@@ -65,7 +65,7 @@ class LdapConnector(object):
 
 
 	def getMemberList(self):
-		filter = '(uid=*)'
+		filter = '(&(uid=*)(gidNumber=100))'
 		attrs = ['uid', 'uidNumber']
 
 		result = self.con.search_s( config.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs )
