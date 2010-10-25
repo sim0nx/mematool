@@ -19,7 +19,7 @@
 #    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, DateTime, ForeignKeyConstraint
+from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, Date, ForeignKeyConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relation
 
@@ -34,7 +34,7 @@ class Payment(Base):
 
 	idpayment = Column(Integer, primary_key=True)
 	dtreason = Column(String(255))
-	dtdate = Column(DateTime)
+	dtdate = Column(Date)
 	dtamount = Column(Integer)
 	lipaymentmethod = Column(Integer)	
 

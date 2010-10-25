@@ -1,7 +1,6 @@
 <%inherit file="/base.mako" />
-<%def name="menu()" >
-	${parent.menu()}
-	<p>
+<%def name="actions()" >
+	<p id="actions">
 		<a href="${url(controller='payments', action='listPayments', member_id=c.payment.limember)}">&lt;-- back to Payments</a>
 	</p>
 </%def>
@@ -14,7 +13,7 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
         </tr>
         <tr>
                 <td class="table_label"><label for="dtdate">Date payed</label></td>
-		<td><input type="text" name="dtdate" class="input" value="${c.payment.dtdate}"/>(replace by datepicker)</td>
+		<td>${h.text('dtdate', value=c.payment.dtdate, class_='input')}(dd/mm/yyyy, replace by datepicker)</td>
         </tr>
         <tr>
                 <td class="table_label"><label for="dtreason">Reason for payment</label></td>

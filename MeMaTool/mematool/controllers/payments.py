@@ -71,6 +71,8 @@ class PaymentsController(BaseController):
 		## using a join while trying to figure out how to make relations work (can't get this to work either)
 		#query = Session.query(Member,Payment).filter(Payment.limember == Member.idmember).filter(Member.idmember == request.params['member_id'])
 
+		## consider pagination
+		# http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html#using-pagination
                 try:
 			#member,payments = query.all()
 			c.member = member_q.one()
@@ -101,7 +103,7 @@ class PaymentsController(BaseController):
 				print "oops"
 
 		methods = Session.query(Paymentmethod).all()
-		## how to easily turn a result object into a list?
+		## how to easily turn a result object into a list? (more efficiently than this)
 		c.methods = []
 		for m in methods:
 			c.methods.append([m.idpaymentmethod,m.dtname])

@@ -5,8 +5,9 @@
 	${self.css_link('/css/viewAll.css', 'screen')}
 </%def>
 <%def name="actions()">
-        <p>
+        <p id="actions">
                 ${h.link_to('Add member',url(controller='members', action='addMember'))}
+                | ${h.link_to('RCSL export',url(controller='members', action='rcslExport'))}
         </p>
 </%def>
 

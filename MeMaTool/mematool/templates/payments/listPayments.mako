@@ -1,12 +1,12 @@
 <%inherit file="/base.mako" />
 <%def name="actions()">
-	<p>
+	<p id="actions">
 		<a href="${url(controller='payments', action='editPayment', member_id=c.member_id)}">Add payment</a>
 	</p>
 </%def>
 <p id="lastsuntil">
 This member chose to pay ${c.member.dtmonthly} EUR per month. (<a href="${url(controller='members', action='setMonthlyFee', member_id=c.member_id)}">edit</a>)<br/>
-At the current rate, this will last until ${c.until}. (Add nice graphics or calendar)
+At the current rate, this will last <strong>until ${c.until}</strong>. (Add nice graphics or calendar)
 </p>
 
 <table class="table_content" width="95%">

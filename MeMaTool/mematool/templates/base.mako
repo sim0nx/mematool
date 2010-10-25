@@ -51,7 +51,7 @@
 	# We should be able to dynmically get all available controllers and list them (where?) 
 %>
 <%def name="menu()">
-	<p>
+	<p id="menu">
 	  <a href="${h.url_for(controller='members', action='showAllMembers', id=None)}">Members</a>
 	| <a href="${h.url_for(controller='payments', action='showOutstanding',id=None)}">Payments</a>
 	| <a href="${h.url_for(controller='paymentmethods', action='listMethods',id=None)}">Payment-methods</a>
