@@ -6,6 +6,16 @@
 	</p>
 </%def>
 
+<%
+	## Supposedly, there is also a form helper:
+	"""
+	${h.form(h.url(action='email'), method='get')}
+		Email Address: ${h.text_field('email')}
+               ${h.submit('Submit')}
+	${h.end_form()}
+	"""
+
+%>
 <form method="post" action="${url(controller='payments', action='savePayment')}" name="recordform">
 <table class="table_content" width="95%">
         <tr>

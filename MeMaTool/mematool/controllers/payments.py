@@ -23,12 +23,19 @@ import logging
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
+from formencode import htmlfill
+from mematool.model.schema.payments import PaymentForm
+
+from pylons.decorators import validate
+from pylons.decorators.rest import restrict
+
 from mematool.lib.base import BaseController, render, Session
 from mematool.model import Payment, Member, Paymentmethod
 
 from sqlalchemy.orm.exc import NoResultFound
 
 log = logging.getLogger(__name__)
+
 
 class PaymentsController(BaseController):
 
@@ -93,27 +100,26 @@ class PaymentsController(BaseController):
 		return render('/payments/editPayment.mako')
 
 
-	#@checkdecorator	# check that payments are not in the future
+	# I suspect keyError catching only works with forms in editPayment created by the FormBuild module
+	@restrict('POST')
+	@validate(schema=PaymentForm(), form='editPayment')
 	def savePayment(self):
 		""" Save a new or edited payment """
 
-		rp = request.params
-		if (rp['idpayment'] != 0):
+		if (self.form_result['idpayment'] != 0):
 			np = Session.query(Payment).filter(Payment.idpayment == request.params['idpayment']).one()
 		else:
 			np = Payment()
 
-		np.dtreason = rp['dtreason']
-		np.dtdate = rp['dtdate']
-		np.dtamount = rp['dtamount']
-		np.lipaymentmethod = rp['lipaymentmethod']
-		np.limember = rp['limember']
+		for key, value in self.form_result.items():
+			setattr(np, key, value)
 
 		Session.add(np)
 		np.save() # defined in Payment model
-		## how to test for success?
+		## how to test for success? --> if np.idpayment set
+		#print(repr(np.idpayment))
 
 		session['flash'] = 'Payment saved successfully.'
 		session.save()
 
-		redirect(url(controller='payments', action='listPayments', member_id=rp['limember']))
+		redirect(url(controller='payments', action='listPayments', member_id=self.form_result['limember']))
