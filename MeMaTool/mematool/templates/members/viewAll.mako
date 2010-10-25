@@ -4,6 +4,11 @@
 	${parent.css()}
 	${self.css_link('/css/viewAll.css', 'screen')}
 </%def>
+<%def name="actions()">
+        <p>
+                ${h.link_to('Add member',url(controller='members', action='addMember'))}
+        </p>
+</%def>
 
 <table class="table_content" width="95%">
         <tr>

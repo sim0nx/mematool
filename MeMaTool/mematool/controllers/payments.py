@@ -90,18 +90,18 @@ class PaymentsController(BaseController):
 		if (not 'idpayment' in request.params):
 			c.payment = Payment()
 			c.payment.limember = request.params['member_id']
-			member_id = request.params['member_id']
+			action = 'Adding'
 		else:
+			action = 'Editing'
 			payment_q = Session.query(Payment).filter(Payment.idpayment == request.params['idpayment'])
 			try:
 				payment = payment_q.one()
 				c.payment = payment
-				member_id = payment.limember
 			except NoResultFound:
 				print "oops"
 
 		c.methods = Session.query(Paymentmethod).all()
-		c.heading = 'Adding payment for user %s' % member_id
+		c.heading = '%s payment for user %s' % (action, c.payment.limember)
 
 		return render('/payments/editPayment.mako')
 
@@ -112,7 +112,7 @@ class PaymentsController(BaseController):
 	def savePayment(self):
 		""" Save a new or edited payment """
 
-		if (self.form_result['idpayment'] != 0):
+		if (self.form_result['idpayment'] != None):
 			np = Session.query(Payment).filter(Payment.idpayment == request.params['idpayment']).one()
 		else:
 			np = Payment()

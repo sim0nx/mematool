@@ -1,6 +1,5 @@
 <%inherit file="/base.mako" />
-<%def name="menu()">
-	${parent.menu()}
+<%def name="actions()">
 	<p>
 		<a href="${url(controller='payments', action='editPayment', member_id=c.member_id)}">Add payment</a>
 	</p>

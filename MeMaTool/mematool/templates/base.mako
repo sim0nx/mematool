@@ -10,6 +10,7 @@
 		${self.header()}
 		${self.menu()}
 		${self.heading()}
+		${self.actions()}
 		${self.breadcrumbs()}
 		${self.flash()}
 		${next.body()}
@@ -32,6 +33,7 @@
 <%def name="heading()"><h1>${hasattr(c, 'heading') and c.heading or 'No Title'}</h1></%def>
 <%def name="header()"><a name="top"></a></%def>
 <%def name="menu()"></%def>
+<%def name="actions()"></%def>
 <%def name="breadcrumbs()"></%def>
 <%def name="footer()"><p><a href="#top">Top ^</a></p></%def>
 

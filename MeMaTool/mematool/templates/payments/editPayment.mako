@@ -42,7 +42,7 @@
 	<tr>
 		<td class="table_label"/>
 		<td style="text-align:left;"><button name="send" label="Add payment">
-		% if (c.payment.idpayment == ''):
+		% if (c.payment.idpayment == None):
 			Add
 		% else:
 			Edit
