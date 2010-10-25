@@ -39,7 +39,7 @@ class Paymentmethod(Base):
 		pass
 
 	def __repr__(self):
-		return "<Payment('idpayment=%d, limember=%d')>" % (self.idpayment, self.limember)
+		return "<Paymentmethod('idpaymentmethod=%d, dtname=%s')>" % (self.idpaymentmethod, self.dtname)
 
 	def save(self):
 		Session.commit()

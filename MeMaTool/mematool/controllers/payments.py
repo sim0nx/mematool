@@ -100,7 +100,11 @@ class PaymentsController(BaseController):
 			except NoResultFound:
 				print "oops"
 
-		c.methods = Session.query(Paymentmethod).all()
+		methods = Session.query(Paymentmethod).all()
+		## how to easily turn a result object into a list?
+		c.methods = []
+		for m in methods:
+			c.methods.append([m.idpaymentmethod,m.dtname])
 		c.heading = '%s payment for user %s' % (action, c.payment.limember)
 
 		return render('/payments/editPayment.mako')
