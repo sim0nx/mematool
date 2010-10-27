@@ -9,6 +9,7 @@ from pylons.wsgiapp import PylonsApp
 from routes.middleware import RoutesMiddleware
 
 from mematool.config.environment import load_environment
+from repoze.who.config import make_middleware_with_config as make_who_with_config
 
 def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     """Create a Pylons WSGI application and return it
@@ -44,6 +45,7 @@ def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     app = SessionMiddleware(app, config)
 
     # CUSTOM MIDDLEWARE HERE (filtered by error handling middlewares)
+    app = make_who_with_config(app, global_conf, app_conf['who.config_file'], app_conf['who.log_file'], app_conf['who.log_level'])
 
     if asbool(full_stack):
         # Handle Python exceptions
