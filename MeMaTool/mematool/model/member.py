@@ -52,13 +52,14 @@ class Member(Base):
 	mail = '' # mail
 	userPassword = '' # SSHA password
 	sambaNTPassword = '' # NT Password
-	userCertificate = '' # x509 certificate
+	#userCertificate = '' # x509 certificate
 	sshPublicKey = '' # SSH public key
 	uidNumber = '' # user id (uidNumber)
 	gidNumber = '' # group id (gidNumber)
 	loginShell = '' # login shell
 	homeDirectory = '' # homeDirectory
 	birthDate = '' # birthDate
+	homePostalAddress = '' # homePostalAddress
 	arrivalDate = '' # member since
 	leavingDate = '' # membership canceled
 
@@ -94,8 +95,8 @@ class Member(Base):
 			self.mail = member['mail']
 		if 'sambaNTPassword' in member and member['sambaNTPassword'] != '':
 			self.sambaNTPassword = 'yes'
-		if 'certificate'  in member:
-			self.userCertificate = member['certificate']
+		#if 'certificate'  in member:
+		#	self.userCertificate = member['certificate']
 		if 'sshPublicKey' in member:
 			self.sshPublicKey = member['sshPublicKey']
 		if 'gidNumber'  in member:
@@ -108,6 +109,8 @@ class Member(Base):
 			self.homeDirectory = member['homeDirectory']
 		if 'birthDate'  in member:
 			self.birthDate = member['birthDate']
+		if 'homePostalAddress' in member:
+			self.homePostalAddress = member['homePostalAddress']
 		if 'arrivalDate'  in member:
 			self.arrivalDate = member['arrivalDate']
 		if 'leavingDate'  in member:

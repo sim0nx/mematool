@@ -31,6 +31,12 @@ log = logging.getLogger(__name__)
 
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
 from sqlalchemy.orm.exc import NoResultFound
+import re
+from mematool.lib.syn2cat import regex
+
+import gettext
+_ = gettext.gettext
+
 
 
 class MembersController(BaseController):
@@ -41,11 +47,6 @@ class MembersController(BaseController):
 
 	def index(self):
 		return self.showAllMembers()
-
-		#members_q = Session.query(Member)
-		#members = members_q.all()
-		#c.members = members
-		#return render('/members/index.mako')
 
 
 	def editMember(self):
@@ -78,28 +79,81 @@ class MembersController(BaseController):
 
 
         def checkMember(f):
-		# @TODO add more tests on the content
-		# @TODO actually display errors !
                 def new_f(self):
+			# @TODO request.params may contain multiple values per key... test & fix
                         if (not 'member_id' in request.params):
-                                redirect(url(controller='members', action='showAllMembers'))
-                        elif (not 'cn' in request.params or
-                                not 'sn' in request.params or
-                                not 'gn' in request.params or
-				not 'birthDate' in request.params or
-				not 'address' in request.params or
-				not 'phone' in request.params or
-				not 'mobile' in request.params or
-				not 'mail' in request.params or
-				not 'loginShell' in request.params or
-                                not 'homeDirectory' in request.params or
-				not 'arrivalDate' in request.params or
-				not 'leavingDate' in request.params):
-                                redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
-			elif ( ('userPassword' in request.params and 'userPassword2' in request.params)
-				and
-				(request.params['userPassword'] != request.params['userPassword2'])):
-				redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
+				redirect(url(controller='members', action='showAllMembers'))
+                        else:
+				formok = True
+				errors = []
+
+				if not 'cn' in request.params or len(request.params['cn']) > 40:
+					formok = False
+					errors.append(_('Invalid common name'))
+
+				if not 'sn' in request.params or len(request.params['sn']) > 20:
+					formok = False
+					errors.append(_('Invalid surname'))
+
+				if not 'gn' in request.params or len(request.params['gn']) > 20:
+					formok = False
+					errors.append(_('Invalid given name'))
+
+				if not 'birthDate' in request.params or not re.match(regex.date, request.params['birthDate'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid birth date'))
+
+				if not 'address' in request.params or len(request.params['address']) > 100:
+					formok = False
+					errors.append(_('Invalid address'))
+
+				if 'phone' in request.params and request.params['phone'] != '' and not re.match(regex.phone, request.params['phone'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid phone number'))
+
+				if not 'mobile' in request.params or not re.match(regex.phone, request.params['mobile'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid mobile number'))
+
+				if not 'mail' in request.params or not re.match(regex.email, request.params['mail'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid e-mail address'))
+
+				if not 'loginShell' in request.params or not re.match(regex.date, request.params['loginShell'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid login shell'))
+
+				if not 'homeDirectory' in request.params or not re.match(regex.date, request.params['homeDirectory'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid home directory'))
+
+				if not 'arrivalDate' in request.params or not re.match(regex.date, request.params['arrivalDate'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid "member since" date'))
+
+				if 'leavingDate' in request.params and request.params['leavingDate'] != '' and not re.match(regex.date, request.params['leavingDate'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid "membership canceled" date'))
+
+				if 'userPassword' in request.params and 'userPassword2' in request.params:
+					if request.params['userPassword'] != request.params['userPassword2']:
+						formok = False
+						errors.append(_('Passwords don\'t match'))
+					elif len(request.params['userPassword']) > 0 and len(request.params['userPassword']) <= 6:
+						formok = False
+						errors.append(_('Password too short'))
+
+				if not formok:
+					session['errors'] = errors
+					session['reqparams'] = {}
+
+					# @TODO request.params may contain multiple values per key... test & fix
+					for k in request.params.iterkeys():
+						session['reqparams'][k] = request.params[k]
+						
+					session.save()
+
+					redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
 
 
                         return f(self)
@@ -115,18 +169,19 @@ class MembersController(BaseController):
 			member = member_q.one()
 
                         try:
-                                member.loadFromLdap()
+				member.loadFromLdap()
 
+				member.gidNumber = request.params['gidNumber']
 				member.cn = request.params['cn']
 				member.sn = request.params['sn']
 				member.gn = request.params['gn']
-				member.homeDirectory = request.params['homeDirectory']
-				member.mobile = request.params['mobile']
 				member.birthDate = request.params['birthDate']
 				member.address = request.params['address']
 				member.phone = request.params['phone']
+				member.mobile = request.params['mobile']
 				member.mail = request.params['mail']
 				member.loginShell = request.params['loginShell']
+				member.homeDirectory = request.params['homeDirectory']
 				member.arrivalDate = request.params['arrivalDate']
 				member.leavingDate = request.params['leavingDate']
 
@@ -147,7 +202,7 @@ class MembersController(BaseController):
 				redirect(url(controller='members', action='showAllMembers'))
 
                         except LookupError:
-                                print 'No such ldap user !'
+				print 'No such ldap user !'
 
                 except NoResultFound:
                         print 'No such sql user !'

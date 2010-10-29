@@ -80,14 +80,58 @@ class LdapConnector(object):
 
 
 	def saveMember(self, member):
-		mod_attrs = [ (ldap.MOD_REPLACE, 'cn', str(member.cn)),
-				(ldap.MOD_REPLACE, 'sn', str(member.sn)),
-	                        (ldap.MOD_REPLACE, 'homeDirectory', str(member.homeDirectory)),
-	                        (ldap.MOD_REPLACE, 'mobile', str(member.mobile)),
-	                        (ldap.MOD_REPLACE, 'givenName', str(member.gn))
-			]
+		mod_attrs = []
 
-		
+		if member.cn != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'cn', str(member.cn)))
+
+		if member.sn != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'sn', str(member.sn)))
+
+		if member.gn != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'givenName', str(member.gn)))
+
+		if member.homePostalAddress != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'homePostalAddress', str(member.homePostalAddress)))
+
+		if member.phone != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'homePhone', str(member.phone)))
+		# @TODO wildcard delete does not work ... fix
+		#else:
+		#	mod_attrs.append((ldap.MOD_DELETE, 'homePhone', None))
+
+		if member.mobile != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'mobile', str(member.mobile)))
+
+		if member.mail != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'mail', str(member.mail)))
+
+		#if member.userCertificate != '':
+		#	mod_attrs.append((ldap.MOD_REPLACE, 'userCertificate', str(member.userCertificate)))
+		#else:
+		#	mod_attrs.append((ldap.MOD_DELETE, 'userCertificate', None))
+
+		if member.gidNumber != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'gidNumber', str(member.gidNumber)))
+
+		if member.loginShell != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'loginShell', str(member.loginShell)))
+
+		if member.homeDirectory != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'homeDirectory', str(member.homeDirectory)))
+
+		if member.birthDate != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'birthDate', str(member.birthDate)))
+
+		if member.arrivalDate != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'arrivalDate', str(member.arrivalDate)))
+
+		if member.leavingDate != '':
+			mod_attrs.append((ldap.MOD_REPLACE, 'leavingDate', str(member.leavingDate)))
+		# @TODO wildcard delete does not work ... fix
+		#else:
+		#	mod_attrs.append((ldap.MOD_DELETE, 'leavingDate', None))
+
 
 		if member.userPassword and member.userPassword != '':
 			mod_attrs.append((ldap.MOD_REPLACE, 'userPassword', str(member.userPassword)))
