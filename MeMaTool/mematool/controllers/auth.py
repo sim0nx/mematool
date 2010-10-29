@@ -25,7 +25,7 @@ class AuthController(BaseController):
 
 
 	def login(self):
-		return "At login"
+		return "At login: here be a form"
 		pass
 
 	def logout(self):
