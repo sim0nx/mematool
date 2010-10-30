@@ -41,7 +41,6 @@ class Member(Base):
 
 	idmember = Column(Integer, primary_key=True)
 	dtusername = Column(String(255))
-	dtmonthly = Column(Integer)
 	# ldap
 	cn = ''    # fullname
 	sn = ''    # family name

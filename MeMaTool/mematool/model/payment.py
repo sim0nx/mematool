@@ -36,6 +36,9 @@ class Payment(Base):
 	dtreason = Column(String(255))
 	dtdate = Column(Date)
 	dtamount = Column(Integer)
+	dtrate = Column(Integer)
+	dtmode = Column(String(255))
+	dtverified = Column(Boolean)
 	lipaymentmethod = Column(Integer)	
 
 	# defined in the member model

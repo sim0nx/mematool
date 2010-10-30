@@ -1,11 +1,11 @@
 <%inherit file="/base.mako" />
 
-<%def name="menu()">
-## Include the parent footer too
-${parent.menu()}
-## Then add our page links
-<p>
-  <a href="${url(controller='page', action='list', id=None)}">Some additional link</a>
+<%def name="actions()">
+<p id="actions">
+${h.form(url(controller='payments', action='editPayment'), method='post', name='addpayment')}
+	${h.select('member_id', '1000', c.member_ids)}
+	${h.submit('choose','Add payment')}
+${h.end_form()}
 </p>
 </%def>
 

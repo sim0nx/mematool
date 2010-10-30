@@ -33,6 +33,9 @@ from mematool.lib.base import BaseController, render, Session
 from mematool.model import Payment, Member, Paymentmethod
 
 from sqlalchemy.orm.exc import NoResultFound
+from webob.exc import HTTPUnauthorized
+
+from datetime import date
 
 log = logging.getLogger(__name__)
 
@@ -45,13 +48,26 @@ class PaymentsController(BaseController):
 	def __before__(self, action, **param):
 		# called before accessing any method
 		# also remember that any private methods (def _functionname) cannot be accessed as action
-		pass
+		if self.identity is None:
+                        raise HTTPUnauthorized()
 
 	def index(self):
 		return self.showOutstanding()
         
 	def showOutstanding(self):
 		""" Show which users still need to pay their membership fees and if a reminder has already been sent """
+
+		try:
+			nummissing = Session.query(Payment).filter("dtdate<:now AND dtverified=:verified AND dtmode=:mode").params(now=date.today(),verified=0,mode='recurring').count()
+			nummissing += 0
+			c.heading = "%d outstanding payments" % nummissing
+		except NoResultFound:
+			return 'No unpaid fees'
+		
+		# Prepare add payment form
+		c.member_ids = []
+		for id, username in Session.query(Member.idmember, Member.dtusername).order_by(Member.idmember):
+			c.member_ids.append([id, username])
 		return render('/payments/showOutstanding.mako')
     	
 	def listPayments(self):
@@ -74,20 +90,33 @@ class PaymentsController(BaseController):
 		## consider pagination
 		# http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html#using-pagination
                 try:
-			#member,payments = query.all()
 			c.member = member_q.one()
-			c.until = '06.2011'
-			c.payments = payment_q.all()
 			c.member_id = request.params['member_id']
+			c.payments = payment_q.all()
+		
+			c.unverifiedPledges = 0
+			for payment in c.payments:
+				if payment.dtverified == 0 and payment.dtmode == 'recurring':
+					c.unverifiedPledges += 1
 
+			## hmm this doesn't raie NoResultFound but has None as value of lastpayment
+			lastpayment = payment_q.order_by(Payment.idpayment).first()
+			c.ppm = lastpayment.dtrate
+
+		except AttributeError:
+			return 'This member has made no payments o.O ?! '
 		except NoResultFound:
-			print "oops"
+			return "oops"	## replace by "this member has made no payments" message
 		    
+		session['return_to'] = ('payments','listPayments')
+		session.save()
 		return render('/payments/listPayments.mako')
 
 
 	def editPayment(self):
 		""" Add or edit a payment to/of a specific user """
+
+		# vary form depending on mode (do that over ajax)
 
 		if (not 'idpayment' in request.params):
 			c.payment = Payment()
@@ -122,14 +151,21 @@ class PaymentsController(BaseController):
 			np = Session.query(Payment).filter(Payment.idpayment == request.params['idpayment']).one()
 		else:
 			np = Payment()
+			# not foreseen to add recurring payments in the admin interface
 
 		for key, value in self.form_result.items():
 			setattr(np, key, value)
+
+		if np.dtmode == 'single':
+			np.dtverified = True	
+			np.dtrate = np.dtamount
 
 		Session.add(np)
 		np.save() # defined in Payment model
 		## how to test for success? --> if np.idpayment set
 		#print(repr(np.idpayment))
+
+		## todo: recalculate member.leavingDate
 
 		session['flash'] = 'Payment saved successfully.'
 		session.save()

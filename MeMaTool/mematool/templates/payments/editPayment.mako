@@ -36,5 +36,6 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 	</tr>
 	<input type="hidden" name="limember" value="${c.payment.limember}">
 	<input type="hidden" name="idpayment" value="${c.payment.idpayment}">
+	<input type="hidden" name="dtmode" value="single">
 </table>
 ${h.end_form()}
