@@ -14,6 +14,8 @@ class LdapAuthPlugin(object):
 			return None
 
 		try:
+			pass
+			#self._fetchLdapUser(login)
 			# do ldap auth here
 		except LdapError:
 			return None
