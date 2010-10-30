@@ -19,32 +19,39 @@
 #    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+log = logging.getLogger(__name__)
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from formencode import htmlfill
+
 from mematool.model.schema.payments import PaymentForm
-
-from pylons.decorators import validate
-from pylons.decorators.rest import restrict
-
 from mematool.lib.base import BaseController, render, Session
 from mematool.model import Payment, Member, Paymentmethod
 
+from mematool.model.auth import Permission
+
 from sqlalchemy.orm.exc import NoResultFound
 from webob.exc import HTTPUnauthorized
-
 from datetime import date
 
-log = logging.getLogger(__name__)
+# Decorators
+from pylons.decorators import validate
+from pylons.decorators.rest import restrict
+from repoze.what.predicates import has_permission
+from repoze.what.plugins.pylonshq import ActionProtector, ControllerProtector
 
 
 class PaymentsController(BaseController):
+	## using this is the same as decorating __before__ with ActionController (workaround for python < 2.6)
+	#PaymentsController = ControllerProtector(has_permission('admin')) (PaymentsController)
+	## but it doesn't really work either
 
 	def __init__(self):
 		pass
 
+	@ActionProtector(has_permission('admin'))
 	def __before__(self, action, **param):
 		# called before accessing any method
 		# also remember that any private methods (def _functionname) cannot be accessed as action
@@ -171,3 +178,9 @@ class PaymentsController(BaseController):
 		session.save()
 
 		redirect(url(controller='payments', action='listPayments', member_id=self.form_result['limember']))
+
+
+	@ActionProtector(has_permission('delete_payment'))
+	def delete(self):
+		""" Delete a payment specified by an id """
+		return "I would have deleted it, honestly!"

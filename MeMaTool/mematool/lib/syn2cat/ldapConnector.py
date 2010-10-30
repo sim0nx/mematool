@@ -45,6 +45,13 @@ class LdapConnector(object):
 
 			sys.exit
 
+	def getGroup(self, gid):
+		pass
+
+
+	def getGroupList(self):
+		pass
+
 
 	def getMember(self, uid):
 		filter = '(uid=' + uid + ')'
