@@ -28,7 +28,7 @@ class LdapAuthPlugin(object):
 	def add_metadata(self, environ, identity):
 		""" retrieve metadata from the Member model """
 		userid = identity.get('repoze.who.userid')
-		user = Member.get(userid)	# idmember is primary key for member
+		#user = Member.get(userid)	# idmember is primary key for member
 
-		if user is not None:
-			identity['user'] = user
+		#if user is not None:
+		#	identity['user'] = user

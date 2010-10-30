@@ -3,17 +3,17 @@ import logging
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
-from mematool.lib.base import BaseController
+from mematool.lib.base import BaseController, render
+from pylons.decorators.secure import https
+
 
 log = logging.getLogger(__name__)
 
 class AuthController(BaseController):
 
 	def index(self,environ):
-		identity = environ.get('repoze.who.identity')
-		if identity is not None:
-			user = identity.get('user')
-			return user
+		if self.identity is not None:
+			redirect(url(controller='members', action='showAll'))
 		else:
 			redirect(url(controller='auth', action='login'))
 	
@@ -24,14 +24,12 @@ class AuthController(BaseController):
 		#	abort(403, 'You don\'t have rights to accesss this page')
 
 
+	@https()
 	def login(self):
-		return "At login: here be a form"
-		pass
+		if self.identity is not None:
+			if 'came_from' in request.params:
+				redirect(request.params['came_from'])
+			else:
+				redirect(url(controller='members', action='showAll'))
 
-	def logout(self):
-		return "At logout"
-		pass
-
-	def dologin(self):
-		return "At dologin"
-
+		return render('/auth/login.mako')

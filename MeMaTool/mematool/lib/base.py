@@ -16,6 +16,8 @@ class BaseController(WSGIController):
         # the request is routed to. This routing information is
         # available in environ['pylons.routes_dict']
         try:
+            self.identity = environ.get('repoze.who.identity')
+
             return WSGIController.__call__(self, environ, start_response)
         finally:
             Session.remove()

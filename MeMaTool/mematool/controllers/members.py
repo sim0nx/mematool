@@ -34,6 +34,8 @@ from sqlalchemy.orm.exc import NoResultFound
 import re
 from mematool.lib.syn2cat import regex
 
+from webob.exc import HTTPUnauthorized
+
 import gettext
 _ = gettext.gettext
 
@@ -43,6 +45,11 @@ class MembersController(BaseController):
 
 	def __init__(self):
 		self.ldapcon = LdapConnector()
+
+
+	def __before__(self):
+                if self.identity is None:
+			raise HTTPUnauthorized()
 
 
 	def index(self):
