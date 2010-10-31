@@ -41,7 +41,7 @@ ${h.end_form()}
                 <td>${m[2]}</td>
                 <td>${m[3]}</td>
                 <td>${paymentGood}</td>
-                <td><a href="${url(controller='payments', action='listPayments', member_id=m[1])}">payments</a></td>
+                <td><a href="${url(controller='payments', action='listPayments', member_id=m[0])}">payments</a></td>
         </tr>
 % endfor
 </table>
