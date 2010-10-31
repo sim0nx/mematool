@@ -215,7 +215,7 @@ class MembersController(BaseController):
 
 
 	def showAllMembers(self):
-		members_q = Session.query(Member)
+		members_q = Session.query(Member).order_by(Member.dtusername.asc())
 
 		try:
 			c.heading = 'All members'
