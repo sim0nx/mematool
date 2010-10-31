@@ -78,7 +78,7 @@ class PaymentsController(BaseController):
 		
 		# Prepare add payment form
 		c.member_ids = []
-		for id, username in Session.query(Member.idmember, Member.dtusername).order_by(Member.idmember):
+		for id, username in Session.query(Member.idmember, Member.dtusername).order_by(Member.dtusername):
 			c.member_ids.append([id, username])
 		return render('/payments/showOutstanding.mako')
     	
