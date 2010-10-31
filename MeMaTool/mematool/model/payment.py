@@ -34,15 +34,17 @@ class Payment(Base):
 
 	idpayment = Column(Integer, primary_key=True)
 	dtreason = Column(String(255))
-	dtdate = Column(Date)
-	dtamount = Column(Integer)
+	dtdate = Column(Date, nullable=False)
+	dtamount = Column(Integer, nullable=False)
 	dtrate = Column(Integer)
 	dtmode = Column(String(255))
 	dtverified = Column(Boolean)
 	lipaymentmethod = Column(Integer)	
 
-	# defined in the member model
+	# Members can have many payments, thus the foreign key belongs here
 	limember = Column(Integer, ForeignKey('member.idmember'))
+	
+	# trying to set up the relation in the Member class
 	#limember = relation(Member, backref=backref('payments', order_by=idpayment))
 
 	#def __init__(self,reason,date,amount,limethod,limember):

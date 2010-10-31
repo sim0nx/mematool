@@ -63,9 +63,8 @@ class Member(Base):
 	leavingDate = '' # membership canceled
 
 	# This does not seem to work
-	#payments = relation(Payment, order_by=Payment.idpayment, primaryjoin=Payment.limember == Member.idmember, backref="limember")
+	payments = relation('Payment', order_by='Payment.idpayment', backref="member")
 	
-
 
 	def __init__(self):
 		pass

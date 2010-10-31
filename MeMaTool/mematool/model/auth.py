@@ -72,6 +72,7 @@ class Permission(Base):
 	dtname = Column(String(40))
 	dtldapgid = Column(Integer)
 	## of course, if you have a secondary table, you don't need the ldapgid column
+	## also, secondary tables seem necessary for many to many relations, as in this case.
 	#groups = relation(Group, secondary=group_permission_table,backref='permissions')
 
 	def __init__(self):
