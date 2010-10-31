@@ -29,6 +29,7 @@ class LdapConnector(object):
 
 
 	def __init__(self):
+		""" Bind to server """
 		self.con = ldap.initialize(config.get('ldap.server'))
 		try:
 			self.con.start_tls_s()
@@ -45,12 +46,34 @@ class LdapConnector(object):
 
 			sys.exit
 
-	def getGroup(self, gid):
-		pass
+	def getGroup(self, cn):
+		filter = '(cn=' + cn + ')'
+		attrs = ['*']
+
+		result = self.con.search_s( config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs )
+
+		if not result:
+			raise LookupError('No such group !')
+
+		group = {}
+		for dn, attr in result:
+			for k, v in attr.iteritems():
+				group[k] = v[0]
+
+		return group
 
 
 	def getGroupList(self):
-		pass
+		filter = '(cn=*)'
+		attrs = ['cn', 'gidNumber']
+		
+		result = self.con.search_s( config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs )
+		groups = {}
+		
+		for dn, attr in result:
+			groups.append( attr['cn'][0] )
+
+		return groups
 
 
 	def getMember(self, uid):

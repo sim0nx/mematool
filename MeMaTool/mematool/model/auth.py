@@ -47,19 +47,33 @@ from mematool.lib.syn2cat.ldapConnector import LdapConnector
 
 class Group(Base):
 	
-	gid = ''
-	groupName = ''
+	__tablename__ = 'group'
+	__table_args__ = (
+		{'mysql_engine':'InnoDB' }
+		)
 
+	idgroup = Column(Integer, autoincrement=True, primary_key=True)
+	groupName = Column(String(40))
+
+	cn = ''
+	gidNumber = ''
+
+	# many to many
 	#members = relation('Member', secondary=user_group_table, backref='groups')
+
+	def __init__(self):
+		self.loadFromLdap()
 	
 	def __repr__(self):
-		return "<Group('gid=%d, groupName=%s')>" % (self.gid, self.groupName)
+		return "<Group('gidNumber=%d, groupName=%s')>" % (self.gidNumber, self.groupName)
 
 	def loadFromLdap(self):
                 self.ldapcon = LdapConnector()
-		group = self.ldapcon.getGroup(self.gid)
-		if 'groupName' in group:
-			group.groupName = group['groupName']
+		group = self.ldapcon.getGroup(self.groupName)
+		if 'gidNumber' in group:
+			group.gidNumber = group['gidNumber']
+		if 'cn' in group:
+			group.groupName = group['cn']
 
 
 class Permission(Base):

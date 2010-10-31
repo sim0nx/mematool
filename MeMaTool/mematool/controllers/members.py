@@ -80,7 +80,6 @@ class MembersController(BaseController):
 		except NoResultFound:
 			print 'No such sql user !'
 
-	
 
 		return 'ERROR 4x0'
 

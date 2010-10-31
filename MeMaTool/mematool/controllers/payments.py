@@ -30,7 +30,7 @@ from mematool.model.schema.payments import PaymentForm
 from mematool.lib.base import BaseController, render, Session
 from mematool.model import Payment, Member, Paymentmethod
 
-from mematool.model.auth import Permission
+#from mematool.model.auth import Permission
 
 from sqlalchemy.orm.exc import NoResultFound
 from webob.exc import HTTPUnauthorized
@@ -51,7 +51,7 @@ class PaymentsController(BaseController):
 	def __init__(self):
 		pass
 
-	@ActionProtector(has_permission('admin'))
+	#@ActionProtector(has_permission('admin'))
 	def __before__(self, action, **param):
 		# called before accessing any method
 		# also remember that any private methods (def _functionname) cannot be accessed as action
