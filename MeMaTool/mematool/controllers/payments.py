@@ -60,6 +60,11 @@ class PaymentsController(BaseController):
 
 	def index(self):
 		return self.showOutstanding()
+
+	#@ActionProtector(has_permission('admin'))
+	def verifyPayment(self):
+		""" action triggered through ajax by checking/unchecking checkboxes"""
+		pass
         
 	def showOutstanding(self):
 		""" Show which users still need to pay their membership fees and if a reminder has already been sent """
@@ -97,8 +102,11 @@ class PaymentsController(BaseController):
 		## consider pagination
 		# http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html#using-pagination
                 try:
-			c.member = member_q.one()
-			c.member_id = request.params['member_id']
+			member = member_q.one()
+			member.loadFromLdap()
+			c.member = member
+			c.member_id = member.dtusername
+			#c.member.leavingDate = date(int(member.leavingDate[:4]),int(member.leavingDate[5:6]),int(member.leavingDate[7:8]))
 			c.payments = payment_q.all()
 		
 			c.unverifiedPledges = 0
@@ -110,8 +118,8 @@ class PaymentsController(BaseController):
 			lastpayment = payment_q.order_by(Payment.idpayment).first()
 			c.ppm = lastpayment.dtrate
 
-		except AttributeError:
-			return 'This member has made no payments o.O ?! '
+		except AttributeError, e:
+			return 'This member has made no payments o.O ?!: %s' % e
 		except NoResultFound:
 			return "oops"	## replace by "this member has made no payments" message
 		    

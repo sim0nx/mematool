@@ -25,6 +25,7 @@ from sqlalchemy.orm import sessionmaker, relation, backref
 from mematool.model.meta import Base
 #from mematool.model.payment import Payment
 
+from datetime import date
 from mematool.lib.base import Session
 
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
@@ -67,10 +68,14 @@ class Member(Base):
 	
 
 	def __init__(self):
+		#self.loadFromLdap()	## that doesn't seem to work
 		pass
 
 	def __repr__(self):
 		return "<Member('idmember=%s, dtusername=%s')>" % (self.idmember, self.dtusername)
+
+	def _toDate(self,datestring):
+		return date(int(datestring[:4]),int(datestring[5:6]),int(datestring[7:8]))
 
 
 	def loadFromLdap(self):
@@ -112,7 +117,7 @@ class Member(Base):
 		if 'arrivalDate'  in member:
 			self.arrivalDate = member['arrivalDate']
 		if 'leavingDate'  in member:
-			self.leavingDate = member['leavingDate']
+			self.leavingDate = self._toDate(member['leavingDate'])
 
 
 	def save(self):
