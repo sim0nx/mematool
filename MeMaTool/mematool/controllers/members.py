@@ -125,11 +125,11 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid e-mail address'))
 
-				if not 'loginShell' in request.params or not re.match(regex.date, request.params['loginShell'], re.IGNORECASE):
+				if not 'loginShell' in request.params or not re.match(regex.loginShell, request.params['loginShell'], re.IGNORECASE):
 					formok = False
 					errors.append(_('Invalid login shell'))
 
-				if not 'homeDirectory' in request.params or not re.match(regex.date, request.params['homeDirectory'], re.IGNORECASE):
+				if not 'homeDirectory' in request.params or not re.match(regex.homeDirectory, request.params['homeDirectory'], re.IGNORECASE):
 					formok = False
 					errors.append(_('Invalid home directory'))
 
