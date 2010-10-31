@@ -33,6 +33,7 @@ from mematool.model import Payment, Member, Paymentmethod
 #from mematool.model.auth import Permission
 
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import and_
 from webob.exc import HTTPUnauthorized
 from datetime import date
 
@@ -41,6 +42,9 @@ from pylons.decorators import validate
 from pylons.decorators.rest import restrict
 from repoze.what.predicates import has_permission
 from repoze.what.plugins.pylonshq import ActionProtector, ControllerProtector
+
+import dateutil.parser
+import datetime
 
 
 class PaymentsController(BaseController):
@@ -78,10 +82,38 @@ class PaymentsController(BaseController):
 		
 		# Prepare add payment form
 		c.member_ids = []
+		c.members = []
 		for id, username in Session.query(Member.idmember, Member.dtusername).order_by(Member.dtusername):
+			m = Member()
+			m.dtusername = username
+			m.loadFromLdap()
+			last_payment = None
+
+			try:
+				last_payment = Session.query(Payment).filter(and_(Payment.limember == id, Payment.dtverified == 1)).order_by(Payment.dtdate.desc()).limit(1)[0]
+			except:
+				''' Don't care if there is no payment '''
+				pass
+
+
+			paymentGood = 'no'
+
+			if last_payment:
+				d1 = dateutil.parser.parse(str(last_payment.dtdate))
+				today = str(datetime.date.today()) + ' 00:00:00'
+				d2 = dateutil.parser.parse(today)
+
+				if d1 >= d2:
+					paymentGood = 'yes'
+
+
+			c.members.append([id, username, m.sn, m.gn, paymentGood])
 			c.member_ids.append([id, username])
+
+
 		return render('/payments/showOutstanding.mako')
-    	
+
+
 	def listPayments(self):
 		""" Show a specific user's payments """
 		if (not 'member_id' in request.params):

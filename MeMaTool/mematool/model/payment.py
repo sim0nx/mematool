@@ -52,7 +52,7 @@ class Payment(Base):
 		pass	
 
 	def __repr__(self):
-		return "<Payment('idpayment=%d, limember=%d')>" % (self.idpayment, self.limember)
+		return "<Payment('idpayment=%d, limember=%d', dtdate=%s, dtverified=%d)>" % (self.idpayment, self.limember, self.dtdate, self.dtverified)
 
 
 	def save(self):
