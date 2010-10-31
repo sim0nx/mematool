@@ -38,6 +38,7 @@ class LdapConnector(object):
 			except ldap.INVALID_CREDENTIALS:
 				print "Your username or password is incorrect."
 		except ldap.LDAPError, e:
+			''' @TODO better handle errors and don't use "sys.exit" ;-) '''
 			print e.message['info']
 			if type(e.message) == dict and e.message.has_key('desc'):
 				print e.message['desc']
@@ -45,6 +46,7 @@ class LdapConnector(object):
 				print e
 
 			sys.exit
+
 
 	def getGroup(self, cn):
 		filter = '(cn=' + cn + ')'
