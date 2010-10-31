@@ -84,7 +84,7 @@ def getFormVar(s, c, var):
         </tr>
         <tr>
                 <td class="table_title">
-                        ${_('Birth Date')} (YYYYMMDD)
+                        ${_('Birth Date')} (YYYY-MM-DD)
                 </td>
                 <td>
                         <input type="text" name="birthDate" value="${getFormVar(session, c, 'birthDate')}" class="input">
@@ -140,7 +140,7 @@ def getFormVar(s, c, var):
         </tr>
         <tr>
                 <td class="table_title">
-                        ${_('Member since')} (YYYYMMDD)
+                        ${_('Member since')} (YYYY-MM-DD)
                 </td>
                 <td>
                         <input type="text" name="arrivalDate" value="${getFormVar(session, c, 'arrivalDate')}" class="input">
@@ -148,7 +148,7 @@ def getFormVar(s, c, var):
         </tr>
         <tr>
                 <td class="table_title">
-                        ${_('Membership canceled')} (YYYYMMDD)
+                        ${_('Membership canceled')} (YYYY-MM-DD)
                 </td>
                 <td>
                         <input type="text" name="leavingDate" value="${getFormVar(session, c, 'leavingDate')}" class="input">
