@@ -52,10 +52,11 @@
 %>
 <%def name="menu()">
 	<p id="menu">
-	  <a href="${h.url_for(controller='members', action='showAllMembers', id=None)}">Members</a>
-	| <a href="${h.url_for(controller='payments', action='showOutstanding',id=None)}">Payments</a>
-	| <a href="${h.url_for(controller='paymentmethods', action='listMethods',id=None)}">Payment-methods</a>
-	| <a href="${h.url_for(controller='auth', action='logout',id=None)}">Logout</a>
+	  ${h.link_to('Members',url(controller='members', action='showAllMembers'))}
+	| ${h.link_to('Payments',url(controller='payments', action='showOutstanding'))}
+	| ${h.link_to('Payment-methods',url(controller='paymentmethods', action='listMethods',id=None))}
+	| ${h.link_to('Statistics',url(controller='statistics', action='getOverview',id=None))}
+	| ${h.link_to('Logout',url(controller='auth', action='logout',id=None))}
 	</p>
 </%def>
 
