@@ -71,11 +71,9 @@ class Member(Base):
 		#self.loadFromLdap()	## that doesn't seem to work
 		pass
 
+
 	def __repr__(self):
 		return "<Member('idmember=%s, dtusername=%s')>" % (self.idmember, self.dtusername)
-
-	def _toDate(self,datestring):
-		return date(int(datestring[:4]),int(datestring[5:6]),int(datestring[7:8]))
 
 
 	def loadFromLdap(self):
@@ -117,7 +115,7 @@ class Member(Base):
 		if 'arrivalDate'  in member:
 			self.arrivalDate = member['arrivalDate']
 		if 'leavingDate'  in member:
-			self.leavingDate = self._toDate(member['leavingDate'])
+			self.leavingDate = member['leavingDate']
 
 
 	def save(self):
