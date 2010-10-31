@@ -93,15 +93,15 @@ class MembersController(BaseController):
 				formok = True
 				errors = []
 
-				if not 'cn' in request.params or len(request.params['cn']) > 40:
+				if not 'cn' in request.params or request.params['cn'] == '' or len(request.params['cn']) > 40:
 					formok = False
 					errors.append(_('Invalid common name'))
 
-				if not 'sn' in request.params or len(request.params['sn']) > 20:
+				if not 'sn' in request.params or request.params['sn'] == '' or len(request.params['sn']) > 20:
 					formok = False
 					errors.append(_('Invalid surname'))
 
-				if not 'gn' in request.params or len(request.params['gn']) > 20:
+				if not 'gn' in request.params or request.params['gn'] == '' or len(request.params['gn']) > 20:
 					formok = False
 					errors.append(_('Invalid given name'))
 
@@ -109,7 +109,7 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid birth date'))
 
-				if not 'address' in request.params or len(request.params['address']) > 100:
+				if not 'address' in request.params or request.params['address'] == '' or len(request.params['address']) > 100:
 					formok = False
 					errors.append(_('Invalid address'))
 
