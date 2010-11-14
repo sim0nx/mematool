@@ -47,7 +47,7 @@ class Member(Base):
 	sn = ''    # family name
 	gn = ''    # given name
 	address = '' # complete address (homePostalAddress)
-	phone = '' # phone (homePhone)
+	homePhone = '' # phone (homePhone)
 	mobile = '' # mobile
 	mail = '' # mail
 	userPassword = '' # SSHA password
