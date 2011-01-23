@@ -51,9 +51,8 @@ class MembersController(BaseController):
 	def __before__(self):
                 if self.identity is None:
 			raise HTTPUnauthorized()
-		elif not self.authAdapter.user_in_group('office', self.identity[uid]):
-			print self.identity[uid]
-			raise HTTPUnauthorized()
+		elif not self.authAdapter.user_in_group('office', self.identity.get('uid')[0]):
+			redirect(url(controller='error', action='unauthorized'))
 
 
 	def index(self):
