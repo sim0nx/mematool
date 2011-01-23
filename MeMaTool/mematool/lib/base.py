@@ -6,9 +6,12 @@ from pylons.controllers import WSGIController
 from pylons.templating import render_mako as render
 
 from mematool.model.meta import Session
+from mematool.lib.syn2cat.auth.auth_ldap import LDAPAuthAdapter
 
 
 class BaseController(WSGIController):
+    def __init__(self):
+	self.authAdapter = LDAPAuthAdapter()
 
     def __call__(self, environ, start_response):
         """Invoke the Controller"""

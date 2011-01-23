@@ -48,6 +48,10 @@ class LdapConnector(object):
 			sys.exit
 
 
+	def getLdapConnection(self):
+		return self.con
+
+
 	def getGroup(self, cn):
 		filter = '(cn=' + cn + ')'
 		attrs = ['*']
@@ -76,6 +80,24 @@ class LdapConnector(object):
 			groups.append( attr['cn'][0] )
 
 		return groups
+
+
+	def getGroupMembers(self, group):
+		filter = '(cn=' + group + ')'
+		attrs = ['memberUid']
+
+		result = self.con.search_s( config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs )
+		members = []
+
+		for dn, attr in result:
+			for key, value in attr.iteritems():
+				if len(value) == 1:
+					items.append(value[0])
+				else:
+					for i in value:
+						members.append(i)
+
+		return members
 
 
 	def getMember(self, uid):
@@ -109,6 +131,24 @@ class LdapConnector(object):
 				members.append( attr['uid'][0] )
 
 		return members
+
+
+	def getMemberGroups(self, member):
+		filter = '(memberUid=' + member + ')'
+		attrs = ['cn']
+		groups = []
+
+		result = self.con.search_s( config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs )
+
+		for dn, attr in result:
+			for key, value in attr.iteritems():
+				if len(value) == 1:
+					groups.append(value[0])
+				else:
+					for i in value:
+						groups.append(i)
+
+		return groups
 
 
 	def saveMember(self, member):

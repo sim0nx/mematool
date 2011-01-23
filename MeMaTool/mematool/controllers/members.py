@@ -44,11 +44,15 @@ _ = gettext.gettext
 class MembersController(BaseController):
 
 	def __init__(self):
+		super(MembersController, self).__init__()
 		self.ldapcon = LdapConnector()
 
 
 	def __before__(self):
                 if self.identity is None:
+			raise HTTPUnauthorized()
+		elif not self.authAdapter.user_in_group('office', self.identity[uid]):
+			print self.identity[uid]
 			raise HTTPUnauthorized()
 
 
