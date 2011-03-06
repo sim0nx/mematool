@@ -1,22 +1,22 @@
 #
-#    MeMaTool (c) 2010 Georges Toth <georges _at_ trypill _dot_ org>
+#	MeMaTool (c) 2010 Georges Toth <georges _at_ trypill _dot_ org>
 #
 #
-#    This file is part of MeMaTool.
+#	This file is part of MeMaTool.
 #
 #
-#    MeMaTool is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#	MeMaTool is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
 #
-#    Foobar is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#	Foobar is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
+#	You should have received a copy of the GNU General Public License
+#	along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import logging
@@ -49,7 +49,7 @@ class MembersController(BaseController):
 
 
 	def __before__(self):
-                if self.identity is None:
+		if self.identity is None:
 			raise HTTPUnauthorized()
 		elif not self.authAdapter.user_in_group('office', self.identity.get('uid')[0]):
 			redirect(url(controller='error', action='unauthorized'))
@@ -63,7 +63,7 @@ class MembersController(BaseController):
 		if (not 'member_id' in request.params):
 			redirect(url(controller='members', action='showAllMembers'))
 
-		member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
+		member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
 
 		try:
 			member = member_q.one()
@@ -87,12 +87,12 @@ class MembersController(BaseController):
 		return 'ERROR 4x0'
 
 
-        def checkMember(f):
-                def new_f(self):
+	def checkMember(f):
+		def new_f(self):
 			# @TODO request.params may contain multiple values per key... test & fix
-                        if (not 'member_id' in request.params):
+			if (not 'member_id' in request.params):
 				redirect(url(controller='members', action='showAllMembers'))
-                        else:
+			else:
 				formok = True
 				errors = []
 
@@ -164,10 +164,8 @@ class MembersController(BaseController):
 
 					redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
 
-
-                        return f(self)
-
-                return new_f
+			return f(self)
+		return new_f
 
 
 	@checkMember
@@ -177,7 +175,7 @@ class MembersController(BaseController):
 		try:
 			member = member_q.one()
 
-                        try:
+			try:
 				member.loadFromLdap()
 
 				member.gidNumber = request.params['gidNumber']
@@ -210,30 +208,50 @@ class MembersController(BaseController):
 
 				redirect(url(controller='members', action='showAllMembers'))
 
-                        except LookupError:
+			except LookupError:
 				print 'No such ldap user !'
 
-                except NoResultFound:
-                        print 'No such sql user !'
+		except NoResultFound:
+			print 'No such sql user !'
+
+
+	def getAllMembers(self):
+		'''This methods retireves all members from LDAP and returns a list object containing them all'''
+		ldapcon = LdapConnector()
+		memberlist = ldapcon.getMemberList()
+		members = []
+
+		for key in memberlist:
+			member = Member()
+			member.dtusername = key
+			member.loadFromLdap()
+
+			members.append(member)
+
+		return members
 
 
 	def showAllMembers(self):
-		members_q = Session.query(Member).order_by(Member.dtusername.asc())
-
 		try:
 			c.heading = 'All members'
-			members = members_q.all()
+			members = self.getAllMembers()
 
+			# make sure to clean out some vars
 			for m in members:
-				try:
-					m.loadFromLdap()
-				except LookupError:
-					pass
+				if m.sambaNTPassword != '':
+					m.sambaNTPassword = '******'
+				if m.userPassword != '':
+					m.userPassword = '******'
+
+				print m.dtusername
 
 			c.members = members
 
 			return render('/members/viewAll.mako')
 
+		except LookupError:
+			print 'Lookup error!'
+			pass
 		except NoResultFound:
 			print 'No such sql user !'
 
