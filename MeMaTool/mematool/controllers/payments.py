@@ -53,14 +53,19 @@ class PaymentsController(BaseController):
 	## but it doesn't really work either
 
 	def __init__(self):
-		pass
+		super(PaymentsController, self).__init__()
 
 	#@ActionProtector(has_permission('admin'))
 	def __before__(self, action, **param):
-		# called before accessing any method
-		# also remember that any private methods (def _functionname) cannot be accessed as action
-		if self.identity is None:
-                        raise HTTPUnauthorized()
+		super(PaymentsController, self).__before__()
+
+		if not self.identity or not self.authAdapter.user_in_group('office', self.identity):
+			print 'wualla'
+			redirect(url(controller='error', action='unauthorized'))
+
+	def _require_auth(self):
+		return True
+
 
 	def index(self):
 		return self.showOutstanding()
@@ -123,10 +128,10 @@ class PaymentsController(BaseController):
 
 		## ideally, fetch monthly from member and the rest from payment (one to many relation)
 		## http://www.sqlalchemy.org/docs/05/reference/ext/declarative.html
-		payment_q = Session.query(Payment).filter(Payment.limember == request.params['member_id'])
+		#payment_q = Session.query(Payment).filter(Payment.limember == request.params['member_id'])
 
 		## having problems establishing relations, thus doing a second query
-		member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
+		#member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
 		
 		## using a join while trying to figure out how to make relations work (can't get this to work either)
 		#query = Session.query(Member,Payment).filter(Payment.limember == Member.idmember).filter(Member.idmember == request.params['member_id'])
@@ -134,11 +139,18 @@ class PaymentsController(BaseController):
 		## consider pagination
 		# http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html#using-pagination
                 try:
-			member = member_q.one()
+			#member = member_q.one()
+			member = Member()
+			member.uid = request.params['member_id']
 			member.loadFromLdap()
 			c.member = member
-			c.member_id = member.dtusername
+			c.member_id = member.uidNumber
 			#c.member.leavingDate = date(int(member.leavingDate[:4]),int(member.leavingDate[5:6]),int(member.leavingDate[7:8]))
+			## ideally, fetch monthly from member and the rest from payment (one to many relation)
+			## http://www.sqlalchemy.org/docs/05/reference/ext/declarative.html
+			payment_q = Session.query(Payment).filter(Payment.limember == member.uidNumber)
+
+
 			c.payments = payment_q.all()
 		
 			c.unverifiedPledges = 0
@@ -148,12 +160,16 @@ class PaymentsController(BaseController):
 
 			## hmm this doesn't raie NoResultFound but has None as value of lastpayment
 			lastpayment = payment_q.order_by(Payment.idpayment).first()
-			c.ppm = lastpayment.dtrate
+
+			if lastpayment:
+				c.ppm = lastpayment.dtrate
+			else:
+				c.ppm = 0
 
 		except AttributeError, e:
 			return 'This member has made no payments o.O ?!: %s' % e
 		except NoResultFound:
-			return "oops"	## replace by "this member has made no payments" message
+			return "this member has no payments on records"	## replace by "this member has made no payments" message
 		    
 		session['return_to'] = ('payments','listPayments')
 		session.save()
@@ -163,8 +179,11 @@ class PaymentsController(BaseController):
 	def editPayment(self):
 		""" Add or edit a payment to/of a specific user """
 
-		# vary form depending on mode (do that over ajax)
+		if (not 'member_id' in request.params or request.params['member_id'] == ''):
+			redirect(url(controller='members', action='showAllMembers'))
+			return
 
+		# vary form depending on mode (do that over ajax)
 		if (not 'idpayment' in request.params):
 			c.payment = Payment()
 			c.payment.limember = request.params['member_id']

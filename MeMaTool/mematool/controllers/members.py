@@ -23,6 +23,7 @@ import logging
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
+from pylons import config
 
 from mematool.lib.base import BaseController, render, Session
 from mematool.model import Member
@@ -49,10 +50,15 @@ class MembersController(BaseController):
 
 
 	def __before__(self):
-		if self.identity is None:
-			raise HTTPUnauthorized()
-		elif not self.authAdapter.user_in_group('office', self.identity.get('uid')[0]):
+		super(MembersController, self).__before__()
+
+		if not self.identity or not self.authAdapter.user_in_group('office', self.identity):
+			print 'wualla'
 			redirect(url(controller='error', action='unauthorized'))
+
+
+	def _require_auth(self):
+		return True
 
 
 	def index(self):
@@ -63,10 +69,12 @@ class MembersController(BaseController):
 		if (not 'member_id' in request.params):
 			redirect(url(controller='members', action='showAllMembers'))
 
-		member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
+		#member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
 
 		try:
-			member = member_q.one()
+			#member = member_q.one()
+			member = Member()
+			member.uid = request.params['member_id']
 
 			c.heading = 'Edit member'
 
@@ -223,7 +231,7 @@ class MembersController(BaseController):
 
 		for key in memberlist:
 			member = Member()
-			member.dtusername = key
+			member.uid = key
 			member.loadFromLdap()
 
 			members.append(member)
@@ -234,6 +242,7 @@ class MembersController(BaseController):
 	def showAllMembers(self):
 		try:
 			c.heading = 'All members'
+
 			members = self.getAllMembers()
 
 			# make sure to clean out some vars
@@ -242,8 +251,6 @@ class MembersController(BaseController):
 					m.sambaNTPassword = '******'
 				if m.userPassword != '':
 					m.userPassword = '******'
-
-				print m.dtusername
 
 			c.members = members
 

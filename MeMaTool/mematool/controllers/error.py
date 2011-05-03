@@ -23,7 +23,7 @@ class ErrorController(BaseController):
     def document(self):
         """Render the error document"""
         resp = request.environ.get('pylons.original_response')
-        content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
+	content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
         page = error_document_template % \
             dict(prefix=request.environ.get('SCRIPT_NAME', ''),
                  code=cgi.escape(request.GET.get('code', str(resp.status_int))),
@@ -45,5 +45,5 @@ class ErrorController(BaseController):
         request.environ['PATH_INFO'] = '/%s' % path
         return forward(PkgResourcesParser('pylons', 'pylons'))
 
-    def unauthorized(self):
-	return render('/unauthorized.mako')
+    #def unauthorized(self):
+	#return render('/unauthorized.mako')

@@ -130,6 +130,8 @@ class LdapConnector(object):
 			if int(attr['uidNumber'][0]) >= 1000 and int(attr['uidNumber'][0]) < 65000:
 				members.append( attr['uid'][0] )
 
+		members.sort()
+
 		return members
 
 

@@ -9,7 +9,7 @@
      <b>Log In</b>
   </div>
   <br/>
-  <form method="POST" action="/auth/dologin">
+  <form method="POST" action="${url(controller='auth', action='doLogin')}">
     <table border="0">
     <tr>
       <td>User Name</td>

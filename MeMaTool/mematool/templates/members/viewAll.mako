@@ -52,7 +52,7 @@
 			sshPublicKey = 'no' if not m.sshPublicKey else h.literal('<font color="green">yes</font>')
 	%>
 	<tr style="background-color:${color};" class="table_row">
-		<td>${m.dtusername}</td>
+		<td>${m.uid}</td>
                 <td>${m.cn}</td>
 	        <td>${m.sn}</td>
 	        <td>${m.gn}</td>
@@ -60,8 +60,8 @@
 		<td>${m.mobile}</td>
 		<td>${peapPossible}</td>
 		<td>${sshPublicKey}</td>
-		<td><a href="${url(controller='members', action='editMember', member_id=m.dtusername)}">edit</a></td>
-		<td><a href="${url(controller='payments', action='listPayments', member_id=m.dtusername)}">payments</a></td>
+		<td><a href="${url(controller='members', action='editMember', member_id=m.uid)}">edit</a></td>
+		<td><a href="${url(controller='payments', action='listPayments', member_id=m.uid)}">payments</a></td>
         </tr>
 % endfor
 

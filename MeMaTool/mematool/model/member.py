@@ -19,9 +19,9 @@
 #    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, DateTime, ForeignKeyConstraint
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relation, backref
+#from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, DateTime, ForeignKeyConstraint
+#from sqlalchemy.ext.declarative import declarative_base
+#from sqlalchemy.orm import sessionmaker, relation, backref
 from mematool.model.meta import Base
 #from mematool.model.payment import Payment
 
@@ -34,15 +34,16 @@ from binascii import b2a_base64, a2b_base64
 import os
 
 
-class Member(Base):
-	__tablename__ = 'member'
-	__table_args__ = (
-		{'mysql_engine':'InnoDB'}
-		)
+class Member():
+#	__tablename__ = 'member'
+#	__table_args__ = (
+#		{'mysql_engine':'InnoDB'}
+#		)
 
-	idmember = Column(Integer, primary_key=True)
-	dtusername = Column(String(255))
+#	idmember = Column(Integer, primary_key=True)
+#	dtusername = Column(String(255))
 	# ldap
+	uid = ''   # uid
 	cn = ''    # fullname
 	sn = ''    # family name
 	gn = ''    # given name
@@ -64,7 +65,7 @@ class Member(Base):
 	leavingDate = '' # membership canceled
 
 	# This does not seem to work
-	payments = relation('Payment', order_by='Payment.idpayment', backref="member")
+#	payments = relation('Payment', order_by='Payment.idpayment', backref="member")
 	
 
 	def __init__(self):
@@ -73,12 +74,12 @@ class Member(Base):
 
 
 	def __repr__(self):
-		return "<Member('idmember=%s, dtusername=%s')>" % (self.idmember, self.dtusername)
+		return "<Member('idmember=%s, dtusername=%s')>" % (self.uidnumber, self.uid)
 
 
 	def loadFromLdap(self):
 		self.ldapcon = LdapConnector()
-		member = self.ldapcon.getMember(self.dtusername)
+		member = self.ldapcon.getMember(self.uid)
 
 		if 'cn' in member:
 			self.cn = member['cn']
@@ -129,9 +130,9 @@ class Member(Base):
 
 		self.ldapcon.saveMember(self)
 
-		m = Session.query(Member).filter(Member.idmember == self.idmember).one()
-		m.dtusername = self.dtusername
-		Session.commit()
+		#m = Session.query(Member).filter(Member.idmember == self.idmember).one()
+		#m.dtusername = self.dtusername
+		#Session.commit()
 
 
 	def setPassword(self, password):

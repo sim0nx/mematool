@@ -39,7 +39,7 @@ def getFormVar(s, c, var):
                         ${_('Username')}
                 </td>
 		<td>
-			${c.member.dtusername}
+			${c.member.uid}
 		</td>
 	</tr>
         <tr>
@@ -189,7 +189,7 @@ def getFormVar(s, c, var):
 </table>
 
 
-<input type="hidden" name="member_id" value="${c.member.idmember}">
+<input type="hidden" name="member_id" value="${c.member.uidNumber}">
 </form>
 
 <%

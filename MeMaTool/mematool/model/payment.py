@@ -33,6 +33,7 @@ class Payment(Base):
 		)
 
 	idpayment = Column(Integer, primary_key=True)
+	limember = Column(Integer, nullable=False)
 	dtreason = Column(String(255))
 	dtdate = Column(Date, nullable=False)
 	dtamount = Column(Integer, nullable=False)
@@ -42,7 +43,7 @@ class Payment(Base):
 	lipaymentmethod = Column(Integer)	
 
 	# Members can have many payments, thus the foreign key belongs here
-	limember = Column(Integer, ForeignKey('member.idmember'))
+	#limember = Column(Integer, ForeignKey('member.idmember'))
 	
 	# trying to set up the relation in the Member class
 	#limember = relation(Member, backref=backref('payments', order_by=idpayment))
