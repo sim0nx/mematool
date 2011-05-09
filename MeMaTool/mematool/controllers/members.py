@@ -178,49 +178,49 @@ class MembersController(BaseController):
 
 	@checkMember
 	def doEditMember(self):
-		member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
+		member = Member()
+		member.uid = request.params['member_id']
+
 
 		try:
-			member = member_q.one()
+			member.loadFromLdap()
 
-			try:
-				member.loadFromLdap()
+			member.gidNumber = request.params['gidNumber']
+			member.cn = request.params['cn']
+			member.sn = request.params['sn']
+			member.gn = request.params['gn']
+			member.birthDate = request.params['birthDate']
+			member.address = request.params['address']
+			member.phone = request.params['phone']
+			member.mobile = request.params['mobile']
+			member.mail = request.params['mail']
+			member.loginShell = request.params['loginShell']
+			member.homeDirectory = request.params['homeDirectory']
+			member.arrivalDate = request.params['arrivalDate']
+			member.leavingDate = request.params['leavingDate']
 
-				member.gidNumber = request.params['gidNumber']
-				member.cn = request.params['cn']
-				member.sn = request.params['sn']
-				member.gn = request.params['gn']
-				member.birthDate = request.params['birthDate']
-				member.address = request.params['address']
-				member.phone = request.params['phone']
-				member.mobile = request.params['mobile']
-				member.mail = request.params['mail']
-				member.loginShell = request.params['loginShell']
-				member.homeDirectory = request.params['homeDirectory']
-				member.arrivalDate = request.params['arrivalDate']
-				member.leavingDate = request.params['leavingDate']
+			if 'sshPublicKey' in request.params and request.params['sshPublicKey'] != '':
+				# @TODO don't blindly save it
+				member.sshPublicKey = request.params['sshPublicKey']
+			elif 'sshPublicKey' in vars(member):
+				member.sshPublicKey = 'removed'
 
-				if 'sshPublicKey' in request.params and request.params['sshPublicKey'] != '':
-					# @TODO don't blindly save it
-					member.sshPublicKey = request.params['sshPublicKey']
-				elif 'sshPublicKey' in vars(member):
-					member.sshPublicKey = 'removed'
+			if 'userPassword' in request.params and request.params['userPassword'] != '':
+				member.setPassword(request.params['userPassword'])
 
-				if 'userPassword' in request.params and request.params['userPassword'] != '':
-					member.setPassword(request.params['userPassword'])
+			member.save()
 
-				member.save()
+			session['flash'] = 'Member details successfully edited'
+			session.save()
 
-				session['flash'] = 'Member details successfully edited'
-				session.save()
+			redirect(url(controller='members', action='showAllMembers'))
 
-				redirect(url(controller='members', action='showAllMembers'))
+		except LookupError:
+			print 'No such ldap user !'
 
-			except LookupError:
-				print 'No such ldap user !'
+		# @TODO make much more noise !
+		redirect(url(controller='members', action='showAllMembers'))
 
-		except NoResultFound:
-			print 'No such sql user !'
 
 
 	def getAllMembers(self):

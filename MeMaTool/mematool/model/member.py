@@ -74,7 +74,7 @@ class Member():
 
 
 	def __repr__(self):
-		return "<Member('idmember=%s, dtusername=%s')>" % (self.uidnumber, self.uid)
+		return "<Member('uidNumber=%s, uid=%s')>" % (self.uidNumber, self.uid)
 
 
 	def loadFromLdap(self):

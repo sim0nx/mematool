@@ -189,7 +189,7 @@ def getFormVar(s, c, var):
 </table>
 
 
-<input type="hidden" name="member_id" value="${c.member.uidNumber}">
+<input type="hidden" name="member_id" value="${c.member.uid}">
 </form>
 
 <%
