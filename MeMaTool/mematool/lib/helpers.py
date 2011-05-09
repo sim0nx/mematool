@@ -13,3 +13,12 @@ from routes import url_for
 
 #from formbuild.helpers import field
 #from formbuild import start_with_layout as form_start, end_with_layout as form_end
+
+
+def IsInt(string):
+	try:
+		num = int(string)
+	except ValueError:
+		return False
+
+	return True

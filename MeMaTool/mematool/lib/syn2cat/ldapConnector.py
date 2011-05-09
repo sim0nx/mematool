@@ -118,6 +118,21 @@ class LdapConnector(object):
 		return member
 
 
+	def getUidNumberFromUid(self, uid):
+		filter = '(uid=' + uid + ')'
+		attrs = ['uidNumber']
+
+		result = self.con.search_s( config.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs )
+		
+		if not result:
+			raise LookupError('No such user !')
+
+		for dn, attr in result:
+			uidNumber = attr['uidNumber'][0]
+
+		return uidNumber
+
+
 	def getMemberList(self):
 		filter = '(&(uid=*)(gidNumber=100))'
 		attrs = ['uid', 'uidNumber']

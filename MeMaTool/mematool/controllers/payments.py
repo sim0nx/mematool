@@ -28,10 +28,15 @@ from formencode import htmlfill
 
 from mematool.model.schema.payments import PaymentForm
 from mematool.lib.base import BaseController, render, Session
+from mematool.lib.helpers import *
 from mematool.model import Payment, Member, Paymentmethod
 
 #from mematool.model.auth import Permission
 
+import re
+from mematool.lib.syn2cat import regex
+
+from mematool.lib.syn2cat.ldapConnector import LdapConnector
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import and_
 from webob.exc import HTTPUnauthorized
@@ -45,6 +50,9 @@ from repoze.what.plugins.pylonshq import ActionProtector, ControllerProtector
 
 import dateutil.parser
 import datetime
+
+import gettext
+_ = gettext.gettext
 
 
 class PaymentsController(BaseController):
@@ -179,52 +187,127 @@ class PaymentsController(BaseController):
 	def editPayment(self):
 		""" Add or edit a payment to/of a specific user """
 
-		if (not 'member_id' in request.params or request.params['member_id'] == ''):
+		if not 'member_id' in request.params or request.params['member_id'] == '':
 			redirect(url(controller='members', action='showAllMembers'))
 			return
 
+		c.member_id = request.params['member_id']
+
 		# vary form depending on mode (do that over ajax)
-		if (not 'idpayment' in request.params):
+		if not 'idpayment' in request.params:
 			c.payment = Payment()
-			c.payment.limember = request.params['member_id']
 			action = 'Adding'
-		else:
+		elif not request.params['idpayment'] == '' and IsInt(request.params['idpayment']) and int(request.params['idpayment']) > 0:
 			action = 'Editing'
-			payment_q = Session.query(Payment).filter(Payment.idpayment == request.params['idpayment'])
+			payment_q = Session.query(Payment).filter(Payment.idpayment == int(request.params['idpayment']))
 			try:
 				payment = payment_q.one()
+				payment.dtdate = payment.dtdate.strftime("%Y-%m-%d") #str(payment.dtdate.year) + '-' + str(payment.dtdate.month) + '-' + str(payment.dtdate.day)
 				c.payment = payment
 			except NoResultFound:
 				print "oops"
+		else:
+			redirect(url(controller='members', action='showAllMembers'))
 
 		methods = Session.query(Paymentmethod).all()
 		## how to easily turn a result object into a list? (more efficiently than this)
 		c.methods = []
 		for m in methods:
 			c.methods.append([m.idpaymentmethod,m.dtname])
-		c.heading = '%s payment for user %s' % (action, c.payment.limember)
+		c.heading = '%s payment for user %s' % (action, c.member_id)
 
 		return render('/payments/editPayment.mako')
 
 
-	# I suspect keyError catching only works with forms in editPayment created by the FormBuild module
+	def checkPayment(f):
+		def new_f(self):
+			# @TODO request.params may contain multiple values per key... test & fix
+			if (not 'member_id' in request.params):
+				redirect(url(controller='members', action='showAllMembers'))
+			else:
+				formok = True
+				errors = []
+				items = {}
+
+				if not 'dtamount' in request.params or request.params['dtamount'] == '' or not IsInt(request.params['dtamount']) or  len(request.params['dtamount']) > 4:
+					formok = False
+					errors.append(_('Invalid amount'))
+
+				if not 'dtdate' in request.params or not re.match(regex.date, request.params['dtdate'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid date'))
+
+				if not 'dtreason' in request.params or request.params['dtreason'] == '' or len(request.params['dtreason']) > 150:
+					formok = False
+					errors.append(_('Malformated reason'))
+
+				if not 'lipaymentmethod' in request.params or request.params['lipaymentmethod'] == '' or not IsInt(request.params['lipaymentmethod']) or not (int(request.params['lipaymentmethod']) >=1 and int(request.params['lipaymentmethod']) <= 3):
+					formok = False
+					errors.append(_('Invalid payment method'))
+
+
+				if not formok:
+					session['errors'] = errors
+					session['reqparams'] = {}
+
+					# @TODO request.params may contain multiple values per key... test & fix
+					for k in request.params.iterkeys():
+						session['reqparams'][k] = request.params[k]
+						
+					session.save()
+
+					redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], mode='single'))
+				else:
+					if 'idpayment' in request.params and not request.params['idpayment'] == '' and IsInt(request.params['idpayment']) and int(request.params['idpayment']) > 0:
+						items['idpayment'] = int(request.params['idpayment'])
+					else:
+						items['idpayment'] = 0
+
+					items['dtamount'] = int(request.params['dtamount'])
+					items['dtdate'] = request.params['dtdate']
+					items['dtreason'] = request.params['dtreason']
+					items['lipaymentmethod'] = request.params['lipaymentmethod']
+
+
+			return f(self, request.params['member_id'], items)
+		return new_f
+
+
+
+	@checkPayment
 	@restrict('POST')
-	@validate(schema=PaymentForm(), form='editPayment')
-	def savePayment(self):
+	def savePayment(self, member_id, items):
 		""" Save a new or edited payment """
 
-		if (self.form_result['idpayment'] != None):
-			np = Session.query(Payment).filter(Payment.idpayment == request.params['idpayment']).one()
+		if items['idpayment'] > 0:
+			np = Session.query(Payment).filter(Payment.idpayment == items['idpayment']).one()
 		else:
 			np = Payment()
+			np.dtmode = 'single'
 			# not foreseen to add recurring payments in the admin interface
 
-		for key, value in self.form_result.items():
+		for key, value in items.iteritems():
 			setattr(np, key, value)
 
 		if np.dtmode == 'single':
 			np.dtverified = True	
 			np.dtrate = np.dtamount
+
+		ldapcon = LdapConnector()
+
+		try:
+			uidNumber = ldapcon.getUidNumberFromUid(member_id)
+			np.limember = uidNumber
+		except:
+			session['flash'] = _('Invalid member')
+			session.save()
+			redirect(url(controller='payments', action='listPayments', member_id=member_id))
+
+		# Cleanup session
+		if 'reqparams' in session:
+			del(session['reqparams'])
+		session.save()
+		##########
 
 		Session.add(np)
 		np.save() # defined in Payment model
@@ -236,7 +319,7 @@ class PaymentsController(BaseController):
 		session['flash'] = 'Payment saved successfully.'
 		session.save()
 
-		redirect(url(controller='payments', action='listPayments', member_id=self.form_result['limember']))
+		redirect(url(controller='payments', action='listPayments', member_id=member_id))
 
 
 	@ActionProtector(has_permission('delete_payment'))

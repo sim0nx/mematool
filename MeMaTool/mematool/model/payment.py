@@ -24,6 +24,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relation
 
 from mematool.model.meta import Base
+from mematool.model.paymentmethod import Paymentmethod
 from mematool.lib.base import Session
 
 class Payment(Base):
@@ -40,10 +41,11 @@ class Payment(Base):
 	dtrate = Column(Integer)
 	dtmode = Column(String(255))
 	dtverified = Column(Boolean)
-	lipaymentmethod = Column(Integer)	
+	lipaymentmethod = Column(Integer, ForeignKey('paymentmethod.idpaymentmethod'))
 
 	# Members can have many payments, thus the foreign key belongs here
 	#limember = Column(Integer, ForeignKey('member.idmember'))
+	dtpaymentmethod = relation(Paymentmethod, primaryjoin=lipaymentmethod == Paymentmethod.idpaymentmethod)
 	
 	# trying to set up the relation in the Member class
 	#limember = relation(Member, backref=backref('payments', order_by=idpayment))
