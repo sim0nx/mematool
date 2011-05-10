@@ -150,6 +150,25 @@ class LdapConnector(object):
 		return members
 
 
+	# see openldap slapo-memberof
+	def getActiveMemberList(self):
+		filter = '(&(uid=*)(gidNumber=100))'
+		attrs = ['uid', 'uidNumber']
+
+		result = self.con.search_s( config.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs )
+
+		members = []
+
+		for dn, attr in result:
+			if int(attr['uidNumber'][0]) >= 1000 and int(attr['uidNumber'][0]) < 65000:
+				if not 'syn2cat_locked_member' in self.getMemberGroups( attr['uid'][0] ):
+					members.append( [attr['uid'][0], attr['uidNumber'][0]] )
+
+		members.sort()
+
+		return members
+
+
 	def getMemberGroups(self, member):
 		filter = '(memberUid=' + member + ')'
 		attrs = ['cn']

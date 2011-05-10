@@ -24,8 +24,6 @@ log = logging.getLogger(__name__)
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
-from formencode import htmlfill
-
 from mematool.model.schema.payments import PaymentForm
 from mematool.lib.base import BaseController, render, Session
 from mematool.lib.helpers import *
@@ -45,8 +43,6 @@ from datetime import date
 # Decorators
 from pylons.decorators import validate
 from pylons.decorators.rest import restrict
-from repoze.what.predicates import has_permission
-from repoze.what.plugins.pylonshq import ActionProtector, ControllerProtector
 
 import dateutil.parser
 import datetime
@@ -78,7 +74,6 @@ class PaymentsController(BaseController):
 	def index(self):
 		return self.showOutstanding()
 
-	#@ActionProtector(has_permission('admin'))
 	def verifyPayment(self):
 		""" action triggered through ajax by checking/unchecking checkboxes"""
 		pass
@@ -86,24 +81,24 @@ class PaymentsController(BaseController):
 	def showOutstanding(self):
 		""" Show which users still need to pay their membership fees and if a reminder has already been sent """
 
-		try:
-			nummissing = Session.query(Payment).filter("dtdate<:now AND dtverified=:verified AND dtmode=:mode").params(now=date.today(),verified=0,mode='recurring').count()
-			nummissing += 0
-			c.heading = "%d outstanding payments" % nummissing
-		except NoResultFound:
-			return 'No unpaid fees'
+		ldapcon = LdapConnector()
+		activeMembers = ldapcon.getActiveMemberList()
+
+		#try:
+		#	nummissing = Session.query(Payment).filter("dtdate<:now AND dtverified=:verified AND dtmode=:mode").params(now=date.today(),verified=0,mode='recurring').count()
+		#	nummissing += 0
+		#	c.heading = "%d outstanding payments" % nummissing
+		#except NoResultFound:
+		#	return 'No unpaid fees'
 		
 		# Prepare add payment form
 		c.member_ids = []
 		c.members = []
-		for id, username in Session.query(Member.idmember, Member.dtusername).order_by(Member.dtusername):
-			m = Member()
-			m.dtusername = username
-			m.loadFromLdap()
+		for uid, uidNumber in activeMembers:
 			last_payment = None
 
 			try:
-				last_payment = Session.query(Payment).filter(and_(Payment.limember == id, Payment.dtverified == 1)).order_by(Payment.dtdate.desc()).limit(1)[0]
+				last_payment = Session.query(Payment).filter(and_(Payment.limember == uidNumber, Payment.dtverified == 1)).order_by(Payment.dtdate.desc()).limit(1)[0]
 			except:
 				''' Don't care if there is no payment '''
 				pass
@@ -115,13 +110,18 @@ class PaymentsController(BaseController):
 				d1 = dateutil.parser.parse(str(last_payment.dtdate))
 				today = str(datetime.date.today()) + ' 00:00:00'
 				d2 = dateutil.parser.parse(today)
+				if uid == 'sim0n':
+					print last_payment
+					print today
+					print d1
+					print d2.year
 
-				if d1 >= d2:
+				if d1.year == d2.year and d1.month == d2.month:
 					paymentGood = 'yes'
 
 
-			c.members.append([id, username, m.sn, m.gn, paymentGood])
-			c.member_ids.append([id, username])
+			c.members.append([uidNumber, uid, 'sn', 'gn', paymentGood])
+			c.member_ids.append([uidNumber, uid])
 
 
 		return render('/payments/showOutstanding.mako')
@@ -322,7 +322,6 @@ class PaymentsController(BaseController):
 		redirect(url(controller='payments', action='listPayments', member_id=member_id))
 
 
-	@ActionProtector(has_permission('delete_payment'))
 	def delete(self):
 		""" Delete a payment specified by an id """
 		return "I would have deleted it, honestly!"
