@@ -21,7 +21,8 @@
 
 from mematool.lib.syn2cat.singleton import Singleton
 import ldap
-from pylons import config
+from pylons import config, session
+from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
 
 
 class LdapConnector(object):
@@ -34,7 +35,12 @@ class LdapConnector(object):
 		try:
 			self.con.start_tls_s()
 			try:
-				self.con.simple_bind_s(config.get('ldap.bind'), config.get('ldap.password'))
+				if 'identity' in session:
+					uid = session['identity']
+					binddn = 'uid=' + uid + ',' + config.get('ldap.basedn_users')
+					password = decodeAES(session['secret'])
+
+					self.con.simple_bind_s(binddn, password)
 			except ldap.INVALID_CREDENTIALS:
 				print "Your username or password is incorrect."
 		except ldap.LDAPError, e:
@@ -169,8 +175,9 @@ class LdapConnector(object):
 		return members
 
 
-	def getMemberGroups(self, member):
-		filter = '(memberUid=' + member + ')'
+	# get groups a user is member of
+	def getMemberGroups(self, uid):
+		filter = '(memberUid=' + uid + ')'
 		attrs = ['cn']
 		groups = []
 
