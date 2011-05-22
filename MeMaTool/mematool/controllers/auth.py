@@ -6,6 +6,7 @@ from pylons.controllers.util import abort, redirect
 from mematool.lib.base import BaseController, render
 from pylons.decorators.secure import https
 from mematool.lib.syn2cat.auth.auth_ldap import LDAPAuthAdapter
+from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
 
 
 log = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ class AuthController(BaseController):
 
 	def index(self,environ):
 		if self.identity is not None:
-			redirect(url(controller='members', action='showAll'))
+			redirect(url(controller='members', action='showAllMembers'))
 		else:
 			redirect(url(controller='auth', action='login'))
 	
@@ -30,9 +31,9 @@ class AuthController(BaseController):
 		if self.identity is not None:
 			if 'came_from' in request.params:
 				#redirect(request.params['came_from'])
-				redirect(url(controller='members', action='showAll'))
+				redirect(url(controller='members', action='showAllMembers'))
 			else:
-				redirect(url(controller='members', action='showAll'))
+				redirect(url(controller='members', action='showAllMembers'))
 
 		return render('/auth/login.mako')
 
@@ -45,10 +46,12 @@ class AuthController(BaseController):
 
 			if ret:
 				session['identity'] = request.params['login']
+				session['secret'] = encodeAES( request.params['password'] )
 				session.save()
-				print session["after_login"]
-				redirect(session["after_login"])
-				print 'wakawaka'
+
+				if 'after_login' in session:
+					print session["after_login"]
+					redirect(session["after_login"])
 
 		redirect(url(controller='auth', action='login'))
 
