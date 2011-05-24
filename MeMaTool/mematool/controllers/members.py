@@ -65,6 +65,17 @@ class MembersController(BaseController):
 		return self.showAllMembers()
 
 
+	def addMember(self):
+		if not ('office' in session['groups'] or 'sysops' in session['groups']):
+			redirect(url(controller='members', action='showAllMembers'))
+
+		c.heading = 'Add member'
+		c.mode = 'add'
+
+
+		return render('/members/editMember.mako')
+
+
 	def editMember(self):
 		if (not 'member_id' in request.params):
 			redirect(url(controller='members', action='showAllMembers'))
@@ -77,6 +88,7 @@ class MembersController(BaseController):
 			member.uid = request.params['member_id']
 
 			c.heading = 'Edit member'
+			c.mode = 'edit'
 
 			try:
 				member.loadFromLdap()
@@ -103,6 +115,10 @@ class MembersController(BaseController):
 			else:
 				formok = True
 				errors = []
+
+				if not 'mode' in request.params or (request.params['mode'] != 'add' and request.params['mode'] != 'edit'):
+					formok = False
+					errors.append(_('Invalid form data'))
 
 				if not 'cn' in request.params or request.params['cn'] == '' or len(request.params['cn']) > 40:
 					formok = False
@@ -136,6 +152,10 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid e-mail address'))
 
+				if not 'gidNumber' in request.params or not re.match('^\d+$', request.params['gidNumber']) or len(request.params['gidNumber']) > 5:
+					formok = False
+					errors.append(_('Invalid group'))					
+
 				if not 'loginShell' in request.params or not re.match(regex.loginShell, request.params['loginShell'], re.IGNORECASE):
 					formok = False
 					errors.append(_('Invalid login shell'))
@@ -160,6 +180,10 @@ class MembersController(BaseController):
 						formok = False
 						errors.append(_('Password too short'))
 
+					if request.params['mode'] == 'add' and request.params['userPassword'] == '':
+						formok = False
+						errors.append(_('No password set'))
+
 				if not formok:
 					session['errors'] = errors
 					session['reqparams'] = {}
@@ -170,7 +194,10 @@ class MembersController(BaseController):
 						
 					session.save()
 
-					redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
+					if request.params['mode'] == 'add':
+						redirect(url(controller='members', action='addMember'))
+					else:
+						redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
 
 			return f(self)
 		return new_f
@@ -183,7 +210,8 @@ class MembersController(BaseController):
 
 
 		try:
-			member.loadFromLdap()
+			if request.params['mode'] is 'edit': 
+				member.loadFromLdap()
 
 			member.gidNumber = request.params['gidNumber']
 			member.cn = request.params['cn']
@@ -202,13 +230,16 @@ class MembersController(BaseController):
 			if 'sshPublicKey' in request.params and request.params['sshPublicKey'] != '':
 				# @TODO don't blindly save it
 				member.sshPublicKey = request.params['sshPublicKey']
-			elif 'sshPublicKey' in vars(member):
+			elif 'sshPublicKey' in vars(member) and request.params['mode'] is 'edit':
 				member.sshPublicKey = 'removed'
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				member.setPassword(request.params['userPassword'])
 
-			member.save()
+			if request.params['mode'] is 'edit':
+				member.save()
+			else:
+				member.add()
 
 			session['flash'] = 'Member details successfully edited'
 			session.save()

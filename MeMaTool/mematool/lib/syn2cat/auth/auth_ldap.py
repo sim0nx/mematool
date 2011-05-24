@@ -49,6 +49,10 @@ class LDAPAuthAdapter(object):
 		return False
 
 
+	def getUserGroups(self):
+		return self.groups
+
+
 	def authenticate_ldap(self, username, password):
 		"""Authenticate a user via LDAP and return his/her LDAP properties.
 
@@ -69,6 +73,9 @@ class LDAPAuthAdapter(object):
 			print 'tls'
 			try:
 				con.simple_bind_s(dn, password)
+				self.ldapcon.setLdapConnection(con)
+
+				self.groups = self.ldapcon.getMemberGroups(username)
 				print 'simple bind'
 				return True
 

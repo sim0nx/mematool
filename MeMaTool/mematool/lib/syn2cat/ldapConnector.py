@@ -1,22 +1,22 @@
 #
-#    MeMaTool (c) 2010 Georges Toth <georges _at_ trypill _dot_ org>
+#	MeMaTool (c) 2010 Georges Toth <georges _at_ trypill _dot_ org>
 #
 #
-#    This file is part of MeMaTool.
+#	This file is part of MeMaTool.
 #
 #
-#    MeMaTool is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#	MeMaTool is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
 #
-#    Foobar is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#	Foobar is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
+#	You should have received a copy of the GNU General Public License
+#	along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 
 from mematool.lib.syn2cat.singleton import Singleton
@@ -29,33 +29,40 @@ class LdapConnector(object):
 	__metaclass__ = Singleton
 
 
-	def __init__(self):
-		""" Bind to server """
-		self.con = ldap.initialize(config.get('ldap.server'))
-		try:
-			self.con.start_tls_s()
+	def __init__(self, con=None):
+		if con is not None:
+			self.con = con
+		else:
+			""" Bind to server """
+			self.con = ldap.initialize(config.get('ldap.server'))
 			try:
-				if 'identity' in session:
-					uid = session['identity']
-					binddn = 'uid=' + uid + ',' + config.get('ldap.basedn_users')
-					password = decodeAES(session['secret'])
+				self.con.start_tls_s()
+				try:
+					if 'identity' in session:
+						uid = session['identity']
+						binddn = 'uid=' + uid + ',' + config.get('ldap.basedn_users')
+						password = decodeAES(session['secret'])
 
-					self.con.simple_bind_s(binddn, password)
-			except ldap.INVALID_CREDENTIALS:
-				print "Your username or password is incorrect."
-		except ldap.LDAPError, e:
-			''' @TODO better handle errors and don't use "sys.exit" ;-) '''
-			print e.message['info']
-			if type(e.message) == dict and e.message.has_key('desc'):
-				print e.message['desc']
-			else:   
-				print e
+						self.con.simple_bind_s(binddn, password)
+				except ldap.INVALID_CREDENTIALS:
+					print "Your username or password is incorrect."
+			except ldap.LDAPError, e:
+				''' @TODO better handle errors and don't use "sys.exit" ;-) '''
+				print e.message['info']
+				if type(e.message) == dict and e.message.has_key('desc'):
+					print e.message['desc']
+				else:   
+					print e
 
-			sys.exit
+				sys.exit
 
 
 	def getLdapConnection(self):
 		return self.con
+
+
+	def setLdapConnection(self, con):
+		self.con = con
 
 
 	def getGroup(self, cn):
@@ -194,6 +201,19 @@ class LdapConnector(object):
 		return groups
 
 
+	def getHighestUidNumber(self):
+		result = self.con.search_s( config.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, config.get('ldap.uid_filter'), [config.get('ldap.uid_filter_attrs')] )
+
+		uidNumber = -1
+
+		for dn, attr in result:
+				for key, value in attr.iteritems():
+						if int(value[0]) > uidNumber and int(value[0]) < 65000:
+								uidNumber = int(value[0])
+
+		return str(uidNumber)
+
+
 	def saveMember(self, member):
 		mod_attrs = []
 
@@ -261,5 +281,36 @@ class LdapConnector(object):
 
 
 		result = self.con.modify_s('uid=' + member.uid + ',' + config.get('ldap.basedn_users'), mod_attrs)
+
+		return result
+
+
+	def addMember(self, member):
+		add_record = [
+				('objectclass', ['posixAccount', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount', 'top', 'samsePerson', 'sambaSamAccount', 'ldapPublicKey']),
+				('uid', [member.uid.encode('ascii','ignore')]),
+				('cn', [member.cn.encode('ascii','ignore')] ),
+				('sn', [member.sn.encode('ascii','ignore')] ),
+				('userPassword', [member.userPassword.encode('ascii','ignore')]),
+				('gidNumber', [member.gidNumber.encode('ascii','ignore')]),
+				('homeDirectory', [member.homeDirectory.encode('ascii','ignore')]),
+				('uidNumber', [member.uidNumber.encode('ascii','ignore')]),
+				('loginShell', [member.loginShell.encode('ascii','ignore')]),
+				('mobile', [member.mobile.encode('ascii','ignore')]),
+				('mail', [member.mail.encode('ascii','ignore')]),
+				('ou', ['People']),
+				('sambaSID', [member.sambaSID.encode('ascii','ignore')]),
+				('sambaNTPassword', [member.sambaNTPassword.encode('ascii','ignore')]),
+				('birthDate', [member.birthDate.encode('ascii','ignore')]),
+				('givenName', [member.gn.encode('ascii','ignore')]),
+				('homePostalAddress', [member.homePostalAddress.encode('ascii','ignore')])
+			]
+
+		dn = 'uid=' + member.uid + ',' + config.get('ldap.basedn_users')
+		dn = dn.encode('ascii','ignore')
+		result = self.con.add_s( dn, add_record)
+
+		#changeUserGroup(connection, uid, 'syn2cat_full_member', user.fullMember)
+		#changeUserGroup(connection, uid, 'syn2cat_locked_member', user.lockedMember)
 
 		return result

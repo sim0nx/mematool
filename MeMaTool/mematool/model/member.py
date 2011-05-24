@@ -1,22 +1,22 @@
 #
-#    MeMaTool (c) 2010 Georges Toth <georges _at_ trypill _dot_ org>
+#	MeMaTool (c) 2010 Georges Toth <georges _at_ trypill _dot_ org>
 #
 #
-#    This file is part of MeMaTool.
+#	This file is part of MeMaTool.
 #
 #
-#    MeMaTool is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#	MeMaTool is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
 #
-#    Foobar is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#	Foobar is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
+#	You should have received a copy of the GNU General Public License
+#	along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, DateTime, ForeignKeyConstraint
@@ -44,15 +44,16 @@ class Member():
 #	dtusername = Column(String(255))
 	# ldap
 	uid = ''   # uid
-	cn = ''    # fullname
-	sn = ''    # family name
-	gn = ''    # given name
+	cn = ''	# fullname
+	sn = ''	# family name
+	gn = ''	# given name
 	address = '' # complete address (homePostalAddress)
 	homePhone = '' # phone (homePhone)
 	mobile = '' # mobile
 	mail = '' # mail
 	userPassword = '' # SSHA password
 	sambaNTPassword = '' # NT Password
+	sambaSID = ''
 	#userCertificate = '' # x509 certificate
 	sshPublicKey = '' # SSH public key
 	uidNumber = '' # user id (uidNumber)
@@ -97,16 +98,18 @@ class Member():
 			self.mail = member['mail']
 		if 'sambaNTPassword' in member and member['sambaNTPassword'] != '':
 			self.sambaNTPassword = 'yes'
+		if 'sambaSID' in member and member['sambaSID'] != '':
+			self.sambaSID = member['sambaSID']
 		#if 'certificate'  in member:
 		#	self.userCertificate = member['certificate']
 		if 'sshPublicKey' in member:
 			self.sshPublicKey = member['sshPublicKey']
 		if 'gidNumber'  in member:
 			self.gidNumber = member['gidNumber']
-		if 'uidNumber'  in member:
-                        self.uidNumber = member['uidNumber']
-                if 'loginShell'  in member:
-                        self.loginShell = member['loginShell']
+		if 'uidNumber' in member:
+			self.uidNumber = member['uidNumber']
+		if 'loginShell'  in member:
+			self.loginShell = member['loginShell']
 		if 'homeDirectory'  in member:
 			self.homeDirectory = member['homeDirectory']
 		if 'birthDate'  in member:
@@ -135,9 +138,29 @@ class Member():
 		#Session.commit()
 
 
+	def add(self):
+		self.ldapcon = LdapConnector()
+
+		if self.gn == '':
+			self.gn = '_'
+
+		if self.mobile == '':
+			self.mobile = '0'
+
+		self.uidNumber = self.ldapcon.getHighestUidNumber()
+		self.generateUserSID()
+		self.ldapcon.addMember(self)
+
+
 	def setPassword(self, password):
 		salt = os.urandom(4)
 		h = hashlib.sha1(password)
 		h.update(salt)
 		self.userPassword = '{SSHA}' + b2a_base64(h.digest() + salt)[:-1]
 		self.sambaNTPassword = hashlib.new('md4', password.encode('utf-16le')).hexdigest().upper()
+
+
+	def generateUserSID(self):
+		#@TODO put in config file
+		serverSambaSID = 'S-1-1-1'
+		self.sambaSID = serverSambaSID + '-' + str( (int(self.uidNumber) * 2) + 1000 )

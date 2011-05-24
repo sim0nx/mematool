@@ -6,8 +6,18 @@ def getFormVar(s, c, var):
 		if var in s['reqparams']:
 			return s['reqparams'][var]
 
-	if var in vars(c.member):
-		return vars(c.member)[var]
+	if hasattr(c, 'member'):
+		if var in vars(c.member):
+			return vars(c.member)[var]
+
+	if var is 'gidNumber':
+		return 100
+	elif var is 'loginShell':
+		return '/bin/false'
+	elif var is 'homeDirectory':
+		return '/home/'
+
+	return ''
 %>
 
 <form method="post" action="${url(controller='members', action='doEditMember')}" name="recordform">
@@ -39,9 +49,14 @@ def getFormVar(s, c, var):
                         ${_('Username')}
                 </td>
 		<td>
+			% if c.mode is 'add':
+			<input type="text" name="member_id" value="${getFormVar(session, c, 'member_id')}" class="input">
+			% else:
 			${c.member.uid}
+			% endif
 		</td>
 	</tr>
+	% if c.mode is 'edit':
         <tr>
                 <td class="table_title">
                         ${_('User ID')}
@@ -50,6 +65,7 @@ def getFormVar(s, c, var):
                         ${c.member.uidNumber}
                 </td>
         </tr>
+	% endif
         <tr>
                 <td class="table_title">
                         ${_('Group ID')}
@@ -188,8 +204,10 @@ def getFormVar(s, c, var):
         </tr>
 </table>
 
-
+% if c.mode is 'edit':
 <input type="hidden" name="member_id" value="${c.member.uid}">
+% endif
+<input type="hidden" name="mode" value="${c.mode}">
 </form>
 
 <%

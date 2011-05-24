@@ -37,6 +37,7 @@ class AuthController(BaseController):
 
 		return render('/auth/login.mako')
 
+
 	def doLogin(self):
 		if not 'login' in request.params or request.params['login'] == '' or not 'password' in request.params or request.params['password'] == '':
 			print "crap"
@@ -47,6 +48,7 @@ class AuthController(BaseController):
 			if ret:
 				session['identity'] = request.params['login']
 				session['secret'] = encodeAES( request.params['password'] )
+				session['groups'] = authAdapter.getUserGroups()
 				session.save()
 
 				if 'after_login' in session:
@@ -59,6 +61,8 @@ class AuthController(BaseController):
 	def logout(self):
 		if self.identity is not None:
 			session['identity'] = None
+			session.invalidate()
+			session.save()
 			session.delete()
 			request.environ["REMOTE_USER"] = ""
 
