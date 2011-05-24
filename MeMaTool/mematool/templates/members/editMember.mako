@@ -74,6 +74,15 @@ def getFormVar(s, c, var):
                         <input type="text" name="gidNumber" value="${getFormVar(session, c, 'gidNumber')}" class="input">
                 </td>
         </tr>
+        <tr>
+                <td class="table_title">
+                        ${_('Additional groups')}
+                </td>
+                <td>
+                        ${_('full member')} <input type="checkbox" name="full_member" ${getFormVar(session, c, 'full_member')} class="input">
+                        ${_('locked member')} <input type="checkbox" name="locked_member" ${getFormVar(session, c, 'locked_member')} class="input">
+                </td>
+        </tr>
 	<tr>
                 <td class="table_title">
                         ${_('Common name')}
@@ -111,7 +120,7 @@ def getFormVar(s, c, var):
                         ${_('Address')}
                 </td>
                 <td>
-                        <input type="text" name="address" value="${getFormVar(session, c, 'address')}" class="input">
+                        <input type="text" name="homePostalAddress" value="${getFormVar(session, c, 'homePostalAddress')}" class="input">
                 </td>
         </tr>
         <tr>

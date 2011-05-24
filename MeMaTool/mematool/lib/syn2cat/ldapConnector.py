@@ -282,6 +282,10 @@ class LdapConnector(object):
 
 		result = self.con.modify_s('uid=' + member.uid + ',' + config.get('ldap.basedn_users'), mod_attrs)
 
+		self.changeUserGroup(member.uid, 'syn2cat_full_member', member.fullMember)
+		self.changeUserGroup(member.uid, 'syn2cat_locked_member', member.lockedMember)
+
+
 		return result
 
 
@@ -310,7 +314,28 @@ class LdapConnector(object):
 		dn = dn.encode('ascii','ignore')
 		result = self.con.add_s( dn, add_record)
 
-		#changeUserGroup(connection, uid, 'syn2cat_full_member', user.fullMember)
-		#changeUserGroup(connection, uid, 'syn2cat_locked_member', user.lockedMember)
+		self.changeUserGroup(member.uid, 'syn2cat_full_member', member.fullMember)
+		self.changeUserGroup(member.uid, 'syn2cat_locked_member', member.lockedMember)
+
+		return result
+
+
+	def changeUserGroup(self, uid, group, status):
+		mod_attrs = []
+		result = ''
+		import sys
+
+		if status:
+			mod_attrs = [ (ldap.MOD_ADD, 'memberUid', uid.encode('ascii','ignore')) ]
+		else:
+			mod_attrs = [ (ldap.MOD_DELETE, 'memberUid', uid.encode('ascii','ignore')) ]
+
+		try:
+			result = self.con.modify_s('cn=' + group.encode('ascii','ignore') + ',' + config.get('ldap.basedn_groups'), mod_attrs)
+		except (ldap.TYPE_OR_VALUE_EXISTS, ldap.NO_SUCH_ATTRIBUTE):
+			pass
+		except:
+			print sys.exc_info()[0]
+			pass
 
 		return result

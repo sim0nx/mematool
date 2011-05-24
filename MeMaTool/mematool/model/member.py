@@ -47,7 +47,6 @@ class Member():
 	cn = ''	# fullname
 	sn = ''	# family name
 	gn = ''	# given name
-	address = '' # complete address (homePostalAddress)
 	homePhone = '' # phone (homePhone)
 	mobile = '' # mobile
 	mail = '' # mail
@@ -64,6 +63,9 @@ class Member():
 	homePostalAddress = '' # homePostalAddress
 	arrivalDate = '' # member since
 	leavingDate = '' # membership canceled
+	groups = [] # additional user groups
+	fullMember = False
+	lockedMember = False
 
 	# This does not seem to work
 #	payments = relation('Payment', order_by='Payment.idpayment', backref="member")
@@ -89,7 +91,7 @@ class Member():
 		if 'givenName' in member:
 			self.gn = member['givenName']
 		if 'homePostalAddress' in member:
-			self.address = member['homePostalAddress']
+			self.homePostalAddress = member['homePostalAddress']
 		if 'homePhone'  in member:
 			self.phone = member['homePhone']
 		if 'mobile'  in member:
@@ -120,6 +122,12 @@ class Member():
 			self.arrivalDate = member['arrivalDate']
 		if 'leavingDate'  in member:
 			self.leavingDate = member['leavingDate']
+
+		self.groups = self.ldapcon.getMemberGroups(self.uid)
+		if 'syn2cat_full_member' in self.groups:
+			self.fullMember = True
+		if 'syn2cat_locked_member' in self.groups:
+			self.lockedMember = True
 
 
 	def save(self):

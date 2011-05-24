@@ -95,6 +95,11 @@ class MembersController(BaseController):
 
 				c.member = member
 
+				if member.fullMember:
+					c.member.full_member = 'checked'
+				if member.lockedMember:
+					c.member.locked_member = 'checked'
+
 				return render('/members/editMember.mako')
 
 			except LookupError:
@@ -136,7 +141,7 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid birth date'))
 
-				if not 'address' in request.params or request.params['address'] == '' or len(request.params['address']) > 100:
+				if not 'homePostalAddress' in request.params or request.params['homePostalAddress'] == '' or len(request.params['homePostalAddress']) > 100:
 					formok = False
 					errors.append(_('Invalid address'))
 
@@ -218,7 +223,7 @@ class MembersController(BaseController):
 			member.sn = request.params['sn']
 			member.gn = request.params['gn']
 			member.birthDate = request.params['birthDate']
-			member.address = request.params['address']
+			member.homePostalAddress = request.params['homePostalAddress']
 			member.phone = request.params['phone']
 			member.mobile = request.params['mobile']
 			member.mail = request.params['mail']
@@ -236,7 +241,13 @@ class MembersController(BaseController):
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				member.setPassword(request.params['userPassword'])
 
-			if request.params['mode'] is 'edit':
+			if 'full_member' in request.params:
+				member.fullMember = True
+
+			if 'locked_member' in request.params:
+				member.lockedMember = True
+
+			if request.params['mode'] == 'edit':
 				member.save()
 			else:
 				member.add()
