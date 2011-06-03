@@ -8,7 +8,9 @@
         </head>
         <body>
 		${self.header()}
+		% if session.has_key('identity'):
 		${self.menu()}
+		% endif
 		${self.heading()}
 		${self.actions()}
 		${self.breadcrumbs()}
@@ -50,6 +52,7 @@
 <% 
 	# We should be able to dynmically get all available controllers and list them (where?) 
 %>
+% if session.has_key('identity'):
 <%def name="menu()">
 	<p id="menu">
 	  ${h.link_to('Members',url(controller='members', action='showAllMembers'))}
@@ -59,4 +62,4 @@
 	| ${h.link_to('Logout',url(controller='auth', action='logout',id=None))}
 	</p>
 </%def>
-
+%endif
