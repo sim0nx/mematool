@@ -2,12 +2,12 @@
 
 <%!
 def getFormVar(s, c, var):
-	if var in vars(c.payment):
-		return vars(c.payment)[var]
-
 	if 'reqparams' in s:
 		if var in s['reqparams']:
 			return s['reqparams'][var]
+
+	if var in vars(c.payment):
+		return vars(c.payment)[var]
 
 %>
 
@@ -69,7 +69,7 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 		${h.submit('send',label)}</td>
 	</tr>
 	<input type="hidden" name="member_id" value="${c.member_id}">
-	<input type="hidden" name="idpayment" value="${c.payment.idpayment}">
+	<input type="hidden" name="idPayment" value="${c.payment.idpayment}">
 	<input type="hidden" name="dtmode" value="single">
 </table>
 ${h.end_form()}

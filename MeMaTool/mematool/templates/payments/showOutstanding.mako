@@ -34,14 +34,14 @@ ${h.end_form()}
         <%
                         x += 1
                         color = "#99ffcc" if x % 2 else "white"
-                        paymentGood = h.literal('<font color="red">no</font>') if m[4] == 'no' else h.literal('<font color="green">yes</font>')
+                        paymentGood = h.literal('<font color="red">no</font>') if m.paymentGood == 'no' else h.literal('<font color="green">yes</font>')
         %>
         <tr style="background-color:${color};" class="table_row">
-                <td>${m[1]}</td>
-                <td>${m[2]}</td>
-                <td>${m[3]}</td>
+                <td>${m.uid}</td>
+                <td>${m.sn}</td>
+                <td>${m.gn}</td>
                 <td>${paymentGood}</td>
-                <td><a href="${url(controller='payments', action='listPayments', member_id=m[1])}">payments</a></td>
+                <td><a href="${url(controller='payments', action='listPayments', member_id=m.uid)}">payments</a></td>
         </tr>
 % endfor
 </table>

@@ -33,7 +33,8 @@
 				% endif
 				<td>${h.checkbox('verify[]', value='1', checked=checked, label='Verified', id=p.idpayment)}
 			% else:
-				<td>${h.link_to('Modify',url(controller='payments', action='editPayment', idpayment=p.idpayment, member_id=c.member.uid))}</td>
+				<td>${h.link_to('Modify',url(controller='payments', action='editPayment', idPayment=p.idpayment, member_id=c.member.uid))}</td>
+				<td>${h.link_to('Delete',url(controller='payments', action='deletePayment', idPayment=p.idpayment, member_id=c.member.uid))}</td>
 			% endif
 		</tr>
 	%endfor

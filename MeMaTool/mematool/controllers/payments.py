@@ -92,19 +92,21 @@ class PaymentsController(BaseController):
 		#	return 'No unpaid fees'
 		
 		# Prepare add payment form
-		c.member_ids = []
 		c.members = []
-		for uid, uidNumber in activeMembers:
+		c.member_ids = []
+		for uid in activeMembers:
 			last_payment = None
 
+			m = Member(uid)
+			
+
 			try:
-				last_payment = Session.query(Payment).filter(and_(Payment.limember == uidNumber, Payment.dtverified == 1)).order_by(Payment.dtdate.desc()).limit(1)[0]
+				last_payment = Session.query(Payment).filter(and_(Payment.limember == m.uidNumber, Payment.dtverified == 1)).order_by(Payment.dtdate.desc()).limit(1)[0]
 			except:
 				''' Don't care if there is no payment '''
 				pass
 
-
-			paymentGood = 'no'
+			m.paymentGood = 'no'
 
 			if last_payment:
 				d1 = dateutil.parser.parse(str(last_payment.dtdate))
@@ -117,11 +119,11 @@ class PaymentsController(BaseController):
 					print d2.year
 
 				if d1.year == d2.year and d1.month == d2.month:
-					paymentGood = 'yes'
+					m.paymentGood = 'yes'
 
 
-			c.members.append([uidNumber, uid, 'sn', 'gn', paymentGood])
-			c.member_ids.append([uidNumber, uid])
+			c.members.append(m)
+			c.member_ids.append(uid)
 
 
 		return render('/payments/showOutstanding.mako')
@@ -194,12 +196,12 @@ class PaymentsController(BaseController):
 		c.member_id = request.params['member_id']
 
 		# vary form depending on mode (do that over ajax)
-		if not 'idpayment' in request.params:
+		if not 'idPayment' in request.params:
 			c.payment = Payment()
 			action = 'Adding'
-		elif not request.params['idpayment'] == '' and IsInt(request.params['idpayment']) and int(request.params['idpayment']) > 0:
+		elif not request.params['idPayment'] == '' and IsInt(request.params['idPayment']) and int(request.params['idPayment']) > 0:
 			action = 'Editing'
-			payment_q = Session.query(Payment).filter(Payment.idpayment == int(request.params['idpayment']))
+			payment_q = Session.query(Payment).filter(Payment.idpayment == int(request.params['idPayment']))
 			try:
 				payment = payment_q.one()
 				payment.dtdate = payment.dtdate.strftime("%Y-%m-%d") #str(payment.dtdate.year) + '-' + str(payment.dtdate.month) + '-' + str(payment.dtdate.day)
@@ -229,7 +231,8 @@ class PaymentsController(BaseController):
 				errors = []
 				items = {}
 
-				if not 'dtamount' in request.params or request.params['dtamount'] == '' or not IsInt(request.params['dtamount']) or  len(request.params['dtamount']) > 4:
+				if not self._isParamInt('dtamount', max_len=4):
+					#uest.params or request.params['dtamount'] == '' or not IsInt(request.params['dtamount']) or  len(request.params['dtamount']) > 4:
 					formok = False
 					errors.append(_('Invalid amount'))
 
@@ -237,13 +240,19 @@ class PaymentsController(BaseController):
 					formok = False
 					errors.append(_('Invalid date'))
 
-				if not 'dtreason' in request.params or request.params['dtreason'] == '' or len(request.params['dtreason']) > 150:
+				if not self._isParamStr('dtreason', max_len=150):
 					formok = False
 					errors.append(_('Malformated reason'))
 
 				if not 'lipaymentmethod' in request.params or request.params['lipaymentmethod'] == '' or not IsInt(request.params['lipaymentmethod']) or not (int(request.params['lipaymentmethod']) >=1 and int(request.params['lipaymentmethod']) <= 3):
 					formok = False
 					errors.append(_('Invalid payment method'))
+
+
+				if 'idPayment' in request.params and not request.params['idPayment'] == '' and IsInt(request.params['idPayment']) and int(request.params['idPayment']) > 0:
+					items['idPayment'] = int(request.params['idPayment'])
+				else:
+					items['idPayment'] = 0
 
 
 				if not formok:
@@ -256,13 +265,8 @@ class PaymentsController(BaseController):
 						
 					session.save()
 
-					redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], mode='single'))
+					redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=items['idPayment'], mode='single'))
 				else:
-					if 'idpayment' in request.params and not request.params['idpayment'] == '' and IsInt(request.params['idpayment']) and int(request.params['idpayment']) > 0:
-						items['idpayment'] = int(request.params['idpayment'])
-					else:
-						items['idpayment'] = 0
-
 					items['dtamount'] = int(request.params['dtamount'])
 					items['dtdate'] = request.params['dtdate']
 					items['dtreason'] = request.params['dtreason']
@@ -279,8 +283,8 @@ class PaymentsController(BaseController):
 	def savePayment(self, member_id, items):
 		""" Save a new or edited payment """
 
-		if items['idpayment'] > 0:
-			np = Session.query(Payment).filter(Payment.idpayment == items['idpayment']).one()
+		if items['idPayment'] > 0:
+			np = Session.query(Payment).filter(Payment.idpayment == items['idPayment']).one()
 		else:
 			np = Payment()
 			np.dtmode = 'single'
@@ -322,6 +326,19 @@ class PaymentsController(BaseController):
 		redirect(url(controller='payments', action='listPayments', member_id=member_id))
 
 
-	def delete(self):
+	def deletePayment(self):
 		""" Delete a payment specified by an id """
-		return "I would have deleted it, honestly!"
+
+		if not self._isParamStr('member_id') or not self._isParamInt('idPayment'):
+			redirect(url(controller='members', action='showAllMembers'))
+			return
+
+		try:
+			np = Session.query(Payment).filter(Payment.idpayment == request.params['idPayment']).one()
+			Session.delete(np)
+			Session.commit()
+		except:
+			''' Don't care '''
+			pass
+
+		redirect(url(controller='payments', action='listPayments', member_id=request.params['member_id']))
