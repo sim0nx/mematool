@@ -175,7 +175,7 @@ class LdapConnector(object):
 		for dn, attr in result:
 			if int(attr['uidNumber'][0]) >= 1000 and int(attr['uidNumber'][0]) < 65000:
 				if not 'syn2cat_locked_member' in self.getMemberGroups( attr['uid'][0] ):
-					members.append( [attr['uid'][0], attr['uidNumber'][0]] )
+					members.append( attr['uid'][0] )
 
 		members.sort()
 
