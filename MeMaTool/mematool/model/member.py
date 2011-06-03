@@ -71,12 +71,13 @@ class Member():
 #	payments = relation('Payment', order_by='Payment.idpayment', backref="member")
 	
 
-	def __init__(self):
-		#self.loadFromLdap()	## that doesn't seem to work
-		pass
+	def __init__(self, uid=None):
+		if uid is not None:
+			self.uid = uid
+			self.loadFromLdap()
 
 
-	def __repr__(self):
+	def __str__(self):
 		return "<Member('uidNumber=%s, uid=%s')>" % (self.uidNumber, self.uid)
 
 
