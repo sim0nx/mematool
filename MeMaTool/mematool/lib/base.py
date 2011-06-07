@@ -63,3 +63,15 @@ class BaseController(WSGIController):
 			return True
 
 		return False
+
+
+	@staticmethod
+	def needAdmin(f):
+		def new_f(self):
+			if not ('groups' in session or 'office' in session['groups'] or 'sysops' in session['groups']):
+				#@TODO consider redirecting to a not-authorized page
+				redirect(url(controller='members', action='showAllMembers'))
+			else:
+				return f(self)
+		return new_f
+	

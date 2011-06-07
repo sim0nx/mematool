@@ -59,6 +59,7 @@
 	| ${h.link_to('Payments',url(controller='payments', action='showOutstanding'))}
 	| ${h.link_to('Payment-methods',url(controller='paymentmethods', action='listMethods',id=None))}
 	| ${h.link_to('Statistics',url(controller='statistics', action='getOverview',id=None))}
+	| ${h.link_to('Profile',url(controller='profile', action='index'))}
 	| ${h.link_to('Logout',url(controller='auth', action='logout',id=None))}
 	</p>
 </%def>

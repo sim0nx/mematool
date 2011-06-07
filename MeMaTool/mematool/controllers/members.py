@@ -53,7 +53,6 @@ class MembersController(BaseController):
 		super(MembersController, self).__before__()
 
 		if not self.identity or not self.authAdapter.user_in_group('office', self.identity):
-			print 'wualla'
 			redirect(url(controller='error', action='unauthorized'))
 
 
@@ -65,10 +64,8 @@ class MembersController(BaseController):
 		return self.showAllMembers()
 
 
+	@BaseController.needAdmin
 	def addMember(self):
-		if not ('office' in session['groups'] or 'sysops' in session['groups']):
-			redirect(url(controller='members', action='showAllMembers'))
-
 		c.heading = 'Add member'
 		c.mode = 'add'
 

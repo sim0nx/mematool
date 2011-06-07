@@ -52,19 +52,13 @@ _ = gettext.gettext
 
 
 class PaymentsController(BaseController):
-	## using this is the same as decorating __before__ with ActionController (workaround for python < 2.6)
-	#PaymentsController = ControllerProtector(has_permission('admin')) (PaymentsController)
-	## but it doesn't really work either
-
 	def __init__(self):
 		super(PaymentsController, self).__init__()
 
-	#@ActionProtector(has_permission('admin'))
 	def __before__(self, action, **param):
 		super(PaymentsController, self).__before__()
 
 		if not self.identity or not self.authAdapter.user_in_group('office', self.identity):
-			print 'wualla'
 			redirect(url(controller='error', action='unauthorized'))
 
 	def _require_auth(self):
@@ -244,12 +238,12 @@ class PaymentsController(BaseController):
 					formok = False
 					errors.append(_('Malformated reason'))
 
-				if not 'lipaymentmethod' in request.params or request.params['lipaymentmethod'] == '' or not IsInt(request.params['lipaymentmethod']) or not (int(request.params['lipaymentmethod']) >=1 and int(request.params['lipaymentmethod']) <= 3):
+				if not self._isParamInt('lipaymentmethod') or not int(request.params['lipaymentmethod']) <= 3:
 					formok = False
 					errors.append(_('Invalid payment method'))
 
 
-				if 'idPayment' in request.params and not request.params['idPayment'] == '' and IsInt(request.params['idPayment']) and int(request.params['idPayment']) > 0:
+				if self._isParamInt('idPayment'):
 					items['idPayment'] = int(request.params['idPayment'])
 				else:
 					items['idPayment'] = 0
@@ -314,11 +308,7 @@ class PaymentsController(BaseController):
 		##########
 
 		Session.add(np)
-		np.save() # defined in Payment model
-		## how to test for success? --> if np.idpayment set
-		#print(repr(np.idpayment))
-
-		## todo: recalculate member.leavingDate
+		Session.commit()
 
 		session['flash'] = 'Payment saved successfully.'
 		session.save()

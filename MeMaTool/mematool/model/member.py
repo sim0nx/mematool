@@ -19,11 +19,7 @@
 #	along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, DateTime, ForeignKeyConstraint
-#from sqlalchemy.ext.declarative import declarative_base
-#from sqlalchemy.orm import sessionmaker, relation, backref
 from mematool.model.meta import Base
-#from mematool.model.payment import Payment
 
 from datetime import date
 from mematool.lib.base import Session
@@ -35,13 +31,6 @@ import os
 
 
 class Member():
-#	__tablename__ = 'member'
-#	__table_args__ = (
-#		{'mysql_engine':'InnoDB'}
-#		)
-
-#	idmember = Column(Integer, primary_key=True)
-#	dtusername = Column(String(255))
 	# ldap
 	uid = ''   # uid
 	cn = ''	# fullname
@@ -141,10 +130,6 @@ class Member():
 			self.mobile = '0'
 
 		self.ldapcon.saveMember(self)
-
-		#m = Session.query(Member).filter(Member.idmember == self.idmember).one()
-		#m.dtusername = self.dtusername
-		#Session.commit()
 
 
 	def add(self):
