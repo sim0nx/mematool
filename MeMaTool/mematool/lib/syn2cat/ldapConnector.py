@@ -218,16 +218,16 @@ class LdapConnector(object):
 		mod_attrs = []
 
 		if member.cn != '':
-			mod_attrs.append((ldap.MOD_REPLACE, 'cn', str(member.cn)))
+			mod_attrs.append((ldap.MOD_REPLACE, 'cn', str(member.cn.encode( "utf-8" ))))
 
 		if member.sn != '':
-			mod_attrs.append((ldap.MOD_REPLACE, 'sn', str(member.sn)))
+			mod_attrs.append((ldap.MOD_REPLACE, 'sn', str(member.sn.encode( "utf-8" ))))
 
 		if member.gn != '':
-			mod_attrs.append((ldap.MOD_REPLACE, 'givenName', str(member.gn)))
+			mod_attrs.append((ldap.MOD_REPLACE, 'givenName', str(member.gn.encode( "utf-8" ))))
 
 		if member.homePostalAddress != '':
-			mod_attrs.append((ldap.MOD_REPLACE, 'homePostalAddress', str(member.homePostalAddress)))
+			mod_attrs.append((ldap.MOD_REPLACE, 'homePostalAddress', str(member.homePostalAddress.encode( "utf-8" ))))
 
 		if member.phone != '':
 			mod_attrs.append((ldap.MOD_REPLACE, 'homePhone', str(member.phone)))
