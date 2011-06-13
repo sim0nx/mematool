@@ -26,7 +26,7 @@ from pylons.controllers.util import abort, redirect
 from pylons import config
 
 from mematool.lib.base import BaseController, render, Session
-from mematool.model import Member
+from mematool.model import Member, TmpMember
 
 log = logging.getLogger(__name__)
 
@@ -272,9 +272,7 @@ class MembersController(BaseController):
 		members = []
 
 		for key in memberlist:
-			member = Member()
-			member.uid = key
-			member.loadFromLdap()
+			member = Member(key)
 
 			members.append(member)
 
@@ -307,3 +305,56 @@ class MembersController(BaseController):
 
 
 		return 'ERROR 4x0'
+
+
+	def validateMember(self):
+		if (not 'member_id' in request.params):
+			redirect(url(controller='members', action='showAllMembers'))
+
+		try:
+			member = Member(request.params['member_id'])
+
+			if member.validate:
+				tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
+				member.cn = tm.gn + ' ' + tm.sn
+				member.gn = tm.gn
+				member.sn = tm.sn
+				member.birthDate = tm.birthDate
+				member.homePostalAddress = tm.homePostalAddress
+				member.phone = tm.phone
+				member.mobile = tm.mobile
+				member.mail = tm.mail
+
+				member.save()
+				Session.delete(tm)
+				Session.commit()
+			else:
+				session['flash'] = 'Nothing to validate!'
+
+		except LookupError:
+			session['flash'] = 'Member validation failed!'
+
+		session.save()
+		redirect(url(controller='members', action='showAllMembers'))
+
+
+	def rejectValidation(self):
+		if (not 'member_id' in request.params):
+			redirect(url(controller='members', action='showAllMembers'))
+
+		try:
+			member = Member(request.params['member_id'])
+
+			if member.validate:
+				tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
+				Session.delete(tm)
+				Session.commit()
+			else:
+				session['flash'] = 'Nothing to reject!'
+
+		except LookupError:
+			session['flash'] = 'Validation rejection failed!'
+
+		session.save()
+		redirect(url(controller='members', action='showAllMembers'))
+

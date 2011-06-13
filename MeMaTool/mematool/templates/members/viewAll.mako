@@ -62,6 +62,10 @@
 		<td>${sshPublicKey}</td>
 		<td><a href="${url(controller='members', action='editMember', member_id=m.uid)}">edit</a></td>
 		<td><a href="${url(controller='payments', action='listPayments', member_id=m.uid)}">payments</a></td>
+		% if m.validate == True:
+		<td><a href="${url(controller='members', action='validateMember', member_id=m.uid)}">validate</a></td>
+		<td><a href="${url(controller='members', action='rejectValidation', member_id=m.uid)}">reject-validaton</a></td>
+		% endif
         </tr>
 % endfor
 
