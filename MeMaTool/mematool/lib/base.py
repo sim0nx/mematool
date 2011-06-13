@@ -11,6 +11,7 @@ import logging
 from mematool.model.meta import Session
 from mematool.lib.syn2cat.auth.auth_ldap import LDAPAuthAdapter
 from mematool.lib.helpers import *
+import re
 
 
 class BaseController(WSGIController):
@@ -51,9 +52,13 @@ class BaseController(WSGIController):
 		return False
 
 
-	def _isParamStr(self, param, min_len=0, max_len=255):
+	def _isParamStr(self, param, min_len=0, max_len=255, regex=None):
 		if param in request.params and request.params[param] != '' and len(request.params[param]) > min_len  and len(request.params[param]) <= max_len:
-			return True
+			if regex != None:
+				if re.match(regex, request.params[param], re.IGNORECASE):
+					return True
+			else:
+				return True
 
 		return False
 
