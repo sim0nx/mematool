@@ -7,6 +7,7 @@ from pylons.middleware import error_document_template
 from webhelpers.html.builder import literal
 
 from mematool.lib.base import BaseController, render
+from pylons import tmpl_context as c
 
 class ErrorController(BaseController):
 
@@ -45,5 +46,6 @@ class ErrorController(BaseController):
         request.environ['PATH_INFO'] = '/%s' % path
         return forward(PkgResourcesParser('pylons', 'pylons'))
 
-    #def unauthorized(self):
-	#return render('/unauthorized.mako')
+    def unauthorized(self):
+	c.heading = '401'
+	return render('/unauthorized.mako')
