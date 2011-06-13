@@ -230,7 +230,10 @@ class LdapConnector(object):
 			mod_attrs.append((ldap.MOD_REPLACE, 'homePostalAddress', str(member.homePostalAddress.encode( "utf-8" ))))
 
 		if member.phone != '':
-			mod_attrs.append((ldap.MOD_REPLACE, 'homePhone', str(member.phone)))
+			if member.phone == '>>REMOVE<<':
+				mod_attrs.append((ldap.MOD_DELETE, 'homePhone', None))
+			else:
+				mod_attrs.append((ldap.MOD_REPLACE, 'homePhone', str(member.phone)))
 		# @TODO wildcard delete does not work ... fix
 		#else:
 		#	mod_attrs.append((ldap.MOD_DELETE, 'homePhone', None))
