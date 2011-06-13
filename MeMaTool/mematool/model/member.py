@@ -23,6 +23,7 @@ from mematool.model.meta import Base
 
 from datetime import date
 from mematool.lib.base import Session
+from mematool.model import TmpMember
 
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
 import hashlib
@@ -55,15 +56,18 @@ class Member():
 	groups = [] # additional user groups
 	fullMember = False
 	lockedMember = False
+	validate = False	# validation needed ?
 
-	# This does not seem to work
-#	payments = relation('Payment', order_by='Payment.idpayment', backref="member")
 	
 
 	def __init__(self, uid=None):
 		if uid is not None:
 			self.uid = uid
 			self.loadFromLdap()
+
+			if (Session.query(TmpMember).filter(TmpMember.id == self.uidNumber).count() > 0):
+				self.validate = True
+				print 'need validation'
 
 
 	def __str__(self):

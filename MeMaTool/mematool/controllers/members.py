@@ -192,7 +192,10 @@ class MembersController(BaseController):
 
 					# @TODO request.params may contain multiple values per key... test & fix
 					for k in request.params.iterkeys():
-						session['reqparams'][k] = request.params[k]
+						if (k == 'full_member' or k == 'locked_member')  and request.params[k] == 'on':
+							session['reqparams'][k] = 'checked'
+						else:
+							session['reqparams'][k] = request.params[k]
 						
 					session.save()
 
