@@ -35,6 +35,8 @@ class AuthController(BaseController):
 			else:
 				redirect(url(controller='members', action='showAllMembers'))
 
+		c.heading = 'MeMaTool'
+
 		return render('/auth/login.mako')
 
 
