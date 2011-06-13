@@ -120,7 +120,7 @@ def getFormVar(s, c, var):
                         ${_('Address')}
                 </td>
                 <td>
-                        <input type="text" name="homePostalAddress" value="${getFormVar(session, c, 'homePostalAddress')}" class="input">
+                        <textarea rows='10' cols='60' name="homePostalAddress">${getFormVar(session, c, 'homePostalAddress')}</textarea>
                 </td>
         </tr>
         <tr>
