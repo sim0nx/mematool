@@ -1,3 +1,3 @@
 <%inherit file="/base.mako" />
 
-Unauthorized access
+<img src="/unauthorized.gif">
