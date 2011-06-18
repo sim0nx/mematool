@@ -45,7 +45,6 @@ class ProfileController(BaseController):
 
 	def __init__(self):
 		super(ProfileController, self).__init__()
-		self.ldapcon = LdapConnector()
 
 
 	def __before__(self):
@@ -100,24 +99,23 @@ class ProfileController(BaseController):
 			formok = True
 			errors = []
 
-			if not 'sn' in request.params or request.params['sn'] == '' or len(request.params['sn']) > 20:
+			if not self._isParamStr('sn', max_len=20):
 				formok = False
 				errors.append(_('Invalid surname'))
 
-			if not 'gn' in request.params or request.params['gn'] == '' or len(request.params['gn']) > 20:
+			if not self._isParamStr('gn', max_len=20):
 				formok = False
 				errors.append(_('Invalid given name'))
 
-			if not 'birthDate' in request.params or not re.match(regex.date, request.params['birthDate'], re.IGNORECASE):
+			if not self._isParamStr('birthDate', max_len=10, regex=regex.date):
 				formok = False
 				errors.append(_('Invalid birth date'))
 
-			if not 'homePostalAddress' in request.params or request.params['homePostalAddress'] == '' or len(request.params['homePostalAddress']) > 100:
+			if not self._isParamStr('homePostalAddress', max_len=100):
 				formok = False
 				errors.append(_('Invalid address'))
 
-			#if 'phone' in request.params and request.params['phone'] != '' and not re.match(regex.phone, request.params['phone'], re.IGNORECASE):
-			if 'phone' in request.params and request.params['phone'] != '' and not self._isParamStr('phone', max_len=30, regex=regex.phone):
+			if self._isParamSet('phone') and not self._isParamStr('phone', max_len=30, regex=regex.phone):
 				formok = False
 				errors.append(_('Invalid phone number'))
 
@@ -171,7 +169,7 @@ class ProfileController(BaseController):
 				request.params['gn'] != m.gn or\
 				request.params['birthDate'] != m.birthDate or\
 				request.params['homePostalAddress'] != m.homePostalAddress or\
-				request.params['phone'] != m.phone or\
+				('phone' in request.params and m.homePhone != '' and request.params['phone'] != m.homePhone) or\
 				request.params['mobile'] != m.mobile or\
 				request.params['mail'] != m.mail:
 				changes = True
