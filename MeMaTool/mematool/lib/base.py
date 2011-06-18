@@ -52,8 +52,15 @@ class BaseController(WSGIController):
 		return False
 
 
+	def _isParamSet(self, param):
+		if param in request.params and request.params[param] != '':
+			return True
+
+		return False
+
+
 	def _isParamStr(self, param, min_len=0, max_len=255, regex=None):
-		if param in request.params and request.params[param] != '' and len(request.params[param]) > min_len  and len(request.params[param]) <= max_len:
+		if self._isParamSet(param) and len(request.params[param]) > min_len  and len(request.params[param]) <= max_len:
 			if regex != None:
 				if re.match(regex, request.params[param], re.IGNORECASE):
 					return True
