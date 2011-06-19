@@ -22,7 +22,11 @@ def getFormVar(s, c, var):
 
 <form method="post" action="${url(controller='members', action='doEditMember')}" name="recordform">
 
-<table class="table_content" width="95%%">
+<div id="content" class="span-18 push-5 last ">
+<header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
+<article>
+<table class="table_content" width="95%"> 
+
 	% if 'errors' in session:
 	% if len(session['errors']) > 0:
 	<tr>
@@ -50,7 +54,7 @@ def getFormVar(s, c, var):
                 </td>
 		<td>
 			% if c.mode is 'add':
-			<input type="text" name="member_id" value="${getFormVar(session, c, 'member_id')}" class="input">
+			<input type="text" name="member_id" value="${getFormVar(session, c, 'member_id')}" class="input text">
 			% else:
 			${c.member.uid}
 			% endif
@@ -71,7 +75,7 @@ def getFormVar(s, c, var):
                         ${_('Group ID')}
                 </td>
                 <td>
-                        <input type="text" name="gidNumber" value="${getFormVar(session, c, 'gidNumber')}" class="input">
+                        <input type="text" name="gidNumber" value="${getFormVar(session, c, 'gidNumber')}" class="input text">
                 </td>
         </tr>
         <tr>
@@ -79,8 +83,8 @@ def getFormVar(s, c, var):
                         ${_('Additional groups')}
                 </td>
                 <td>
-                        ${_('full member')} <input type="checkbox" name="full_member" ${getFormVar(session, c, 'full_member')} class="input">
-                        ${_('locked member')} <input type="checkbox" name="locked_member" ${getFormVar(session, c, 'locked_member')} class="input">
+                        ${_('full member')} <input type="checkbox" name="full_member" ${getFormVar(session, c, 'full_member')} class="input text">
+                        ${_('locked member')} <input type="checkbox" name="locked_member" ${getFormVar(session, c, 'locked_member')} class="input text">
                 </td>
         </tr>
 	<tr>
@@ -88,7 +92,7 @@ def getFormVar(s, c, var):
                         ${_('Common name')}
                 </td>
                 <td>
-                        <input type="text" name="cn" value="${getFormVar(session, c, 'cn')}" class="input">
+                        <input type="text" name="cn" value="${getFormVar(session, c, 'cn')}" class="input text">
                 </td>
 	</tr>
 	<tr>
@@ -96,7 +100,7 @@ def getFormVar(s, c, var):
                         ${_('Surname')}
                 </td>
                 <td>
-                        <input type="text" name="sn" value="${getFormVar(session, c, 'sn')}" class="input">
+                        <input type="text" name="sn" value="${getFormVar(session, c, 'sn')}" class="input text">
                 </td>
         </tr>
 	<tr>
@@ -104,7 +108,7 @@ def getFormVar(s, c, var):
                         ${_('Given name')}
                 </td>
                 <td>
-                        <input type="text" name="gn" value="${getFormVar(session, c, 'gn')}" class="input">
+                        <input type="text" name="gn" value="${getFormVar(session, c, 'gn')}" class="input text">
                 </td>
         </tr>
         <tr>
@@ -112,7 +116,7 @@ def getFormVar(s, c, var):
                         ${_('Birth Date')} (YYYY-MM-DD)
                 </td>
                 <td>
-                        <input type="text" name="birthDate" value="${getFormVar(session, c, 'birthDate')}" class="input">
+                        <input type="text" name="birthDate" value="${getFormVar(session, c, 'birthDate')}" class="input text">
                 </td>
         </tr>
         <tr>
@@ -128,7 +132,7 @@ def getFormVar(s, c, var):
                         ${_('Phone')} (+xxx.yyyyyyyyy)
                 </td>
                 <td>
-                        <input type="text" name="phone" value="${getFormVar(session, c, 'phone')}" class="input">
+                        <input type="text" name="phone" value="${getFormVar(session, c, 'phone')}" class="input text">
                 </td>
         </tr>
         <tr>
@@ -136,7 +140,7 @@ def getFormVar(s, c, var):
                         ${_('Mobile')} (+xxx.yyyyyyyyy)
                 </td>
                 <td>
-                        <input type="text" name="mobile" value="${getFormVar(session, c, 'mobile')}" class="input">
+                        <input type="text" name="mobile" value="${getFormVar(session, c, 'mobile')}" class="input text">
                 </td>
         </tr>
         <tr>
@@ -144,7 +148,7 @@ def getFormVar(s, c, var):
                         ${_('E-Mail')}
                 </td>
                 <td>
-                        <input type="text" name="mail" value="${getFormVar(session, c, 'mail')}" class="input">
+                        <input type="text" name="mail" value="${getFormVar(session, c, 'mail')}" class="input text">
                 </td>
         </tr>
         <tr>
@@ -152,7 +156,7 @@ def getFormVar(s, c, var):
                         ${_('Login Shell')}
                 </td>
                 <td>
-                        <input type="text" name="loginShell" value="${getFormVar(session, c, 'loginShell')}" class="input">
+                        <input type="text" name="loginShell" value="${getFormVar(session, c, 'loginShell')}" class="input text">
                 </td>
         </tr>
 	<tr>
@@ -160,7 +164,7 @@ def getFormVar(s, c, var):
                         ${_('Home directory')}
                 </td>
                 <td>
-                        <input type="text" name="homeDirectory" value="${getFormVar(session, c, 'homeDirectory')}" class="input">
+                        <input type="text" name="homeDirectory" value="${getFormVar(session, c, 'homeDirectory')}" class="input text">
                 </td>
         </tr>
         <tr>
@@ -168,7 +172,7 @@ def getFormVar(s, c, var):
                         ${_('Member since')} (YYYY-MM-DD)
                 </td>
                 <td>
-                        <input type="text" name="arrivalDate" value="${getFormVar(session, c, 'arrivalDate')}" class="input">
+                        <input type="text" name="arrivalDate" value="${getFormVar(session, c, 'arrivalDate')}" class="input text">
                 </td>
         </tr>
         <tr>
@@ -176,7 +180,7 @@ def getFormVar(s, c, var):
                         ${_('Membership canceled')} (YYYY-MM-DD)
                 </td>
                 <td>
-                        <input type="text" name="leavingDate" value="${getFormVar(session, c, 'leavingDate')}" class="input">
+                        <input type="text" name="leavingDate" value="${getFormVar(session, c, 'leavingDate')}" class="input text">
                 </td>
         </tr>
         <tr>
@@ -192,7 +196,7 @@ def getFormVar(s, c, var):
                         ${_('Password')} (min 8)
                 </td>
                 <td>
-                        <input type="password" name="userPassword" value="" class="input">
+                        <input type="password" name="userPassword" value="" class="input text">
                 </td>
         </tr>
         <tr>
@@ -200,15 +204,7 @@ def getFormVar(s, c, var):
                         ${_('Repeat Password')} (min 8)
                 </td>
                 <td>
-                        <input type="password" name="userPassword2" value="" class="input">
-                </td>
-        </tr>
-	<tr>
-		<td>
-			&nbsp;
-		</td>
-                <td>
-                        <input type="submit" name="" value="Submit" class="input">
+                        <input type="password" name="userPassword2" value="" class="input text">
                 </td>
         </tr>
 </table>
@@ -217,7 +213,12 @@ def getFormVar(s, c, var):
 <input type="hidden" name="member_id" value="${c.member.uid}">
 % endif
 <input type="hidden" name="mode" value="${c.mode}">
+<input type="submit" name="" value="Submit" class="input button right"> 
+
 </form>
+</article>
+<div id="make-space" class="prepend-top">&nbsp;</div>
+</div>
 
 <%
 if 'reqparams' in session:

@@ -22,9 +22,16 @@ def getFormVar(s, c, var):
 
 <form method="post" action="${url(controller='profile', action='doEdit')}" name="recordform">
 
-<table class="table_content" width="95%%">
+			<div id="content" class="span-18 push-5 last ">
+			<header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">Payments</header>
+				
+				<article>
+					<table class="table_content" width="95%"> 
+
 	% if 'errors' in session:
 	% if len(session['errors']) > 0:
+
+
 	<tr>
 		<td>&nbsp;</td>
 		<td>
@@ -181,16 +188,12 @@ def getFormVar(s, c, var):
                         <input type="password" name="userPassword2" value="" class="input" ${c.formDisabled}>
                 </td>
         </tr>
-	<tr>
-		<td>
-			&nbsp;
-		</td>
-                <td>
-                        <input type="submit" name="" value="Submit" class="input" ${c.formDisabled}>
-                </td>
-        </tr>
 </table>
+<input type="submit" name="" value="Submit" class="input button right" ${c.formDisabled}>
 </form>
+</article>
+<div id="make-space" class="prepend-top">&nbsp;</div>
+</div>
 
 <%
 if 'reqparams' in session:
