@@ -294,6 +294,10 @@ class MembersController(BaseController):
 
 			c.members = members
 
+			c.actions = list()
+			c.actions.append( ('Add member', 'members', 'addMember') )
+			c.actions.append( ('RCSL export', 'members', 'rcslExport') )
+
 			return render('/members/viewAll.mako')
 
 		except LookupError:
