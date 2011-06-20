@@ -181,7 +181,7 @@ class ProfileController(BaseController):
 				tm.birthDate = request.params['birthDate']
 				tm.homePostalAddress = request.params['homePostalAddress']
 
-				if 'phone' not in request.params or request.params['phone'] == '':
+				if 'phone' not in request.params or (request.params['phone'] == '' and not m.homePhone is ''):
 					tm.phone = '>>REMOVE<<'
 				else:
 					tm.phone = request.params['phone']
