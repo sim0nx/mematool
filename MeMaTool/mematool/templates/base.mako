@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection">
   	<link rel="stylesheet" href="/css/app.css" type="text/css" media="screen, projection"> 
 	<link rel="stylesheet" href="/css/ui.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="/css/ie.css" type="text/css" media="screen, projection">
 
 	<!-- Website title !-->
 	<title>syn2cat MeMaTool - {PAGENAME}</title>

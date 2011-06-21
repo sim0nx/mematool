@@ -67,7 +67,6 @@ class Member():
 
 			if (Session.query(TmpMember).filter(TmpMember.id == self.uidNumber).count() > 0):
 				self.validate = True
-				print 'need validation'
 
 
 	def __str__(self):
