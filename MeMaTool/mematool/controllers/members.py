@@ -154,7 +154,7 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid e-mail address'))
 
-				if not 'gidNumber' in request.params or not re.match('^\d+$', request.params['gidNumber']) or len(request.params['gidNumber']) > 5:
+				if not 'gidNumber' in request.params or not re.match('^\d{3,}$', request.params['gidNumber']) or len(request.params['gidNumber']) > 5:
 					formok = False
 					errors.append(_('Invalid group'))					
 
@@ -218,7 +218,9 @@ class MembersController(BaseController):
 			if request.params['mode'] is 'edit': 
 				member.loadFromLdap()
 
-			member.gidNumber = request.params['gidNumber']
+			# @TODO review: for now we don't allow custom GIDs
+			#member.gidNumber = request.params['gidNumber']
+			member.gidNumber = '100'
 			member.cn = request.params['cn']
 			member.sn = request.params['sn']
 			member.gn = request.params['gn']
