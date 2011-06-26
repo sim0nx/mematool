@@ -15,7 +15,7 @@
   	<link rel="stylesheet" href="/css/app.css" type="text/css" media="screen, projection"> 
 	<link rel="stylesheet" href="/css/ui.css" type="text/css" media="screen, projection">
 	<link rel="stylesheet" href="/css/ie.css" type="text/css" media="screen, projection">
-
+	
 	<!-- Website title !-->
 	<title>syn2cat MeMaTool - {PAGENAME}</title>
 </head>
@@ -89,6 +89,9 @@
 	</div>
 	<!-- page-wrapper end !-->
 	<!-- JavaScript !-->
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="/mematool/javascript/html5.js"></script>
+	<![endif]-->
 	<script type="text/javascript" src="/javascript/jquery.js"></script>
         <script type="text/javascript" src="/javascript/ui.jquery.js"></script>
         <script type="text/javascript" src="/javascript/mematool.js"></script>
@@ -116,7 +119,12 @@
 
 <%def name="flash()">
     % if session.has_key('flash'):
-    <div id="flash"><p>${session.get('flash')}</p></div>
+      % if session.has_key('flash_class'):
+        <% flash_class = session.get('flash_class') %>
+      % else:
+        <% flash_class = 'info' %>
+      % endif
+    <div id="flash" class="${flash_class}"><p>${session.get('flash')}</p></div>
     <%
         del session['flash']
         session.save()

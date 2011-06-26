@@ -30,6 +30,13 @@ $(document).ready(function(){
 	$('input[name="mail"]').change(function(){
 		alert('You changed the field');
 	});
-	
 	// end email validation
+
+
+	// system message fade out
+	// profile_save
+	// login_success
+	// logout
+	// login_fail
+	$('div#profile_save, div#login_success, div#logout, div#login_fail, div#flash,').fadeOut(4000);
 });
