@@ -193,12 +193,17 @@ class ProfileController(BaseController):
 				Session.commit()
 
 				session['flash'] = 'Changes saved!'
-				session.save()
+				session['flash_class'] = 'success'
+			else:
+				session['flash'] = 'Nothing to save!'
+				session['flash_class'] = 'info'
+
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				m.setPassword(request.params['userPassword'])
 				m.save()
 	                        session['flash'] = 'Password updated!'
-	                        session.save()
-
+				session['flash_class'] = 'success'
+		
+		session.save()
 		redirect(url(controller='profile', action='index'))
