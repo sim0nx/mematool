@@ -23,7 +23,7 @@ def getFormVar(s, c, var):
 <form method="post" action="${url(controller='profile', action='doEdit')}" name="recordform">
 
 			<div id="content" class="span-18 push-5 last ">
-			<header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">Payments</header>
+			<header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
 				
 				<article>
 					<table class="table_content" width="95%"> 
@@ -35,9 +35,11 @@ def getFormVar(s, c, var):
 	<tr>
 		<td>&nbsp;</td>
 		<td>
-		% for k in session['errors']:
-		<font color="red">${k}</font><br>
-		% endfor
+			<div class="error">
+			% for k in session['errors']:
+			<font color="red">${k}</font><br>
+			% endfor
+			</div>
 		</td>
 	</tr>
 		<%
