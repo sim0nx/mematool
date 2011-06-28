@@ -302,8 +302,9 @@ class MembersController(BaseController):
 
 			return render('/members/viewAll.mako')
 
-		except LookupError:
+		except LookupError as e:
 			print 'Lookup error!'
+			print e
 			pass
 		except NoResultFound:
 			print 'No such sql user !'

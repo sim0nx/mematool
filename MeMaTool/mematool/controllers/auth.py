@@ -41,14 +41,14 @@ class AuthController(BaseController):
 
 
 	def doLogin(self):
-		if not 'login' in request.params or request.params['login'] == '' or not 'password' in request.params or request.params['password'] == '':
+		if not 'username' in request.params or request.params['username'] == '' or not 'password' in request.params or request.params['password'] == '':
 			print "crap"
 		else:
 			authAdapter = LDAPAuthAdapter()
-			ret = authAdapter.authenticate_ldap(request.params['login'], request.params['password'])
+			ret = authAdapter.authenticate_ldap(request.params['username'], request.params['password'])
 
 			if ret:
-				session['identity'] = request.params['login']
+				session['identity'] = request.params['username']
 				session['secret'] = encodeAES( request.params['password'] )
 				session['groups'] = authAdapter.getUserGroups()
 				session.save()

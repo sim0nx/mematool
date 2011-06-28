@@ -26,7 +26,6 @@ def getFormVar(s, c, var):
 <header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
 <article>
 <table class="table_content" width="95%"> 
-
 	% if 'errors' in session:
 	% if len(session['errors']) > 0:
 	<tr>

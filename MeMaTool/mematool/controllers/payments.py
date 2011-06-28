@@ -177,6 +177,10 @@ class PaymentsController(BaseController):
 		    
 		session['return_to'] = ('payments','listPayments')
 		session.save()
+
+		c.actions = list()
+		c.actions.append( ('Add payment', 'payments', 'editPayment', request.params['member_id']) )
+
 		return render('/payments/listPayments.mako')
 
 
@@ -211,6 +215,10 @@ class PaymentsController(BaseController):
 		for m in methods:
 			c.methods.append([m.idpaymentmethod,m.dtname])
 		c.heading = '%s payment for user %s' % (action, c.member_id)
+
+		c.actions = list()
+		c.actions.append( ('List payments', 'payments', 'listPayments', request.params['member_id']) )
+
 
 		return render('/payments/editPayment.mako')
 

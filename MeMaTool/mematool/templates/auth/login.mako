@@ -1,29 +1,15 @@
 <%inherit file="/base.mako" />
 
-<%def name="css()">
-	${parent.css()}
-	${self.css_link('/css/viewAll.css', 'screen')}
-</%def>
-
-  <div>
-     <b>Log In</b>
-  </div>
-  <br/>
-  <form method="POST" action="${url(controller='auth', action='doLogin')}">
-    <table border="0">
-    <tr>
-      <td>User Name</td>
-      <td><input type="text" name="login"></input></td>
-    </tr>
-    <tr>
-      <td>Password</td>
-      <td><input type="password" name="password"></input></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td><input type="submit" name="submit" value="Log In"/></td>
-    </tr>
-    </table>
-  </form>
-  <pre>
-  </pre>
+<!-- content !-->
+<div id="content" class="span-9 push-6 last ">
+<header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">Login</header>
+				
+<article>
+	<h3>Mematool Login</h3>
+	${h.form(url(controller='auth', action='doLogin'), method='post', name='authform')}
+     	<div><input type="text" class="text" name="username" placeholder="syn2cat username" required /></div> 
+	<div><input type="password" class="text" name="password" placeholder="password" required /></div> 
+	${h.submit('send', 'Login', class_='input text')}</td>
+	</form> 
+	 <div class="clear">&nbsp;</div>
+</article>

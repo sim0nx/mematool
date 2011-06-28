@@ -19,6 +19,10 @@ def getFormVar(s, c, var):
 </%def>
 
 ${h.form(url(controller='payments', action='savePayment'), method='post', name='addpaymentform')}
+<div id="content" class="span-19 push-1 last ">
+<header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
+<article>
+
 <table class="table_content" width="95%">
 	% if 'errors' in session:
 	% if len(session['errors']) > 0:
@@ -42,23 +46,23 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 	% endif
 	% endif
         <tr>
-                <td class="table_label"><label for="dtamount">Amount payed</label></td>
-		<td>${h.text('dtamount', value=getFormVar(session, c, 'dtamount'), class_='input')}</td>
+                <td class="table_title"><label for="dtamount">Amount payed</label></td>
+		<td>${h.text('dtamount', value=getFormVar(session, c, 'dtamount'), class_='input text')}</td>
         </tr>
         <tr>
-                <td class="table_label"><label for="dtdate">Date payed</label></td>
-		<td>${h.text('dtdate', value=getFormVar(session, c, 'dtdate'), class_='input')}(YYYY-MM-DD, replace by datepicker)</td>
+                <td class="table_title"><label for="dtdate">Date payed</label></td>
+		<td>${h.text('dtdate', value=getFormVar(session, c, 'dtdate'), class_='input text')}(YYYY-MM-DD, replace by datepicker)</td>
         </tr>
         <tr>
-                <td class="table_label"><label for="dtreason">Reason for payment</label></td>
-		<td><textarea name="dtreason" class="input" >${getFormVar(session, c, 'dtreason')}</textarea></td>
+                <td class="table_title"><label for="dtreason">Reason for payment</label></td>
+		<td><textarea name="dtreason" class="input text" >${getFormVar(session, c, 'dtreason')}</textarea></td>
         </tr>
         <tr>
-                <td class="table_label"><label for="lipaymentmethod">payment method</label></td>
-		<td>${h.select("lipaymentmethod", getFormVar(session, c, 'lipaymentmethod'), c.methods)}</td>
+                <td class="table_title"><label for="lipaymentmethod">payment method</label></td>
+		<td>${h.select("lipaymentmethod", getFormVar(session, c, 'lipaymentmethod'), c.methods, class_='input text')}</td>
         </tr>
 	<tr>
-		<td class="table_label"/>
+		<td class="table_title"/>
 		<td style="text-align:left;">
 		<% 
 			if (c.payment.idpayment == None):
@@ -66,7 +70,7 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 			else:
 				label = 'Edit payment'
 		%>
-		${h.submit('send',label)}</td>
+		${h.submit('send', label, class_='input text')}</td>
 	</tr>
 	<input type="hidden" name="member_id" value="${c.member_id}">
 	<input type="hidden" name="idPayment" value="${c.payment.idpayment}">

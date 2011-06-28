@@ -64,7 +64,11 @@
 					<header class="sidebar-title">Menu</header>
 					<ul class="list-vertical">
 						% for k in c.actions:
+							% if len(k) == 4:
+					        <li>${h.link_to(k[0], url(controller=k[1], action=k[2], member_id=k[3]))}</li>
+							% else:
 					        <li>${h.link_to(k[0], url(controller=k[1], action=k[2]))}</li>
+							% endif
 						% endfor
 					</ul>
 				</nav>
