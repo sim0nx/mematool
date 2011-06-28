@@ -58,20 +58,42 @@ class PaymentsController(BaseController):
 	def __before__(self, action, **param):
 		super(PaymentsController, self).__before__()
 
-		if not self.identity or not self.authAdapter.user_in_group('office', self.identity):
-			redirect(url(controller='error', action='unauthorized'))
-
 	def _require_auth(self):
 		return True
 
 
 	def index(self):
-		return self.showOutstanding()
+		if self.authAdapter.user_in_group('office', self.identity):
+			return self.showOutstanding()
 
-	def verifyPayment(self):
-		""" action triggered through ajax by checking/unchecking checkboxes"""
-		pass
-        
+		return redirect(url(controller='payments', action='listPayments', member_id=self.identity))
+
+	@BaseController.needAdmin
+	def validatePayment(self):
+		""" Validate a payment specified by an id """
+		if not self._isParamStr('member_id') or not self._isParamInt('idPayment'):
+			redirect(url(controller='payments', action='index'))
+
+		try:
+			np = Session.query(Payment).filter(Payment.idpayment == request.params['idPayment']).one()
+
+			if np.dtverified:
+				np.dtverified = False
+			else:
+				np.dtverified = True
+			Session.commit()
+
+			session['flash'] = 'Payment validation successfully toggled'
+			session['flash_class'] = 'success'
+		except:
+			session['flash'] = 'Saving payment failed'
+			session['flash_class'] = 'error'
+
+		session.save()
+
+		redirect(url(controller='payments', action='listPayments', member_id=request.params['member_id']))
+
+	@BaseController.needAdmin
 	def showOutstanding(self):
 		""" Show which users still need to pay their membership fees and if a reminder has already been sent """
 
@@ -106,11 +128,6 @@ class PaymentsController(BaseController):
 				d1 = dateutil.parser.parse(str(last_payment.dtdate))
 				today = str(datetime.date.today()) + ' 00:00:00'
 				d2 = dateutil.parser.parse(today)
-				if uid == 'sim0n':
-					print last_payment
-					print today
-					print d1
-					print d2.year
 
 				if d1.year == d2.year and d1.month == d2.month:
 					m.paymentGood = 'yes'
@@ -127,6 +144,9 @@ class PaymentsController(BaseController):
 		""" Show a specific user's payments """
 		if (not 'member_id' in request.params):
 			redirect(url(controller='payments', action='showOutstanding'))
+		elif not self.isAdmin() and not request.params['member_id'] == self.identity:
+			redirect(url(controller='error', action='unauthorized'))
+
 
 		c.heading = 'Payments for user %s' % request.params['member_id']
 
@@ -186,15 +206,16 @@ class PaymentsController(BaseController):
 
 	def editPayment(self):
 		""" Add or edit a payment to/of a specific user """
-
 		if not 'member_id' in request.params or request.params['member_id'] == '':
-			redirect(url(controller='members', action='showAllMembers'))
-			return
+			redirect(url(controller='members', action='index'))
+		elif not self.isAdmin() and not request.params['member_id'] == self.identity:
+			redirect(url(controller='error', action='unauthorized'))
+
 
 		c.member_id = request.params['member_id']
 
 		# vary form depending on mode (do that over ajax)
-		if not 'idPayment' in request.params:
+		if not 'idPayment' in request.params or request.params['idPayment'] == '0':
 			c.payment = Payment()
 			action = 'Adding'
 		elif not request.params['idPayment'] == '' and IsInt(request.params['idPayment']) and int(request.params['idPayment']) > 0:
@@ -203,11 +224,17 @@ class PaymentsController(BaseController):
 			try:
 				payment = payment_q.one()
 				payment.dtdate = payment.dtdate.strftime("%Y-%m-%d") #str(payment.dtdate.year) + '-' + str(payment.dtdate.month) + '-' + str(payment.dtdate.day)
+
+				# @TODO allow member editing if not verified???
+				if payment.dtverified and not self.isAdmin():
+					redirect(url(controller='error', action='unauthorized'))
+
 				c.payment = payment
 			except NoResultFound:
 				print "oops"
+				redirect(url(controller='members', action='index'))
 		else:
-			redirect(url(controller='members', action='showAllMembers'))
+			redirect(url(controller='members', action='index'))
 
 		methods = Session.query(Paymentmethod).all()
 		## how to easily turn a result object into a list? (more efficiently than this)
@@ -227,13 +254,15 @@ class PaymentsController(BaseController):
 		def new_f(self):
 			# @TODO request.params may contain multiple values per key... test & fix
 			if (not 'member_id' in request.params):
-				redirect(url(controller='members', action='showAllMembers'))
+				redirect(url(controller='members', action='index'))
+			elif not self.isAdmin() and not request.params['member_id'] == self.identity:
+				redirect(url(controller='error', action='unauthorized'))
 			else:
 				formok = True
 				errors = []
 				items = {}
 
-				if not self._isParamInt('dtamount', max_len=4):
+				if not self._isParamFloat('dtamount', max_len=6):
 					#uest.params or request.params['dtamount'] == '' or not IsInt(request.params['dtamount']) or  len(request.params['dtamount']) > 4:
 					formok = False
 					errors.append(_('Invalid amount'))
@@ -269,7 +298,7 @@ class PaymentsController(BaseController):
 
 					redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=items['idPayment'], mode='single'))
 				else:
-					items['dtamount'] = int(request.params['dtamount'])
+					items['dtamount'] = float(request.params['dtamount'])
 					items['dtdate'] = request.params['dtdate']
 					items['dtreason'] = request.params['dtreason']
 					items['lipaymentmethod'] = request.params['lipaymentmethod']
@@ -290,13 +319,13 @@ class PaymentsController(BaseController):
 		else:
 			np = Payment()
 			np.dtmode = 'single'
+			np.dtverified = False
 			# not foreseen to add recurring payments in the admin interface
 
 		for key, value in items.iteritems():
 			setattr(np, key, value)
 
 		if np.dtmode == 'single':
-			np.dtverified = True	
 			np.dtrate = np.dtamount
 
 		ldapcon = LdapConnector()
@@ -319,17 +348,16 @@ class PaymentsController(BaseController):
 		Session.commit()
 
 		session['flash'] = 'Payment saved successfully.'
+		session['flash_class'] = 'success'
 		session.save()
 
 		redirect(url(controller='payments', action='listPayments', member_id=member_id))
 
-
+	@BaseController.needAdmin
 	def deletePayment(self):
 		""" Delete a payment specified by an id """
-
 		if not self._isParamStr('member_id') or not self._isParamInt('idPayment'):
-			redirect(url(controller='members', action='showAllMembers'))
-			return
+			redirect(url(controller='members', action='index'))
 
 		try:
 			np = Session.query(Payment).filter(Payment.idpayment == request.params['idPayment']).one()
