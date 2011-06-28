@@ -19,7 +19,7 @@
 #    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, Date, ForeignKeyConstraint
+from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, Float, String, MetaData, ForeignKey, Boolean, Date, ForeignKeyConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relation
 
@@ -37,7 +37,7 @@ class Payment(Base):
 	limember = Column(Integer, nullable=False)
 	dtreason = Column(String(255))
 	dtdate = Column(Date, nullable=False)
-	dtamount = Column(Integer, nullable=False)
+	dtamount = Column(Float, nullable=False)
 	dtrate = Column(Integer)
 	dtmode = Column(String(255))
 	dtverified = Column(Boolean)
