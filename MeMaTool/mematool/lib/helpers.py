@@ -18,7 +18,15 @@ from routes import url_for
 def IsInt(string):
 	try:
 		num = int(string)
-	except ValueError:
+	except ValueError as e:
+		return False
+
+	return True
+
+def IsFloat(string):
+	try:
+		num = float(string)
+	except ValueError as e:
 		return False
 
 	return True
