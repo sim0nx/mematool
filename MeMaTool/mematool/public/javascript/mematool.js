@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	
 	// datepicker for profiles
-	$('input[name="birthDate"], input[name="leavingDate"], input[name="arrivalDate"] ').datepicker({ 
+	$('input[name="birthDate"], input[name="leavingDate"], input[name="arrivalDate"], input[name="dtdate"] ').datepicker({ 
 		dateFormat: 'yy-mm-dd',
 		changeMonth: true,
 		changeYear: true,

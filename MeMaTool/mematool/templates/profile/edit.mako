@@ -28,6 +28,7 @@ def getFormVar(s, c, var):
 				<article>
 					<table class="table_content" width="95%"> 
 
+	${parent.flash()}
 	% if 'errors' in session:
 	% if len(session['errors']) > 0:
 

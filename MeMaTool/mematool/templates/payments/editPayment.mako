@@ -26,12 +26,16 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 <table class="table_content" width="95%">
 	% if 'errors' in session:
 	% if len(session['errors']) > 0:
+
+
 	<tr>
 		<td>&nbsp;</td>
 		<td>
-		% for k in session['errors']:
-		<font color="red">${k}</font><br>
-		% endfor
+			<div class="error">
+			% for k in session['errors']:
+			<font color="red">${k}</font><br>
+			% endfor
+			</div>
 		</td>
 	</tr>
 		<%
@@ -45,6 +49,7 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
                 %>
 	% endif
 	% endif
+
         <tr>
                 <td class="table_title"><label for="dtamount">Amount payed</label></td>
 		<td>${h.text('dtamount', value=getFormVar(session, c, 'dtamount'), class_='input text')}</td>
