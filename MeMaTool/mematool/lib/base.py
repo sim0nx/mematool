@@ -49,7 +49,7 @@ class BaseController(WSGIController):
 
 
 	def _require_auth(self):
-		return False
+		return True
 
 
 	def _isParamSet(self, param):
@@ -77,13 +77,27 @@ class BaseController(WSGIController):
 		return False
 
 
+	def _isParamFloat(self, param, min_val=0, min_len=0, max_len=4):
+		if self._isParamStr(param, min_len, max_len) and IsFloat(request.params[param]) and float(request.params[param]) > min_val:
+			return True
+
+		return False
+
+
 	@staticmethod
 	def needAdmin(f):
 		def new_f(self):
-			if not ('groups' in session or 'office' in session['groups'] or 'sysops' in session['groups']):
+			if not 'groups' in session or not ('office' in session['groups'] or 'sysops' in session['groups']):
 				#@TODO consider redirecting to a not-authorized page
 				redirect(url(controller='members', action='showAllMembers'))
-			else:
-				return f(self)
+
+			return f(self)
+
 		return new_f
-	
+
+
+	def isAdmin(f):
+		if 'groups' in session and ('office' in session['groups'] or 'sysops' in session['groups']):
+			return True
+
+		return False
