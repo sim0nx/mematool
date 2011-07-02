@@ -3,7 +3,6 @@
 from Crypto.Cipher import AES
 import hashlib
 import base64
-import os
 
 
 # the block size for the cipher object; must be 16, 24, or 32 for AES
@@ -17,6 +16,8 @@ PADDING = chr(0)
 # one-liner to sufficiently pad the text to be encrypted
 pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
 
+
+# @TODO move into config file !
 secret = 'koRie$r9k%ohmu&Ayouk)9Q"uoo§souifo4*aex4u#Basheek*a9jooHuoG/heiqua7oPh'
 key = hashlib.sha256(secret).digest()
 
@@ -27,12 +28,3 @@ def encodeAES(msg):
 def decodeAES(cmsg):
 	cipher = AES.new(key)
 	return cipher.decrypt(base64.b64decode(cmsg)).rstrip(PADDING)
-
-
-# encode a string
-#encoded = encodeAES('password{asfasönfnlanfas"$°"$"%&/(%)/(%$"§!ÄÖÄ*$!$!')
-#print 'Encrypted string:', encoded
-
-# decode the encoded string
-#decoded = decodeAES(encoded)
-#print 'Decrypted string:', decoded
