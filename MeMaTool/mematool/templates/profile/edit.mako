@@ -177,7 +177,7 @@ def getFormVar(s, c, var):
         </tr>
         <tr>
                 <td class="table_title">
-                        ${_('Password')} (min 8)
+                        ${_('Password')} (min 8, only ASCII chars)
                 </td>
                 <td>
                         <input type="password" name="userPassword" value="" class="input" ${c.formDisabled}>
