@@ -18,6 +18,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
+# -*- coding: utf-8 -*-
+
 
 from mematool.lib.syn2cat.singleton import Singleton
 import ldap
@@ -229,8 +231,8 @@ class LdapConnector(object):
 		if member.homePostalAddress != '':
 			mod_attrs.append((ldap.MOD_REPLACE, 'homePostalAddress', str(member.homePostalAddress.encode( "utf-8" ))))
 
-		if member.phone != '':
-			if member.phone == '>>REMOVE<<':
+		if member.homePhone != '':
+			if member.homePhone == '>>REMOVE<<':
 				mod_attrs.append((ldap.MOD_DELETE, 'homePhone', None))
 			else:
 				mod_attrs.append((ldap.MOD_REPLACE, 'homePhone', str(member.phone)))

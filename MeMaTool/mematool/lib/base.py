@@ -5,7 +5,7 @@ Provides the BaseController class for subclassing.
 from pylons.controllers import WSGIController
 from pylons.controllers.util import abort, redirect
 from pylons.templating import render_mako as render
-from pylons import session, request, url
+from pylons import session, request, url, config
 import logging
 
 from mematool.model.meta import Session
@@ -19,6 +19,11 @@ class BaseController(WSGIController):
 		self.authAdapter = LDAPAuthAdapter()
 		self.identity = None
 		self.log = logging.getLogger(__name__)
+
+		# get the list of admins from the configuration file
+		# replace whitespace and split on comma
+		self.admins = re.sub(r' ', '', config.get('mematool.admins')).split(',')
+
 
 	def __call__(self, environ, start_response):
 		"""Invoke the Controller"""
@@ -84,20 +89,28 @@ class BaseController(WSGIController):
 		return False
 
 
+	def unauthorized(self):
+		redirect(url(controller='error', action='unauthorized'))
+
 	@staticmethod
 	def needAdmin(f):
 		def new_f(self):
-			if not 'groups' in session or not ('office' in session['groups'] or 'sysops' in session['groups']):
-				#@TODO consider redirecting to a not-authorized page
-				redirect(url(controller='members', action='showAllMembers'))
+			if 'groups' in session:
+				for ag in self.admins:
+					if ag in session['groups']:
+						print '2 group found'
+						return f(self)
 
-			return f(self)
+			self.unauthorized()
 
 		return new_f
 
 
 	def isAdmin(f):
-		if 'groups' in session and ('office' in session['groups'] or 'sysops' in session['groups']):
-			return True
+		if 'groups' in session:
+			for ag in self.admins:
+				if ag in session['groups']:
+					print '1 group found'
+					return True
 
 		return False

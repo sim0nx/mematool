@@ -18,6 +18,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
+# -*- coding: utf-8 -*-
+
 
 from mematool.model.meta import Base
 

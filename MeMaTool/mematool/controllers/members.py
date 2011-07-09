@@ -49,11 +49,9 @@ class MembersController(BaseController):
 		self.ldapcon = LdapConnector()
 
 
+	@BaseController.needAdmin
 	def __before__(self):
 		super(MembersController, self).__before__()
-
-		if not self.identity or not self.authAdapter.user_in_group('office', self.identity):
-			redirect(url(controller='error', action='unauthorized'))
 
 
 	def _require_auth(self):
