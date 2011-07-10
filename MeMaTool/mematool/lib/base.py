@@ -97,7 +97,7 @@ class BaseController(WSGIController):
 					if ag in session['groups']:
 						return f(self)
 
-			abort(403)
+			redirect(url(controller='error', action='forbidden'))
 
 		return new_f
 

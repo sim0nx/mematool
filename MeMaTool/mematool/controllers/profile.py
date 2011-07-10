@@ -22,7 +22,7 @@
 import logging
 
 from pylons import request, response, session, tmpl_context as c, url
-from pylons.controllers.util import abort, redirect
+from pylons.controllers.util import redirect
 from pylons import config
 
 from mematool.lib.base import BaseController, render, Session
@@ -51,7 +51,7 @@ class ProfileController(BaseController):
 		super(ProfileController, self).__before__()
 
 		if not self.identity:
-			abort(403)
+			redirect(url(controller='error', action='forbidden'))
 
 
 	def _require_auth(self):
@@ -165,7 +165,7 @@ class ProfileController(BaseController):
 
 		if m.validate:
 			# member locked for validation
-			abort(403)
+			redirect(url(controller='error', action='forbidden'))
 		else:
 			changes = False
 

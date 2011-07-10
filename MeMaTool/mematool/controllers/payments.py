@@ -22,7 +22,7 @@ import logging
 log = logging.getLogger(__name__)
 
 from pylons import request, response, session, tmpl_context as c, url
-from pylons.controllers.util import abort, redirect
+from pylons.controllers.util import redirect
 
 from mematool.model.schema.payments import PaymentForm
 from mematool.lib.base import BaseController, render, Session
@@ -147,7 +147,7 @@ class PaymentsController(BaseController):
 		if (not 'member_id' in request.params):
 			redirect(url(controller='payments', action='showOutstanding'))
 		elif not self.isAdmin() and not request.params['member_id'] == self.identity:
-			abort(403)
+			redirect(url(controller='error', action='forbidden'))
 
 
 		c.heading = 'Payments for user %s' % request.params['member_id']
@@ -211,8 +211,7 @@ class PaymentsController(BaseController):
 		if not 'member_id' in request.params or request.params['member_id'] == '':
 			redirect(url(controller='members', action='index'))
 		elif not self.isAdmin() and not request.params['member_id'] == self.identity:
-			abort(403)
-
+			redirect(url(controller='error', action='forbidden'))
 
 		c.member_id = request.params['member_id']
 
@@ -229,7 +228,7 @@ class PaymentsController(BaseController):
 
 				# @TODO allow member editing if not verified???
 				if payment.dtverified and not self.isAdmin():
-					abort(403)
+					redirect(url(controller='error', action='forbidden'))
 
 				c.payment = payment
 			except NoResultFound:
@@ -258,7 +257,7 @@ class PaymentsController(BaseController):
 			if (not 'member_id' in request.params):
 				redirect(url(controller='members', action='index'))
 			elif not self.isAdmin() and not request.params['member_id'] == self.identity:
-				abort(403)
+				redirect(url(controller='error', action='forbidden'))
 			else:
 				formok = True
 				errors = []
