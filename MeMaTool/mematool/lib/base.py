@@ -102,7 +102,7 @@ class BaseController(WSGIController):
 		return new_f
 
 
-	def isAdmin(f):
+	def isAdmin(self):
 		if 'groups' in session:
 			for ag in self.admins:
 				if ag in session['groups']:
