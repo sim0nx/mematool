@@ -89,19 +89,15 @@ class BaseController(WSGIController):
 		return False
 
 
-	def unauthorized(self):
-		redirect(url(controller='error', action='unauthorized'))
-
 	@staticmethod
 	def needAdmin(f):
 		def new_f(self):
 			if 'groups' in session:
 				for ag in self.admins:
 					if ag in session['groups']:
-						print '2 group found'
 						return f(self)
 
-			self.unauthorized()
+			abort(403)
 
 		return new_f
 
@@ -110,7 +106,6 @@ class BaseController(WSGIController):
 		if 'groups' in session:
 			for ag in self.admins:
 				if ag in session['groups']:
-					print '1 group found'
 					return True
 
 		return False

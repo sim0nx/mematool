@@ -51,7 +51,7 @@ class ProfileController(BaseController):
 		super(ProfileController, self).__before__()
 
 		if not self.identity:
-			redirect(url(controller='error', action='unauthorized'))
+			abort(403)
 
 
 	def _require_auth(self):
@@ -161,7 +161,7 @@ class ProfileController(BaseController):
 
 		if m.validate:
 			# member locked for validation
-			redirect(url(controller='error', action='unauthorized'))
+			abort(403)
 		else:
 			changes = False
 

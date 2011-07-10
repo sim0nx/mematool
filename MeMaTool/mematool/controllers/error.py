@@ -25,27 +25,14 @@ class ErrorController(BaseController):
         """Render the error document"""
         resp = request.environ.get('pylons.original_response')
 	content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
-        page = error_document_template % \
-            dict(prefix=request.environ.get('SCRIPT_NAME', ''),
-                 code=cgi.escape(request.GET.get('code', str(resp.status_int))),
-                 message=content)
-        return page
+	c.heading = content
 
-    def img(self, id):
-        """Serve Pylons' stock images"""
-        return self._serve_file('/'.join(['media/img', id]))
-
-    def style(self, id):
-        """Serve Pylons' stock stylesheets"""
-        return self._serve_file('/'.join(['media/style', id]))
-
-    def _serve_file(self, path):
-        """Call Paste's FileApp (a WSGI application) to serve the file
-        at the specified path
-        """
-        request.environ['PATH_INFO'] = '/%s' % path
-        return forward(PkgResourcesParser('pylons', 'pylons'))
+	return render('/unauthorized.mako')
 
     def unauthorized(self):
 	c.heading = '401'
+	return render('/unauthorized.mako')
+
+    def forbidden(self):
+	c.heading = '403'
 	return render('/unauthorized.mako')
