@@ -24,39 +24,14 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 <article>
 
 <table class="table_content" width="95%">
-	% if 'errors' in session:
-	% if len(session['errors']) > 0:
-
-
-	<tr>
-		<td>&nbsp;</td>
-		<td>
-			<div class="error">
-			% for k in session['errors']:
-			<font color="red">${k}</font><br>
-			% endfor
-			</div>
-		</td>
-	</tr>
-		<%
-		del session['errors']
-		session.save()
-		%>
-	% else:
-		<%
-                del session['errors']
-                session.save()
-                %>
-	% endif
-	% endif
-
+	${parent.all_messages()}
         <tr>
                 <td class="table_title"><label for="dtamount">Amount payed</label></td>
 		<td>${h.text('dtamount', value=getFormVar(session, c, 'dtamount'), class_='input text')}</td>
         </tr>
         <tr>
                 <td class="table_title"><label for="dtdate">Date payed</label></td>
-		<td>${h.text('dtdate', value=getFormVar(session, c, 'dtdate'), class_='input text')}(YYYY-MM-DD, replace by datepicker)</td>
+		<td>${h.text('dtdate', value=getFormVar(session, c, 'dtdate'), class_='input text')}(YYYY-MM-DD)</td>
         </tr>
         <tr>
                 <td class="table_title"><label for="dtreason">Reason for payment</label></td>

@@ -26,13 +26,6 @@ $(document).ready(function(){
 	});
 	// end  profiles member delete dialog
 	
-	// e-mail validation 
-	$('input[name="mail"]').change(function(){
-		alert('You changed the field');
-	});
-	// end email validation
-
-
 	// system message fade out
 	// profile_save
 	// login_success

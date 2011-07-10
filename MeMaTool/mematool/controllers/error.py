@@ -24,7 +24,13 @@ class ErrorController(BaseController):
     def document(self):
         """Render the error document"""
         resp = request.environ.get('pylons.original_response')
-	content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
+
+	content = ''
+	try:
+		content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
+	except:
+		pass
+
 	c.heading = content
 
 	return render('/unauthorized.mako')

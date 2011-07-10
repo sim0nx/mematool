@@ -84,6 +84,10 @@ class ProfileController(BaseController):
 
 			c.member = member
 
+			c.actions = list()
+			c.actions.append( ('Payments', 'payments', 'listpayments', session['identity']) )
+
+
 			return render('/profile/edit.mako')
 
 		except LookupError:
@@ -111,7 +115,7 @@ class ProfileController(BaseController):
 				formok = False
 				errors.append(_('Invalid birth date'))
 
-			if not self._isParamStr('homePostalAddress', max_len=100):
+			if not self._isParamStr('homePostalAddress', max_len=255):
 				formok = False
 				errors.append(_('Invalid address'))
 

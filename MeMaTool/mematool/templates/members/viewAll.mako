@@ -4,6 +4,7 @@
 	<header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
 		<article>
 			<li><table class="table_content"> 
+				${parent.flash()}
 			        <tr> 
 			                <th class="table_title">
 			                        ${_('Username')}
@@ -30,13 +31,8 @@
 						${_('Tools')}
 					</th>
 				</tr> 
-
-<%
-	x = 0
-%>
 % for m in c.members:
 	<%
-			x += 1
 			peapPossible = h.literal('<img src="/images/icons/notok.png">') if not m.sambaNTPassword else h.literal('<img src="/images/icons/ok.png">')
 			sshPublicKey = h.literal('<img src="/images/icons/notok.png">') if not m.sshPublicKey else h.literal('<img src="/images/icons/ok.png">')
 	%>

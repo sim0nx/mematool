@@ -22,31 +22,11 @@ def getFormVar(s, c, var):
 
 <form method="post" action="${url(controller='members', action='doEditMember')}" name="recordform">
 
-<div id="content" class="span-18 push-5 last ">
+<div id="content" class="span-18 push-1 last ">
 <header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
 <article>
-<table class="table_content" width="95%"> 
-	% if 'errors' in session:
-	% if len(session['errors']) > 0:
-	<tr>
-		<td>&nbsp;</td>
-		<td>
-		% for k in session['errors']:
-		<font color="red">${k}</font><br>
-		% endfor
-		</td>
-	</tr>
-		<%
-		del session['errors']
-		session.save()
-		%>
-	% else:
-		<%
-                del session['errors']
-                session.save()
-                %>
-	% endif
-	% endif
+<table class="table_content">
+	${parent.all_messages()}
         <tr>
                 <td class="table_title">
                         ${_('Username')}
@@ -69,14 +49,6 @@ def getFormVar(s, c, var):
                 </td>
         </tr>
 	% endif
-        <tr>
-                <td class="table_title">
-                        ${_('Group ID')}
-                </td>
-                <td>
-                        <input type="text" name="gidNumber" value="${getFormVar(session, c, 'gidNumber')}" class="input text">
-                </td>
-        </tr>
         <tr>
                 <td class="table_title">
                         ${_('Additional groups')}
@@ -156,14 +128,6 @@ def getFormVar(s, c, var):
                 </td>
                 <td>
                         <input type="text" name="loginShell" value="${getFormVar(session, c, 'loginShell')}" class="input text">
-                </td>
-        </tr>
-	<tr>
-                <td class="table_title">
-                        ${_('Home directory')}
-                </td>
-                <td>
-                        <input type="text" name="homeDirectory" value="${getFormVar(session, c, 'homeDirectory')}" class="input text">
                 </td>
         </tr>
         <tr>

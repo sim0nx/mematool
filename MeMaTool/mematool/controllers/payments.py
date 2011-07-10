@@ -108,6 +108,7 @@ class PaymentsController(BaseController):
 		#	return 'No unpaid fees'
 		
 		# Prepare add payment form
+		c.heading = 'Payments overview'
 		c.members = []
 		c.member_ids = []
 		for uid in activeMembers:
@@ -136,6 +137,7 @@ class PaymentsController(BaseController):
 			c.members.append(m)
 			c.member_ids.append(uid)
 
+		c.actions = list()
 
 		return render('/payments/showOutstanding.mako')
 

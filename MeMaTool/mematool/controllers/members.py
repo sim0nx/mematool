@@ -85,6 +85,10 @@ class MembersController(BaseController):
 			c.heading = 'Edit member'
 			c.mode = 'edit'
 
+			c.actions = list()
+			c.actions.append( ('Show all members', 'members', 'showAllMembers') )
+
+
 			try:
 				member.loadFromLdap()
 
@@ -136,7 +140,7 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid birth date'))
 
-				if not 'homePostalAddress' in request.params or request.params['homePostalAddress'] == '' or len(request.params['homePostalAddress']) > 100:
+				if not 'homePostalAddress' in request.params or request.params['homePostalAddress'] == '' or len(request.params['homePostalAddress']) > 255:
 					formok = False
 					errors.append(_('Invalid address'))
 
@@ -152,17 +156,9 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid e-mail address'))
 
-				if not 'gidNumber' in request.params or not re.match('^\d{3,}$', request.params['gidNumber']) or len(request.params['gidNumber']) > 5:
-					formok = False
-					errors.append(_('Invalid group'))					
-
 				if not 'loginShell' in request.params or not re.match(regex.loginShell, request.params['loginShell'], re.IGNORECASE):
 					formok = False
 					errors.append(_('Invalid login shell'))
-
-				if not 'homeDirectory' in request.params or not re.match(regex.homeDirectory, request.params['homeDirectory'], re.IGNORECASE):
-					formok = False
-					errors.append(_('Invalid home directory'))
 
 				if not 'arrivalDate' in request.params or not re.match(regex.date, request.params['arrivalDate'], re.IGNORECASE):
 					formok = False
@@ -228,7 +224,7 @@ class MembersController(BaseController):
 			member.mobile = request.params['mobile']
 			member.mail = request.params['mail']
 			member.loginShell = request.params['loginShell']
-			member.homeDirectory = request.params['homeDirectory']
+			member.homeDirectory = '/home/' + request.params['member_id']
 			member.arrivalDate = request.params['arrivalDate']
 			member.leavingDate = request.params['leavingDate']
 

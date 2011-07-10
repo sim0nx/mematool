@@ -63,13 +63,17 @@
 				<nav class="menu">
 					<header class="sidebar-title">Menu</header>
 					<ul class="list-vertical">
-						% for k in c.actions:
-							% if len(k) == 4:
+						% if len(c.actions) > 0:
+							% for k in c.actions:
+								% if len(k) == 4:
 					        <li>${h.link_to(k[0], url(controller=k[1], action=k[2], member_id=k[3]))}</li>
-							% else:
+								% else:
 					        <li>${h.link_to(k[0], url(controller=k[1], action=k[2]))}</li>
-							% endif
-						% endfor
+								% endif
+							% endfor
+						% else:
+							<li>-</li>
+						% endif
 					</ul>
 				</nav>
 				
@@ -134,6 +138,32 @@
     %>
     % endif
 </%def>
+
+<%def name="error_messages()">
+% if 'errors' in session:
+	% if len(session['errors']) > 0:
+<tr>
+	<td colspan="2">
+		<div class="error">
+		% for k in session['errors']:
+			<p>${k}</p>
+		% endfor
+		</div>
+	</td>
+</tr>
+	% endif
+	<%
+	del session['errors']
+	session.save()
+	%>
+% endif
+</%def>
+
+<%def name="all_messages()">
+${self.flash()}
+${self.error_messages()}
+</%def>
+
 
 <% 
 	# We should be able to dynmically get all available controllers and list them (where?) 
