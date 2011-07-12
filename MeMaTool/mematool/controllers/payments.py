@@ -94,6 +94,42 @@ class PaymentsController(BaseController):
 		redirect(url(controller='payments', action='listPayments', member_id=request.params['member_id']))
 
 	@BaseController.needAdmin
+	def duplicatePayment(self):
+		if not self._isParamStr('member_id') or not self._isParamInt('idPayment'):
+			redirect(url(controller='payments', action='index'))
+
+		npID = -1
+
+		try:
+			p = Session.query(Payment).filter(Payment.idpayment == request.params['idPayment']).one()
+
+			np = Payment()
+			np.limember = p.limember
+			np.dtreason = p.dtreason
+			np.dtdate = datetime.datetime.now().date()
+			np.dtamount = p.dtamount
+			np.dtrate = p.dtrate
+			np.dtmode = p.dtmode
+			np.dtverified = False
+			np.lipaymentmethod = p.lipaymentmethod
+
+			Session.add(np)
+			Session.commit()
+
+			npID = np.idpayment
+
+			session['flash'] = 'Payment duplicated'
+			session['flash_class'] = 'success'
+		except:
+			session['flash'] = 'Duplication failed'
+			session['flash_class'] = 'error'
+
+		session.save()
+
+		redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=npID))
+		
+
+	@BaseController.needAdmin
 	def showOutstanding(self):
 		""" Show which users still need to pay their membership fees and if a reminder has already been sent """
 
@@ -108,7 +144,7 @@ class PaymentsController(BaseController):
 		#	return 'No unpaid fees'
 		
 		# Prepare add payment form
-		c.heading = 'Payments overview'
+		c.heading = 'Outstanding payments'
 		c.members = []
 		c.member_ids = []
 		for uid in activeMembers:
@@ -123,17 +159,18 @@ class PaymentsController(BaseController):
 				''' Don't care if there is no payment '''
 				pass
 
-			m.paymentGood = 'no'
+			m.paymentGood = False
 
 			if last_payment:
 				d = last_payment.dtdate
 				today = datetime.datetime.now().date()
 
 				if d.year == today.year and d.month == today.month:
-					m.paymentGood = 'yes'
+					m.paymentGood = True
 
+			if not m.paymentGood:
+				c.members.append(m)
 
-			c.members.append(m)
 			c.member_ids.append(uid)
 
 		c.actions = list()

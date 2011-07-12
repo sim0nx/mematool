@@ -32,7 +32,7 @@ ${h.end_form()}
 		        </tr>
 			% for m in c.members:
 		        <%
-	                        paymentGood = h.literal('<font color="red">no</font>') if m.paymentGood == 'no' else h.literal('<font color="green">yes</font>')
+	                        paymentGood = h.literal('<font color="red">no</font>') if not m.paymentGood else h.literal('<font color="green">yes</font>')
 		        %>
 		        <tr class="table_row">
 		                <td>${m.uid}</td>

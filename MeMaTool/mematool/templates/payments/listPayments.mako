@@ -34,8 +34,11 @@
 				<td>${h.checkbox('verify[]', value='1', checked=checked, label='Verified', id=p.idpayment)}
 				% else:
 				<td>${h.link_to('Modify',url(controller='payments', action='editPayment', idPayment=p.idpayment, member_id=c.member.uid))}</td>
+					% if session.has_key('isAdmin') and session['isAdmin']:
+				<td>${h.link_to('Duplicate',url(controller='payments', action='duplicatePayment', idPayment=p.idpayment, member_id=c.member.uid))}</td>
 				<td>${h.link_to('Validate',url(controller='payments', action='validatePayment', idPayment=p.idpayment, member_id=c.member.uid))}</td>
 				<td>${h.link_to('Delete',url(controller='payments', action='deletePayment', idPayment=p.idpayment, member_id=c.member.uid))}</td>
+					% endif
 				% endif
 			</tr>
 			%endfor
