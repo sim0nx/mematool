@@ -126,11 +126,10 @@ class PaymentsController(BaseController):
 			m.paymentGood = 'no'
 
 			if last_payment:
-				d1 = dateutil.parser.parse(str(last_payment.dtdate))
-				today = str(datetime.date.today()) + ' 00:00:00'
-				d2 = dateutil.parser.parse(today)
+				d = last_payment.dtdate
+				today = datetime.datetime.now().date()
 
-				if d1.year == d2.year and d1.month == d2.month:
+				if d.year == today.year and d.month == today.month:
 					m.paymentGood = 'yes'
 
 
