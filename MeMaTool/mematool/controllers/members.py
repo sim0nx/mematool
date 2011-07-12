@@ -124,10 +124,6 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid form data'))
 
-				if not 'cn' in request.params or request.params['cn'] == '' or len(request.params['cn']) > 40:
-					formok = False
-					errors.append(_('Invalid common name'))
-
 				if not 'sn' in request.params or request.params['sn'] == '' or len(request.params['sn']) > 20:
 					formok = False
 					errors.append(_('Invalid surname'))
@@ -167,6 +163,10 @@ class MembersController(BaseController):
 				if 'leavingDate' in request.params and request.params['leavingDate'] != '' and not re.match(regex.date, request.params['leavingDate'], re.IGNORECASE):
 					formok = False
 					errors.append(_('Invalid "membership canceled" date'))
+
+				if 'sshPublicKey' in request.params and request.params['sshPublicKey'] != '' and not re.match(regex.sshKey, request.params['sshPublicKey'], re.IGNORECASE) or len(request.params['sshPublicKey']) > 1200:
+					formok = False
+					errors.append(_('Invalid SSH key'))
 
 				if 'userPassword' in request.params and 'userPassword2' in request.params:
 					if request.params['userPassword'] != request.params['userPassword2']:
@@ -209,15 +209,15 @@ class MembersController(BaseController):
 
 
 		try:
-			if request.params['mode'] is 'edit': 
+			if request.params['mode'] == 'edit': 
 				member.loadFromLdap()
 
 			# @TODO review: for now we don't allow custom GIDs
 			#member.gidNumber = request.params['gidNumber']
 			member.gidNumber = '100'
-			member.cn = request.params['cn']
-			member.sn = request.params['sn']
-			member.gn = request.params['gn']
+			member.cn = request.params['gn'].lstrip(' ').rstrip(' ') + ' ' + request.params['sn'].lstrip(' ').rstrip(' ')
+			member.sn = request.params['sn'].lstrip(' ').rstrip(' ')
+			member.gn = request.params['gn'].lstrip(' ').rstrip(' ')
 			member.birthDate = request.params['birthDate']
 			member.homePostalAddress = request.params['homePostalAddress']
 			member.phone = request.params['phone']
@@ -228,10 +228,12 @@ class MembersController(BaseController):
 			member.arrivalDate = request.params['arrivalDate']
 			member.leavingDate = request.params['leavingDate']
 
-			if 'sshPublicKey' in request.params and request.params['sshPublicKey'] != '':
-				# @TODO don't blindly save it
-				member.sshPublicKey = request.params['sshPublicKey']
-			elif 'sshPublicKey' in vars(member) and request.params['mode'] is 'edit':
+			if 'sshPublicKey' in request.params:
+				if request.params['sshPublicKey'] == '' and 'sshPublicKey' in vars(member):
+					member.sshPublicKey = 'removed'
+				else:
+					member.sshPublicKey = request.params['sshPublicKey']
+			elif 'sshPublicKey' in vars(member) and request.params['mode'] == 'edit':
 				member.sshPublicKey = 'removed'
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
