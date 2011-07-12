@@ -53,9 +53,11 @@ class AuthController(BaseController):
 				session['groups'] = authAdapter.getUserGroups()
 				session.save()
 
-				if 'after_login' in session:
+				if 'after_login' in session and not 'forbidden' in session["after_login"]:
 					print session["after_login"]
 					redirect(session["after_login"])
+				else:
+					redirect(url(controller='members', action='index'))
 
 		redirect(url(controller='auth', action='login'))
 

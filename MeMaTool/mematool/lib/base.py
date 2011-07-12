@@ -92,10 +92,8 @@ class BaseController(WSGIController):
 	@staticmethod
 	def needAdmin(f):
 		def new_f(self):
-			if 'groups' in session:
-				for ag in self.admins:
-					if ag in session['groups']:
-						return f(self)
+			if self.isAdmin():
+				return f(self)
 
 			redirect(url(controller='error', action='forbidden'))
 
@@ -103,9 +101,12 @@ class BaseController(WSGIController):
 
 
 	def isAdmin(self):
-		if 'groups' in session:
-			for ag in self.admins:
-				if ag in session['groups']:
-					return True
+		if not 'isAdmin' in session:
+			if 'groups' in session:
+				for ag in self.admins:
+					if ag in session['groups']:
+						session['isAdmin'] = True
+						session.save()
+						break
 
-		return False
+		return session['isAdmin']
