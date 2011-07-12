@@ -17,7 +17,7 @@
 	<link rel="stylesheet" href="/css/ie.css" type="text/css" media="screen, projection">
 	
 	<!-- Website title !-->
-	<title>syn2cat MeMaTool - {PAGENAME}</title>
+	<title>syn2cat MeMaTool</title>
 </head>
 <body>
 	<!-- topbar !-->
