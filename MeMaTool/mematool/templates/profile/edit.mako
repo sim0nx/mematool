@@ -47,8 +47,12 @@ def getFormVar(s, c, var):
 		                        ${_('Additional groups')}
 		                </td>
 		                <td>
-		                        ${_('full member')} ${getFormVar(session, c, 'full_member')}
-		                        ${_('locked member')} ${getFormVar(session, c, 'locked_member')}
+					<%
+						full_member = h.literal('<img src="/images/icons/notok.png">') if not c.member.full_member else h.literal('<img src="/images/icons/ok.png">')
+						locked_member = h.literal('<img src="/images/icons/notok.png">') if not c.member.locked_member else h.literal('<img src="/images/icons/ok.png">')
+					%>
+		                        ${_('full member')} ${full_member}
+		                        ${_('locked member')} ${locked_member}
 		                </td>
 		        </tr>
 			<tr>

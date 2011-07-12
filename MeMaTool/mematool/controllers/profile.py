@@ -84,6 +84,15 @@ class ProfileController(BaseController):
 
 			c.member = member
 
+			if member.fullMember:
+				c.member.full_member = True
+			else:
+				c.member.full_member = False
+			if member.lockedMember:
+				c.member.locked_member = True
+			else:
+				c.member.locked_member = False
+
 			c.actions = list()
 			c.actions.append( ('Payments', 'payments', 'listpayments', session['identity']) )
 
@@ -206,7 +215,7 @@ class ProfileController(BaseController):
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				m.setPassword(request.params['userPassword'])
 				m.save()
-	                        session['flash'] = 'Password updated!'
+				session['flash'] = 'Password updated!'
 				session['flash_class'] = 'success'
 		
 		session.save()
