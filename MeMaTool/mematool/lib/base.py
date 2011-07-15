@@ -23,6 +23,7 @@ class BaseController(WSGIController):
 		# get the list of admins from the configuration file
 		# replace whitespace and split on comma
 		self.admins = re.sub(r' ', '', config.get('mematool.admins')).split(',')
+		self.financeadmins = re.sub(r' ', '', config.get('mematool.financeadmins')).split(',')
 
 
 	def __call__(self, environ, start_response):
@@ -105,6 +106,9 @@ class BaseController(WSGIController):
 
 
 	def isAdmin(self):
+		if not 'identity' in session:
+			return False
+
 		if not 'isAdmin' in session:
 			session['isAdmin'] = False
 			if 'groups' in session:
@@ -119,11 +123,11 @@ class BaseController(WSGIController):
 
 
 	@staticmethod
-	def require_users(f, users):
-		def new_f(self, users):
-			if session['identity'] in users:
+	def needFinanceAdmin(f):
+		def new_f(self):
+			if session['identity'] in self.financeadmins:
 				return f(self)
 
 			self._forbidden()
 
-		return new_f(users)
+		return new_f

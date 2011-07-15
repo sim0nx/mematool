@@ -94,7 +94,7 @@ class ProfileController(BaseController):
 				c.member.locked_member = False
 
 			c.actions = list()
-			c.actions.append( ('Payments', 'payments', 'listpayments', session['identity']) )
+			c.actions.append( ('Payments', 'payments', 'listPayments', session['identity']) )
 
 
 			return render('/profile/edit.mako')
