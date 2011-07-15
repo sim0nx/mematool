@@ -48,6 +48,8 @@ class AuthController(BaseController):
 			ret = authAdapter.authenticate_ldap(request.params['username'], request.params['password'])
 
 			if ret:
+				self._clearSession()
+
 				session['identity'] = request.params['username']
 				session['secret'] = encodeAES( request.params['password'] )
 				session['groups'] = authAdapter.getUserGroups()
@@ -62,13 +64,17 @@ class AuthController(BaseController):
 		redirect(url(controller='auth', action='login'))
 
 
-	def logout(self):
+	def _clearSession(self):
 		if self.identity is not None:
 			session['identity'] = None
 			session.invalidate()
 			session.save()
 			session.delete()
 			request.environ["REMOTE_USER"] = ""
+
+
+	def logout(self):
+		self._clearSession()
 
 		redirect(url(controller='auth', action='login'))
 

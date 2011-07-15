@@ -89,24 +89,41 @@ class BaseController(WSGIController):
 		return False
 
 
+	def _forbidden(self):
+		redirect(url(controller='error', action='forbidden'))
+
+
 	@staticmethod
 	def needAdmin(f):
 		def new_f(self):
 			if self.isAdmin():
 				return f(self)
 
-			redirect(url(controller='error', action='forbidden'))
+			self._forbidden()
 
 		return new_f
 
 
 	def isAdmin(self):
 		if not 'isAdmin' in session:
+			session['isAdmin'] = False
 			if 'groups' in session:
 				for ag in self.admins:
 					if ag in session['groups']:
 						session['isAdmin'] = True
-						session.save()
 						break
 
+			session.save()
+
 		return session['isAdmin']
+
+
+	@staticmethod
+	def require_users(f, users):
+		def new_f(self, users):
+			if session['identity'] in users:
+				return f(self)
+
+			self._forbidden()
+
+		return new_f(users)

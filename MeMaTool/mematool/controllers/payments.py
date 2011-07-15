@@ -21,7 +21,7 @@
 import logging
 log = logging.getLogger(__name__)
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import redirect
 
 from mematool.model.schema.payments import PaymentForm
@@ -54,6 +54,7 @@ _ = gettext.gettext
 class PaymentsController(BaseController):
 	def __init__(self):
 		super(PaymentsController, self).__init__()
+		self.financeadmins = re.sub(r' ', '', config.get('mematool.financeadmins')).split(',')
 
 	def __before__(self, action, **param):
 		super(PaymentsController, self).__before__()
@@ -69,6 +70,7 @@ class PaymentsController(BaseController):
 		return redirect(url(controller='payments', action='listPayments', member_id=self.identity))
 
 	@BaseController.needAdmin
+	@BaseController.require_users(self.financeadmins)
 	def validatePayment(self):
 		""" Validate a payment specified by an id """
 		if not self._isParamStr('member_id') or not self._isParamInt('idPayment'):
@@ -94,6 +96,7 @@ class PaymentsController(BaseController):
 		redirect(url(controller='payments', action='listPayments', member_id=request.params['member_id']))
 
 	@BaseController.needAdmin
+	@BaseController.require_users(self.financeadmins)
 	def duplicatePayment(self):
 		if not self._isParamStr('member_id') or not self._isParamInt('idPayment'):
 			redirect(url(controller='payments', action='index'))
