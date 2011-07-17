@@ -54,6 +54,5 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 	</tr>
 	<input type="hidden" name="member_id" value="${c.member_id}">
 	<input type="hidden" name="idPayment" value="${c.payment.idpayment}">
-	<input type="hidden" name="dtmode" value="single">
 </table>
 ${h.end_form()}

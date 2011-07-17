@@ -104,12 +104,10 @@ class PaymentsController(BaseController):
 			p = Session.query(Payment).filter(Payment.idpayment == request.params['idPayment']).one()
 
 			np = Payment()
-			np.limember = p.limember
+			np.member_id = p.member_id
 			np.dtreason = p.dtreason
 			np.dtdate = datetime.datetime.now().date()
 			np.dtamount = p.dtamount
-			np.dtrate = p.dtrate
-			np.dtmode = p.dtmode
 			np.dtverified = False
 			np.lipaymentmethod = p.lipaymentmethod
 
@@ -150,22 +148,20 @@ class PaymentsController(BaseController):
 		for uid in activeMembers:
 			last_payment = None
 
-			m = Member(uid)
-			
-
 			try:
-				last_payment = Session.query(Payment).filter(and_(Payment.limember == m.uidNumber, Payment.dtverified == 1)).order_by(Payment.dtdate.desc()).limit(1)[0]
+				last_payment = Session.query(Payment).filter(and_(Payment.member_id == uid, Payment.dtverified == 1)).order_by(Payment.dtdate.desc()).limit(1)[0]
 			except:
 				''' Don't care if there is no payment '''
 				pass
 
+			m = Member(uid)
 			m.paymentGood = False
 
 			if last_payment:
 				d = last_payment.dtdate
 				today = datetime.datetime.now().date()
 
-				if d.year == today.year and d.month == today.month:
+				if d.year > today.year or (d.year == today.year and d.month >= today.month):
 					m.paymentGood = True
 
 			if not m.paymentGood:
@@ -187,6 +183,7 @@ class PaymentsController(BaseController):
 
 
 		c.heading = 'Payments for user %s' % request.params['member_id']
+		c.member_id = request.params['member_id']
 
 		## ideally, fetch monthly from member and the rest from payment (one to many relation)
 		## http://www.sqlalchemy.org/docs/05/reference/ext/declarative.html
@@ -201,32 +198,18 @@ class PaymentsController(BaseController):
 		## consider pagination
 		# http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html#using-pagination
                 try:
-			#member = member_q.one()
-			member = Member()
-			member.uid = request.params['member_id']
-			member.loadFromLdap()
-			c.member = member
-			c.member_id = member.uidNumber
 			#c.member.leavingDate = date(int(member.leavingDate[:4]),int(member.leavingDate[5:6]),int(member.leavingDate[7:8]))
 			## ideally, fetch monthly from member and the rest from payment (one to many relation)
 			## http://www.sqlalchemy.org/docs/05/reference/ext/declarative.html
-			payment_q = Session.query(Payment).filter(Payment.limember == member.uidNumber)
+			payment_q = Session.query(Payment).filter(Payment.member_id == request.params['member_id'])
 
 
 			c.payments = payment_q.all()
 		
 			c.unverifiedPledges = 0
 			for payment in c.payments:
-				if payment.dtverified == 0 and payment.dtmode == 'recurring':
+				if payment.dtverified == 0:
 					c.unverifiedPledges += 1
-
-			## hmm this doesn't raie NoResultFound but has None as value of lastpayment
-			lastpayment = payment_q.order_by(Payment.idpayment).first()
-
-			if lastpayment:
-				c.ppm = lastpayment.dtrate
-			else:
-				c.ppm = 0
 
 		except AttributeError, e:
 			return 'This member has made no payments o.O ?!: %s' % e
@@ -333,7 +316,7 @@ class PaymentsController(BaseController):
 						
 					session.save()
 
-					redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=items['idPayment'], mode='single'))
+					redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=items['idPayment']))
 				else:
 					items['dtamount'] = float(request.params['dtamount'])
 					items['dtdate'] = request.params['dtdate']
@@ -355,21 +338,15 @@ class PaymentsController(BaseController):
 			np = Session.query(Payment).filter(Payment.idpayment == items['idPayment']).one()
 		else:
 			np = Payment()
-			np.dtmode = 'single'
 			np.dtverified = False
-			# not foreseen to add recurring payments in the admin interface
 
 		for key, value in items.iteritems():
 			setattr(np, key, value)
 
-		if np.dtmode == 'single':
-			np.dtrate = np.dtamount
-
 		ldapcon = LdapConnector()
 
 		try:
-			uidNumber = ldapcon.getUidNumberFromUid(member_id)
-			np.limember = uidNumber
+			np.member_id = member_id
 		except:
 			session['flash'] = _('Invalid member')
 			session.save()

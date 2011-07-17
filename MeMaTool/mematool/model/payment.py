@@ -34,12 +34,10 @@ class Payment(Base):
 		)
 
 	idpayment = Column(Integer, primary_key=True)
-	limember = Column(Integer, nullable=False)
+	member_id = Column(String(255))
 	dtreason = Column(String(255))
 	dtdate = Column(Date, nullable=False)
 	dtamount = Column(Float, nullable=False)
-	dtrate = Column(Integer)
-	dtmode = Column(String(255))
 	dtverified = Column(Boolean)
 	lipaymentmethod = Column(Integer, ForeignKey('paymentmethod.idpaymentmethod'))
 
@@ -55,7 +53,7 @@ class Payment(Base):
 		pass	
 
 	def __repr__(self):
-		return "<Payment('idpayment=%d, limember=%d', dtdate=%s, dtverified=%d)>" % (self.idpayment, self.limember, self.dtdate, self.dtverified)
+		return "<Payment('idpayment=%d, member=%s', dtdate=%s, dtverified=%d)>" % (self.idpayment, self.member_id, self.dtdate, self.dtverified)
 
 
 	def save(self):
