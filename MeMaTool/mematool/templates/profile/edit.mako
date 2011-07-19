@@ -145,6 +145,14 @@ def getFormVar(s, c, var):
 		        </tr>
 		        <tr>
 		                <td class="table_title">
+		                        ${_('PGP Key')}
+		                </td>
+		                <td>
+		                        ${getFormVar(session, c, 'pgpKey')}
+		                </td>
+		        </tr>
+		        <tr>
+		                <td class="table_title">
 		                        ${_('SSH Public Key')}
 		                </td>
 		                <td>

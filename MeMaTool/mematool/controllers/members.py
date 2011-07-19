@@ -168,6 +168,10 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid SSH key'))
 
+				if 'pgpKey' in request.params and request.params['pgpKey'] != '' and not re.match(regex.pgpKey, request.params['pgpKey'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid PGP key'))
+
 				if 'userPassword' in request.params and 'userPassword2' in request.params:
 					if request.params['userPassword'] != request.params['userPassword2']:
 						formok = False
@@ -235,6 +239,14 @@ class MembersController(BaseController):
 					member.sshPublicKey = request.params['sshPublicKey']
 			elif 'sshPublicKey' in vars(member) and request.params['mode'] == 'edit':
 				member.sshPublicKey = 'removed'
+
+			if 'pgpKey' in request.params:
+				if request.params['pgpKey'] == '' and 'pgpKey' in vars(member):
+					member.pgpKey = 'removed'
+				else:
+					member.pgpKey = request.params['pgpKey']
+			elif 'pgpKey' in vars(member) and request.params['mode'] == 'edit':
+				member.pgpKey = 'removed'
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				member.setPassword(request.params['userPassword'])

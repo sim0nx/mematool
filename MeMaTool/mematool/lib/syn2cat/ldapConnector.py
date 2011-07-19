@@ -284,6 +284,11 @@ class LdapConnector(object):
 			else:
 				mod_attrs.append((ldap.MOD_REPLACE, 'sshPublicKey', str(member.sshPublicKey)))
 
+		if member.pgpKey:
+			if member.pgpKey == 'removed':
+				mod_attrs.append((ldap.MOD_DELETE, 'pgpKey', None))
+			else:
+				mod_attrs.append((ldap.MOD_REPLACE, 'pgpKey', str(member.pgpKey)))
 
 		result = self.con.modify_s('uid=' + member.uid + ',' + config.get('ldap.basedn_users'), mod_attrs)
 
@@ -296,7 +301,7 @@ class LdapConnector(object):
 
 	def addMember(self, member):
 		add_record = [
-				('objectclass', ['posixAccount', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount', 'top', 'samsePerson', 'sambaSamAccount', 'ldapPublicKey']),
+				('objectclass', ['posixAccount', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount', 'top', 'samsePerson', 'sambaSamAccount', 'ldapPublicKey', 'syn2catPerson']),
 				('uid', [member.uid.encode('ascii','ignore')]),
 				('cn', [member.cn.encode('ascii','ignore')] ),
 				('sn', [member.sn.encode('ascii','ignore')] ),

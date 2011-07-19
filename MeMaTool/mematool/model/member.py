@@ -47,6 +47,7 @@ class Member():
 	sambaSID = ''
 	#userCertificate = '' # x509 certificate
 	sshPublicKey = '' # SSH public key
+	pgpKey = '' # PGP key
 	uidNumber = '' # user id (uidNumber)
 	gidNumber = '' # group id (gidNumber)
 	loginShell = '' # login shell
@@ -101,6 +102,8 @@ class Member():
 		#	self.userCertificate = member['certificate']
 		if 'sshPublicKey' in member:
 			self.sshPublicKey = member['sshPublicKey']
+		if 'pgpKey' in member:
+			self.pgpKey = member['pgpKey']
 		if 'gidNumber'  in member:
 			self.gidNumber = member['gidNumber']
 		if 'uidNumber' in member:

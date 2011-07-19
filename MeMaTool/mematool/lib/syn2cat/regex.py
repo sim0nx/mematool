@@ -7,3 +7,4 @@ phone = r'^\+(\d){1,3}\.(\d){4,}$' # +123.1234   after the dot, minimum 4 number
 homeDirectory = r'^/home/[a-z0-9_]*$'
 loginShell = r'^/bin/[a-z0-9]*$'
 sshKey = r'^ssh-rsa AAAAB3NzaC1yc2EAAAA[A-Za-z0-9+/]{150,1200}'
+pgpKey = r'^([a-zA-Z0-9]{4}\s*){10}$'
