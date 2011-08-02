@@ -102,6 +102,7 @@
 	<script type="text/javascript" src="/javascript/jquery.js"></script>
         <script type="text/javascript" src="/javascript/ui.jquery.js"></script>
         <script type="text/javascript" src="/javascript/mematool.js"></script>
+        <script type="text/javascript" src="/javascript/jquery.qtip.js"></script>
 </body>
 </html>
 

@@ -290,6 +290,13 @@ class LdapConnector(object):
 			else:
 				mod_attrs.append((ldap.MOD_REPLACE, 'pgpKey', str(member.pgpKey)))
 
+		if member.conventionSigner:
+			if member.pgpKey == 'removed':
+				mod_attrs.append((ldap.MOD_DELETE, 'conventionSigner', None))
+			else:
+				mod_attrs.append((ldap.MOD_REPLACE, 'conventionSigner', str(member.conventionSigner)))
+
+
 		result = self.con.modify_s('uid=' + member.uid + ',' + config.get('ldap.basedn_users'), mod_attrs)
 
 		self.changeUserGroup(member.uid, 'syn2cat_full_member', member.fullMember)

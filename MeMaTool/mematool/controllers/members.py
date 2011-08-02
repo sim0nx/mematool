@@ -172,6 +172,11 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid PGP key'))
 
+				if 'conventionSigner' in request.params and request.params['conventionSigner'] != '' and not re.match(regex.username, request.params['conventionSigner']):
+					formok = False
+					errors.append(_('Invalid convention signer'))
+
+
 				if 'userPassword' in request.params and 'userPassword2' in request.params:
 					if request.params['userPassword'] != request.params['userPassword2']:
 						formok = False
@@ -248,6 +253,14 @@ class MembersController(BaseController):
 			elif 'pgpKey' in vars(member) and request.params['mode'] == 'edit':
 				member.pgpKey = 'removed'
 
+			if 'conventionSigner' in request.params:
+				if request.params['conventionSigner'] == '' and 'conventionSigner' in vars(member):
+					member.conventionSigner = 'removed'
+				else:
+					member.conventionSigner = request.params['conventionSigner']
+			elif 'conventionSigner' in vars(member) and request.params['mode'] == 'edit':
+				member.pgpKey = 'removed'
+
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				member.setPassword(request.params['userPassword'])
 
@@ -289,11 +302,12 @@ class MembersController(BaseController):
 		return members
 
 
-	def showAllMembers(self):
+	def showAllMembers(self, _filter='active'):
 		try:
 			c.heading = 'All members'
 
 			members = self.getAllMembers()
+			c.members = []
 
 			# make sure to clean out some vars
 			for m in members:
@@ -302,11 +316,18 @@ class MembersController(BaseController):
 				if m.userPassword != '':
 					m.userPassword = '******'
 
-			c.members = members
+				if _filter == 'active' and not m.lockedMember:
+					c.members.append(m)
+				elif _filter == 'former' and m.lockedMember:
+					c.members.append(m)
+				elif _filter == 'all':
+					c.members.append(m)
 
 			c.actions = list()
 			c.actions.append( ('Add member', 'members', 'addMember') )
-			c.actions.append( ('RCSL export', 'members', 'rcslExport') )
+			c.actions.append( ('Active members', 'members', 'showActiveMembers') )
+			c.actions.append( ('Former members', 'members', 'showFormerMembers') )
+			#c.actions.append( ('RCSL export', 'members', 'rcslExport') )
 
 			return render('/members/viewAll.mako')
 
@@ -317,10 +338,13 @@ class MembersController(BaseController):
 		except NoResultFound:
 			print 'No such sql user !'
 
-
-
 		return 'ERROR 4x0'
 
+	def showActiveMembers(self):
+		return self.showAllMembers(_filter='active')
+
+	def showFormerMembers(self):
+		return self.showAllMembers(_filter='former')
 
 	def validateMember(self):
 		if (not 'member_id' in request.params):

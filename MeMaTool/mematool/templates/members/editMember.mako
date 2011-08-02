@@ -82,6 +82,14 @@ def getFormVar(s, c, var):
                         <input type="text" name="gn" value="${getFormVar(session, c, 'gn')}" class="input text">
                 </td>
         </tr>
+	<tr>
+                <td class="table_title">
+                        ${_('Convention signer')}
+                </td>
+                <td>
+                        <input type="text" name="conventionSigner" value="${getFormVar(session, c, 'conventionSigner')}" class="input text">
+                </td>
+        </tr>
         <tr>
                 <td class="table_title">
                         ${_('Birth Date')} (YYYY-MM-DD)
