@@ -177,8 +177,11 @@ class PaymentsController(BaseController):
 	def listPayments(self):
 		""" Show a specific user's payments """
 		if (not 'member_id' in request.params):
-			redirect(url(controller='payments', action='showOutstanding'))
-		elif not self.isAdmin() and not request.params['member_id'] == self.identity:
+			if not self.isAdmin() and not self.isFinanceAdmin():
+				redirect(url(controller='error', action='forbidden'))
+			else:
+				redirect(url(controller='payments', action='showOutstanding'))
+		elif not self.isAdmin() and not self.isFinanceAdmin() and not request.params['member_id'] == self.identity:
 			redirect(url(controller='error', action='forbidden'))
 
 
@@ -218,6 +221,10 @@ class PaymentsController(BaseController):
 		    
 		session['return_to'] = ('payments','listPayments')
 		session.save()
+
+		# blind call ... we don't care about the return value
+		# but only that the call sets a session variable
+		self.isFinanceAdmin()
 
 		c.actions = list()
 		c.actions.append( ('Add payment', 'payments', 'editPayment', request.params['member_id']) )

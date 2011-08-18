@@ -121,6 +121,20 @@ class BaseController(WSGIController):
 
 		return session['isAdmin']
 
+	def isFinanceAdmin(self):
+		if not 'identity' in session:
+			return False
+
+		if not 'isFinanceAdmin' in session:
+			if session['identity'] in self.financeadmins:
+				session['isFinanceAdmin'] = True
+			else:
+				session['isFinanceAdmin'] = False
+				
+			session.save()
+
+		return session['isFinanceAdmin']
+
 
 	@staticmethod
 	def needFinanceAdmin(f):

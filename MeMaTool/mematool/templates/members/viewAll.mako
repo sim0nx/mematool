@@ -56,6 +56,7 @@
 </table>
 
 
+<!--
 <ul class="list-horizontal right">
 	<li><a href="/mematool/members/list=10" class="regular button">10</a></li>
 	<li><a href="/mematool/members/list=25" class="regular button">25</a></li>
@@ -63,6 +64,7 @@
 	<li><a href="/mematool/members/list=75" class="regular button">75</a></li>
 	<li><a href="/mematool/members/list=100" class="regular button">100</a></li>
 </ul>
+!-->
 <div class="clear">&nbsp;</div>
 </article>
 </div>

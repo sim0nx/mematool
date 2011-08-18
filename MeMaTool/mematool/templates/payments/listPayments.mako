@@ -24,7 +24,7 @@
 				<td>${p.dtpaymentmethod.dtname}</td>
 				<td>${validated}</td>
 				<td>${h.link_to('Modify',url(controller='payments', action='editPayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
-				% if session.has_key('isAdmin') and session['isAdmin']:
+				% if session.has_key('isFinanceAdmin') and session['isFinanceAdmin']:
 				<td>${h.link_to('Duplicate',url(controller='payments', action='duplicatePayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
 				<td>${h.link_to('Validate',url(controller='payments', action='validatePayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
 				<td>${h.link_to('Delete',url(controller='payments', action='deletePayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
