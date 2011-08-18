@@ -59,7 +59,10 @@ class AuthController(BaseController):
 					print session["after_login"]
 					redirect(session["after_login"])
 				else:
-					redirect(url(controller='members', action='index'))
+					if self.isAdmin():
+						redirect(url(controller='members', action='index'))
+					else:
+						redirect(url(controller='profile', action='index'))
 
 		redirect(url(controller='auth', action='login'))
 
@@ -70,7 +73,7 @@ class AuthController(BaseController):
 			session.invalidate()
 			session.save()
 			session.delete()
-			request.environ["REMOTE_USER"] = ""
+			request.environ["REMOTE_USER"] = ''
 
 
 	def logout(self):
