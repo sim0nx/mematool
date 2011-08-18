@@ -38,7 +38,11 @@ class ErrorController(BaseController):
 	'''
         request = self._py_object.request
         resp = request.environ.get('pylons.original_response')
-        content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
+	try:
+	        content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
+	except:
+		# resp can be None !
+		pass
         page = error_document_template % \
             dict(prefix=request.environ.get('SCRIPT_NAME', ''),
                  code=cgi.escape(request.GET.get('code', str(resp.status_int))),
