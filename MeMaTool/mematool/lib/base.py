@@ -45,6 +45,12 @@ class BaseController(WSGIController):
 
 		if self.identity:
 			request.environ["REMOTE_USER"] = self.identity
+
+			# blind call ... we don't care about the return value
+			# but only that the call sets a session variable
+			# @TODO silly hack... rework
+			self.isFinanceAdmin()
+			self.isAdmin()
 		else:
 			if self._require_auth():
 				referer = request.environ.get('PATH_INFO')

@@ -41,9 +41,13 @@
 				<ul class="list-horizontal">
 					% if session.has_key('identity'):
 					<li><a href="#">Dashboard</a></li>
+						% if session['isFinanceAdmin'] or session['isAdmin']:
 					<li>${h.link_to('Members',url(controller='members', action='showAllMembers'))}</li>
+						% endif
 					<li>${h.link_to('Payments',url(controller='payments', action='index'))}</li>
+						% if session['isFinanceAdmin'] or session['isAdmin']:
 					<li>${h.link_to('Statistics',url(controller='statistics', action='getOverview',id=None))}</li>
+						% endif
 					<li>${h.link_to('Profile',url(controller='profile', action='index'))}</li>
 					% endif
 					<li>${h.link_to('Logout',url(controller='auth', action='logout',id=None))}</li>
