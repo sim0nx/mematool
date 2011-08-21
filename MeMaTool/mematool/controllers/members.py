@@ -176,6 +176,11 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid convention signer'))
 
+				if 'xmppID' in request.params and request.params['xmppID'] != '' and not re.match(regex.email, request.params['xmppID'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid XMPP/Jabber/GTalk ID'))
+
+
 
 				if 'userPassword' in request.params and 'userPassword2' in request.params:
 					if request.params['userPassword'] != request.params['userPassword2']:
@@ -259,7 +264,16 @@ class MembersController(BaseController):
 				else:
 					member.conventionSigner = request.params['conventionSigner']
 			elif 'conventionSigner' in vars(member) and request.params['mode'] == 'edit':
-				member.pgpKey = 'removed'
+				member.conventionSigner = 'removed'
+
+			if 'xmppID' in request.params:
+				if request.params['xmppID'] == '' and 'xmppID' in vars(member):
+					member.xmppID = 'removed'
+				else:
+					member.xmppID = request.params['xmppID']
+			elif 'xmppID' in vars(member) and request.params['mode'] == 'edit':
+				member.xmppID = 'removed'
+
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				member.setPassword(request.params['userPassword'])
@@ -363,6 +377,7 @@ class MembersController(BaseController):
 				member.phone = tm.phone
 				member.mobile = tm.mobile
 				member.mail = tm.mail
+				member.xmppID = tm.xmppID
 
 				member.save()
 				Session.delete(tm)

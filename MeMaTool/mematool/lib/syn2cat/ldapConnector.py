@@ -118,8 +118,9 @@ class LdapConnector(object):
 	def getMember(self, uid):
 		filter = '(uid=' + uid + ')'
 		attrs = ['*']
+		basedn = 'uid=' + str(uid) + ',' + str(config.get('ldap.basedn_users'))
 
-		result = self.con.search_s( config.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs )
+		result = self.con.search_s( basedn, ldap.SCOPE_SUBTREE, filter, attrs )
 
 		if not result:
 			raise LookupError('No such user !')
@@ -291,11 +292,16 @@ class LdapConnector(object):
 				mod_attrs.append((ldap.MOD_REPLACE, 'pgpKey', str(member.pgpKey)))
 
 		if member.conventionSigner:
-			if member.pgpKey == 'removed':
+			if member.conventionSigner == 'removed':
 				mod_attrs.append((ldap.MOD_DELETE, 'conventionSigner', None))
 			else:
 				mod_attrs.append((ldap.MOD_REPLACE, 'conventionSigner', str(member.conventionSigner)))
 
+		if member.xmppID:
+			if member.xmppID == 'removed':
+				mod_attrs.append((ldap.MOD_DELETE, 'xmppID', None))
+			else:
+				mod_attrs.append((ldap.MOD_REPLACE, 'xmppID', str(member.xmppID)))
 
 		result = self.con.modify_s('uid=' + member.uid + ',' + config.get('ldap.basedn_users'), mod_attrs)
 
@@ -307,6 +313,7 @@ class LdapConnector(object):
 
 
 	def addMember(self, member):
+		# @TODO we don't set all possible attributes !!! fix
 		add_record = [
 				('objectclass', ['posixAccount', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount', 'top', 'samsePerson', 'sambaSamAccount', 'ldapPublicKey', 'syn2catPerson']),
 				('uid', [member.uid.encode('ascii','ignore')]),

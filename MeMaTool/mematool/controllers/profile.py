@@ -79,6 +79,7 @@ class ProfileController(BaseController):
 				member.phone = tm.phone
 				member.mobile = tm.mobile
 				member.mail = tm.mail
+				member.xmppID = tm.xmppID
 
 				c.formDisabled = 'disabled'
 
@@ -140,6 +141,10 @@ class ProfileController(BaseController):
 				formok = False
 				errors.append(_('Invalid e-mail address'))
 
+			if self._isParamSet('xmppID') and not self._isParamStr('xmppID', max_len=40, regex=regex.email):
+				formok = False
+				errors.append(_('Invalid XMPP/Jabber/GTalk ID'))
+
 			if self._isParamStr('userPassword') and self._isParamStr('userPassword2'):
 				if request.params['userPassword'] != request.params['userPassword2']:
 					formok = False
@@ -184,7 +189,8 @@ class ProfileController(BaseController):
 				request.params['homePostalAddress'] != m.homePostalAddress or\
 				('phone' in request.params and m.homePhone != '' and request.params['phone'] != m.homePhone) or\
 				request.params['mobile'] != m.mobile or\
-				request.params['mail'] != m.mail:
+				request.params['mail'] != m.mail or\
+				request.params['xmppID'] != m.xmppID:
 				changes = True
 
 			if changes:
@@ -198,6 +204,11 @@ class ProfileController(BaseController):
 					tm.phone = '>>REMOVE<<'
 				else:
 					tm.phone = request.params['phone']
+
+				if 'xmppID' not in request.params or (request.params['xmppID'] == '' and not m.xmppID is ''):
+					tm.xmppID = 'removed'
+				else:
+					tm.xmppID = request.params['xmppID']
 
 				tm.mobile = request.params['mobile']
 				tm.mail = request.params['mail']

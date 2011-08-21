@@ -132,6 +132,14 @@ def getFormVar(s, c, var):
         </tr>
         <tr>
                 <td class="table_title">
+                        ${_('XMPP/Jabber/GTalk ID')}
+                </td>
+                <td>
+                        <input type="text" name="xmppID" value="${getFormVar(session, c, 'xmppID')}" class="input text">
+                </td>
+        </tr>
+        <tr>
+                <td class="table_title">
                         ${_('Login Shell')}
                 </td>
                 <td>

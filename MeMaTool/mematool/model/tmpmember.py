@@ -39,12 +39,13 @@ class TmpMember(Base):
 	phone			= Column(String(30))
 	mobile			= Column(String(30))
 	mail			= Column(String(255))
+	xmppID			= Column(String(255))
 
 	def __init__(self, uidNumber):
 		self.id = uidNumber
 
 	def __str__(self):
-		return "<TmpMember('id=%d, gn=%s', sn=%s, birthDate=%s, homePostalAddress=%s, phone=%s, mobile=%s, mail=%s)>" % (self.id, self.gn, self.sn, self.birthDate, self.homePostalAddress, self.phone, self.mobile, self.mail)
+		return "<TmpMember('id=%d, gn=%s', sn=%s, birthDate=%s, homePostalAddress=%s, phone=%s, mobile=%s, mail=%s, xmppID=%s)>" % (self.id, self.gn, self.sn, self.birthDate, self.homePostalAddress, self.phone, self.mobile, self.mail, self.xmppID)
 
 
 	def save(self):

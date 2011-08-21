@@ -42,6 +42,7 @@ class Member():
 	homePhone = '' # phone (homePhone)
 	mobile = '' # mobile
 	mail = '' # mail
+	xmppID = '' # xmppID
 	userPassword = '' # SSHA password
 	sambaNTPassword = '' # NT Password
 	sambaSID = ''
@@ -95,6 +96,8 @@ class Member():
 			self.mobile = member['mobile']
 		if 'mail'  in member:
 			self.mail = member['mail']
+		if 'xmppID'  in member:
+			self.xmppID = member['xmppID']
 		if 'sambaNTPassword' in member and member['sambaNTPassword'] != '':
 			self.sambaNTPassword = 'yes'
 		if 'sambaSID' in member and member['sambaSID'] != '':
