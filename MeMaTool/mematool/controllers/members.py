@@ -78,9 +78,7 @@ class MembersController(BaseController):
 		#member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
 
 		try:
-			#member = member_q.one()
-			member = Member()
-			member.uid = request.params['member_id']
+			member = Member(request.params['member_id'])
 
 			c.heading = 'Edit member'
 			c.mode = 'edit'
@@ -88,24 +86,17 @@ class MembersController(BaseController):
 			c.actions = list()
 			c.actions.append( ('Show all members', 'members', 'showAllMembers') )
 
+			c.member = member
 
-			try:
-				member.loadFromLdap()
+			if member.fullMember:
+				c.member.full_member = 'checked'
+			if member.lockedMember:
+				c.member.locked_member = 'checked'
 
-				c.member = member
+			return render('/members/editMember.mako')
 
-				if member.fullMember:
-					c.member.full_member = 'checked'
-				if member.lockedMember:
-					c.member.locked_member = 'checked'
-
-				return render('/members/editMember.mako')
-
-			except LookupError:
-				print 'No such ldap user !'
-
-		except NoResultFound:
-			print 'No such sql user !'
+		except LookupError:
+			print 'No such ldap user !'
 
 
 		return 'ERROR 4x0'
@@ -242,37 +233,11 @@ class MembersController(BaseController):
 			member.arrivalDate = request.params['arrivalDate']
 			member.leavingDate = request.params['leavingDate']
 
-			if 'sshPublicKey' in request.params:
-				if request.params['sshPublicKey'] == '' and 'sshPublicKey' in vars(member):
-					member.sshPublicKey = 'removed'
-				else:
-					member.sshPublicKey = request.params['sshPublicKey']
-			elif 'sshPublicKey' in vars(member) and request.params['mode'] == 'edit':
-				member.sshPublicKey = 'removed'
 
-			if 'pgpKey' in request.params:
-				if request.params['pgpKey'] == '' and 'pgpKey' in vars(member):
-					member.pgpKey = 'removed'
-				else:
-					member.pgpKey = request.params['pgpKey']
-			elif 'pgpKey' in vars(member) and request.params['mode'] == 'edit':
-				member.pgpKey = 'removed'
-
-			if 'conventionSigner' in request.params:
-				if request.params['conventionSigner'] == '' and 'conventionSigner' in vars(member):
-					member.conventionSigner = 'removed'
-				else:
-					member.conventionSigner = request.params['conventionSigner']
-			elif 'conventionSigner' in vars(member) and request.params['mode'] == 'edit':
-				member.conventionSigner = 'removed'
-
-			if 'xmppID' in request.params:
-				if request.params['xmppID'] == '' and 'xmppID' in vars(member):
-					member.xmppID = 'removed'
-				else:
-					member.xmppID = request.params['xmppID']
-			elif 'xmppID' in vars(member) and request.params['mode'] == 'edit':
-				member.xmppID = 'removed'
+			self.prepareVolatileParameter(member, 'sshPublicKey')
+			self.prepareVolatileParameter(member, 'pgpKey')
+			self.prepareVolatileParameter(member, 'conventionSigner')
+			self.prepareVolatileParameter(member, 'xmppID')
 
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
@@ -304,8 +269,7 @@ class MembersController(BaseController):
 
 	def getAllMembers(self):
 		'''This methods retireves all members from LDAP and returns a list object containing them all'''
-		ldapcon = LdapConnector()
-		memberlist = ldapcon.getMemberList()
+		memberlist = self.ldapcon.getMemberList()
 		members = []
 
 		for key in memberlist:

@@ -84,6 +84,7 @@ class LdapConnector(object):
 		return group
 
 
+	# @obsolete ... new groups follow a specific schema
 	def getGroupList(self):
 		filter = '(cn=*)'
 		attrs = ['cn', 'gidNumber']
@@ -96,12 +97,27 @@ class LdapConnector(object):
 
 		return groups
 
+	# All syn2cat groups have a specific prefix -> s2c_
+	# Working-groups: s2c_wg_
+	# Member status groups: s2c_member_
+	def getGroups(self):
+		filter = '(cn=s2c_*)'
+		attrs = ['cn', 'gidNumber']
+		
+		result = self.con.search_s(config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
+		groups = []
+		
+		for dn, attr in result:
+			groups.append(attr['cn'][0])
+
+		return groups
+
 
 	def getGroupMembers(self, group):
 		filter = '(cn=' + group + ')'
 		attrs = ['memberUid']
 
-		result = self.con.search_s( config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs )
+		result = self.con.search_s(config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
 		members = []
 
 		for dn, attr in result:

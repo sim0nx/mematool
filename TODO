@@ -2,3 +2,4 @@
 	http://stackoverflow.com/questions/3033234/handle-mysql-restart-in-sqlalchemy
 - handle ldap kill
 - Add CSRF token to session and each form ... CSRF mitigation
+- Implement payment start/end periods after committee discussion

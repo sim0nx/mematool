@@ -151,3 +151,17 @@ class BaseController(WSGIController):
 			self._forbidden()
 
 		return new_f
+
+	'''
+	@param m Member object
+	@param p parameter string
+	'''
+	def prepareVolatileParameter(self, m, p):
+		'''check if a parameter has been removed or changed'''
+		if p in request.params:
+			if request.params[p] == '' and p in vars(m):
+				setattr(m, p, 'removed')
+			else:
+				setattr(m, p, request.params[p])
+		elif p in vars(m) and request.params['mode'] == 'edit':
+			setattr(m, p, 'removed')
