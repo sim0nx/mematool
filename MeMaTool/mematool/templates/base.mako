@@ -40,17 +40,17 @@
 			<nav id="top" class="span-16 push-2 last">
 				<ul class="list-horizontal">
 					% if session.has_key('identity'):
-					<li><a href="#">Dashboard</a></li>
+					<li><a href="#">${_('Dashboard')}</a></li>
 						% if session['isFinanceAdmin'] or session['isAdmin']:
-					<li>${h.link_to('Members',url(controller='members', action='showAllMembers'))}</li>
+					<li>${h.link_to(_('Members'),url(controller='members', action='showAllMembers'))}</li>
 						% endif
-					<li>${h.link_to('Payments',url(controller='payments', action='index'))}</li>
+					<li>${h.link_to(_('Payments'),url(controller='payments', action='index'))}</li>
 						% if session['isFinanceAdmin'] or session['isAdmin']:
-					<li>${h.link_to('Statistics',url(controller='statistics', action='getOverview',id=None))}</li>
+					<li>${h.link_to(_('Statistics'),url(controller='statistics', action='getOverview',id=None))}</li>
 						% endif
-					<li>${h.link_to('Profile',url(controller='profile', action='index'))}</li>
+					<li>${h.link_to(_('Profile'),url(controller='profile', action='index'))}</li>
 					% endif
-					<li>${h.link_to('Logout',url(controller='auth', action='logout',id=None))}</li>
+					<li>${h.link_to(_('Logout'),url(controller='auth', action='logout',id=None))}</li>
 				</ul>
 			</nav>
 			
@@ -65,7 +65,7 @@
 			% if hasattr(c, 'actions'):
 			<aside id="sidebar" class="span-4">
 				<nav class="menu">
-					<header class="sidebar-title">Menu</header>
+					<header class="sidebar-title">${_('Menu')}</header>
 					<ul class="list-vertical">
 						% if len(c.actions) > 0:
 							% for k in c.actions:

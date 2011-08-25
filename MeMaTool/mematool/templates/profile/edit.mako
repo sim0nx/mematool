@@ -177,7 +177,7 @@ def getFormVar(s, c, var):
 		        </tr>
 		        <tr>
 		                <td class="table_title">
-		                        ${_('Password')} (min 8, only ASCII chars)
+		                        ${_('Password')} (min 8, ${_('only ASCII chars')})
 		                </td>
 		                <td>
 		                        <input type="password" name="userPassword" value="" class="input" ${c.formDisabled}>
@@ -192,7 +192,7 @@ def getFormVar(s, c, var):
 		                </td>
 		        </tr>
 		</table>
-	<input type="submit" name="" value="Submit" class="input button right" ${c.formDisabled}>
+	<input type="submit" name="" value="${_('Submit')}" class="input button right" ${c.formDisabled}>
 </article>
 </form>
 <div id="make-space" class="prepend-top">&nbsp;</div>

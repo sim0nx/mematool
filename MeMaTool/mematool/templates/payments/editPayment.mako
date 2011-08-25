@@ -14,7 +14,7 @@ def getFormVar(s, c, var):
 
 <%def name="actions()" >
 	<p id="actions">
-		<a href="${url(controller='payments', action='listPayments', member_id=c.member_id)}">&lt;-- back to Payments</a>
+		<a href="${url(controller='payments', action='listPayments', member_id=c.member_id)}">&lt;-- ${_('back to Payments')}</a>
 	</p>
 </%def>
 
@@ -26,19 +26,19 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 <table class="table_content" width="95%">
 	${parent.all_messages()}
         <tr>
-                <td class="table_title"><label for="dtamount">Amount payed</label></td>
+                <td class="table_title"><label for="dtamount">${_('Amount payed')}</label></td>
 		<td>${h.text('dtamount', value=getFormVar(session, c, 'dtamount'), class_='input text')}</td>
         </tr>
         <tr>
-                <td class="table_title"><label for="dtdate">Date payed</label></td>
+                <td class="table_title"><label for="dtdate">${_('Date payed')}</label></td>
 		<td>${h.text('dtdate', value=getFormVar(session, c, 'dtdate'), class_='input text')}(YYYY-MM-DD)</td>
         </tr>
         <tr>
-                <td class="table_title"><label for="dtreason">Reason for payment</label></td>
+                <td class="table_title"><label for="dtreason">${_('Reason for payment')}</label></td>
 		<td><textarea name="dtreason" class="input text" >${getFormVar(session, c, 'dtreason')}</textarea></td>
         </tr>
         <tr>
-                <td class="table_title"><label for="lipaymentmethod">payment method</label></td>
+                <td class="table_title"><label for="lipaymentmethod">${_('payment method')}</label></td>
 		<td>${h.select("lipaymentmethod", getFormVar(session, c, 'lipaymentmethod'), c.methods, class_='input text')}</td>
         </tr>
 	<tr>
@@ -46,9 +46,9 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 		<td style="text-align:left;">
 		<% 
 			if (c.payment.idpayment == None):
-				label = 'Add payment'
+				label = _('Add payment')
 			else:
-				label = 'Edit payment'
+				label = _('Edit payment')
 		%>
 		${h.submit('send', label, class_='input text')}</td>
 	</tr>

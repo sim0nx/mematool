@@ -6,12 +6,12 @@
 		<li><table class="table_content">
 			${parent.flash()}
 			<tr>
-				<th class="table_title">Date</th>
-				<th class="table_title">Amount</th>
-				<th class="table_title">Reason</th>
-				<th class="table_title">by method</th>
-				<th class="table_title">validated</th>
-				<th class="table_title">Tools</th>
+				<th class="table_title">${_('Date')}</th>
+				<th class="table_title">${_('Amount')}</th>
+				<th class="table_title">${_('Reason')}</th>
+				<th class="table_title">${_('by method')}</th>
+				<th class="table_title">${_('validated')}</th>
+				<th class="table_title">${_('Tools')}</th>
 			</tr>
 			%for p in c.payments:
 			<%
@@ -23,11 +23,11 @@
 				<td style="font-style:italic;">${p.dtreason}</td>
 				<td>${p.dtpaymentmethod.dtname}</td>
 				<td>${validated}</td>
-				<td>${h.link_to('Modify',url(controller='payments', action='editPayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
+				<td>${h.link_to(_('Modify'),url(controller='payments', action='editPayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
 				% if session.has_key('isFinanceAdmin') and session['isFinanceAdmin']:
-				<td>${h.link_to('Duplicate',url(controller='payments', action='duplicatePayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
-				<td>${h.link_to('Validate',url(controller='payments', action='validatePayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
-				<td>${h.link_to('Delete',url(controller='payments', action='deletePayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
+				<td>${h.link_to(_('Duplicate'),url(controller='payments', action='duplicatePayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
+				<td>${h.link_to(_('Validate'),url(controller='payments', action='validatePayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
+				<td>${h.link_to(_('Delete'),url(controller='payments', action='deletePayment', idPayment=p.idpayment, member_id=c.member_id))}</td>
 				% endif
 			</tr>
 			%endfor

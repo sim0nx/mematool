@@ -32,14 +32,14 @@ ${h.end_form()}
 		        </tr>
 			% for m in c.members:
 		        <%
-	                        paymentGood = h.literal('<font color="red">no</font>') if not m.paymentGood else h.literal('<font color="green">yes</font>')
+	                        paymentGood = h.literal('<font color="red">' + _('no') + '</font>') if not m.paymentGood else h.literal('<font color="green">' + _('yes') + '</font>')
 		        %>
 		        <tr class="table_row">
 		                <td>${m.uid}</td>
 		                <td>${m.sn}</td>
 		                <td>${m.gn}</td>
 		                <td>${paymentGood}</td>
-		                <td><a href="${url(controller='payments', action='listPayments', member_id=m.uid)}">payments</a></td>
+		                <td><a href="${url(controller='payments', action='listPayments', member_id=m.uid)}">${_('payments')}</a></td>
 		        </tr>
 			% endfor
 		</table>

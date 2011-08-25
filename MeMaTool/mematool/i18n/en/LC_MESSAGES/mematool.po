@@ -1,17 +1,17 @@
-# Translations template for MeMaTool.
-# Copyright (C) 2011 ORGANIZATION
-# This file is distributed under the same license as the MeMaTool project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# English translations for PROJECT.
+# Copyright (C) 2010 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: MeMaTool 0.1\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-08-25 10:22+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2010-10-10 22:57+0200\n"
+"PO-Revision-Date: 2011-08-25 09:15+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -107,46 +107,6 @@ msgstr ""
 
 #: mematool/controllers/payments.py:358
 msgid "Invalid member"
-msgstr ""
-
-#: mematool/templates/auth/login.mako:5 mematool/templates/auth/login.mako:12
-msgid "Login"
-msgstr ""
-
-#: mematool/templates/auth/login.mako:10
-msgid "syn2cat username"
-msgstr ""
-
-#: mematool/templates/auth/login.mako:11
-msgid "password"
-msgstr ""
-
-#: mematool/templates/base.mako:43
-msgid "Dashboard"
-msgstr ""
-
-#: mematool/templates/base.mako:45
-msgid "Members"
-msgstr ""
-
-#: mematool/templates/base.mako:47
-msgid "Payments"
-msgstr ""
-
-#: mematool/templates/base.mako:49
-msgid "Statistics"
-msgstr ""
-
-#: mematool/templates/base.mako:51
-msgid "Profile"
-msgstr ""
-
-#: mematool/templates/base.mako:53
-msgid "Logout"
-msgstr ""
-
-#: mematool/templates/base.mako:68
-msgid "Menu"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:32
@@ -265,11 +225,6 @@ msgstr ""
 msgid "Repeat Password"
 msgstr ""
 
-#: mematool/templates/members/editMember.mako:203
-#: mematool/templates/profile/edit.mako:195
-msgid "Submit"
-msgstr ""
-
 #: mematool/templates/members/viewAll.mako:19
 #: mematool/templates/profile/edit.mako:148
 msgid "Home directory"
@@ -284,92 +239,28 @@ msgid "SSH"
 msgstr ""
 
 #: mematool/templates/members/viewAll.mako:31
-#: mematool/templates/payments/listPayments.mako:14
 #: mematool/templates/payments/showOutstanding.mako:30
 msgid "Tools"
-msgstr ""
-
-#: mematool/templates/payments/editPayment.mako:17
-msgid "back to Payments"
-msgstr ""
-
-#: mematool/templates/payments/editPayment.mako:29
-msgid "Amount payed"
-msgstr ""
-
-#: mematool/templates/payments/editPayment.mako:33
-msgid "Date payed"
-msgstr ""
-
-#: mematool/templates/payments/editPayment.mako:37
-msgid "Reason for payment"
-msgstr ""
-
-#: mematool/templates/payments/editPayment.mako:41
-msgid "payment method"
-msgstr ""
-
-#: mematool/templates/payments/editPayment.mako:49
-msgid "Add payment"
-msgstr ""
-
-#: mematool/templates/payments/editPayment.mako:51
-msgid "Edit payment"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:9
-msgid "Date"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:10
-msgid "Amount"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:11
-msgid "Reason"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:12
-msgid "by method"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:13
-msgid "validated"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:26
-msgid "Modify"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:28
-msgid "Duplicate"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:29
-msgid "Validate"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:30
-msgid "Delete"
 msgstr ""
 
 #: mematool/templates/payments/showOutstanding.mako:27
 msgid "Payment good"
 msgstr ""
 
-#: mematool/templates/payments/showOutstanding.mako:35
-msgid "no"
-msgstr ""
-
-#: mematool/templates/payments/showOutstanding.mako:35
-msgid "yes"
-msgstr ""
-
-#: mematool/templates/payments/showOutstanding.mako:42
-msgid "payments"
-msgstr ""
-
-#: mematool/templates/profile/edit.mako:180
-msgid "only ASCII chars"
-msgstr ""
+# Translations template for MeMaTool.
+# Copyright (C) 2010 ORGANIZATION
+# This file is distributed under the same license as the MeMaTool project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#~ msgid "Hello"
+#~ msgstr ""
+#~ "Project-Id-Version: MeMaTool 0.1\n"
+#~ "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+#~ "POT-Creation-Date: 2010-10-10 22:42+0200\n"
+#~ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+#~ "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+#~ "Language-Team: LANGUAGE <LL@li.org>\n"
+#~ "MIME-Version: 1.0\n"
+#~ "Content-Type: text/plain; charset=utf-8\n"
+#~ "Content-Transfer-Encoding: 8bit\n"
+#~ "Generated-By: Babel 0.9.1\n"
 

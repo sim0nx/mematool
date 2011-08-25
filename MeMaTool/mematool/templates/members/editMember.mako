@@ -200,7 +200,7 @@ def getFormVar(s, c, var):
 <input type="hidden" name="member_id" value="${c.member.uid}">
 % endif
 <input type="hidden" name="mode" value="${c.mode}">
-<input type="submit" name="" value="Submit" class="input button right"> 
+<input type="submit" name="" value="${_('Submit')}" class="input button right"> 
 
 </form>
 </article>
