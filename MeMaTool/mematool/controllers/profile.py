@@ -63,7 +63,7 @@ class ProfileController(BaseController):
 
 
 	def edit(self):
-		c.heading = 'Edit profile'
+		c.heading = _('Edit profile')
 		c.formDisabled = ''
 
 		try:
@@ -95,7 +95,7 @@ class ProfileController(BaseController):
 				c.member.locked_member = False
 
 			c.actions = list()
-			c.actions.append( ('Payments', 'payments', 'listPayments', session['identity']) )
+			c.actions.append( (_('Payments'), 'payments', 'listPayments', session['identity']) )
 
 
 			return render('/profile/edit.mako')
@@ -216,17 +216,17 @@ class ProfileController(BaseController):
 				Session.add(tm)
 				Session.commit()
 
-				session['flash'] = 'Changes saved!'
+				session['flash'] = _('Changes saved!')
 				session['flash_class'] = 'success'
 			else:
-				session['flash'] = 'Nothing to save!'
+				session['flash'] = _('Nothing to save!')
 				session['flash_class'] = 'info'
 
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				m.setPassword(request.params['userPassword'])
 				m.save()
-				session['flash'] = 'Password updated!'
+				session['flash'] = _('Password updated!')
 				session['flash_class'] = 'success'
 		
 		session.save()

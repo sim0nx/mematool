@@ -82,10 +82,10 @@ class PaymentsController(BaseController):
 				np.dtverified = True
 			Session.commit()
 
-			session['flash'] = 'Payment validation successfully toggled'
+			session['flash'] = _('Payment validation successfully toggled')
 			session['flash_class'] = 'success'
 		except:
-			session['flash'] = 'Saving payment failed'
+			session['flash'] = _('Saving payment failed')
 			session['flash_class'] = 'error'
 
 		session.save()
@@ -115,10 +115,10 @@ class PaymentsController(BaseController):
 
 			npID = np.idpayment
 
-			session['flash'] = 'Payment duplicated'
+			session['flash'] = _('Payment duplicated')
 			session['flash_class'] = 'success'
 		except:
-			session['flash'] = 'Duplication failed'
+			session['flash'] = _('Duplication failed')
 			session['flash_class'] = 'error'
 
 		session.save()
@@ -141,7 +141,7 @@ class PaymentsController(BaseController):
 		#	return 'No unpaid fees'
 		
 		# Prepare add payment form
-		c.heading = 'Outstanding payments'
+		c.heading = _('Outstanding payments')
 		c.members = []
 		c.member_ids = []
 		for uid in activeMembers:
@@ -184,7 +184,7 @@ class PaymentsController(BaseController):
 			redirect(url(controller='error', action='forbidden'))
 
 
-		c.heading = 'Payments for user %s' % request.params['member_id']
+		c.heading = _('Payments for user %s') % request.params['member_id']
 		c.member_id = request.params['member_id']
 
 		## ideally, fetch monthly from member and the rest from payment (one to many relation)
@@ -267,7 +267,7 @@ class PaymentsController(BaseController):
 		c.methods = []
 		for m in methods:
 			c.methods.append([m.idpaymentmethod,m.dtname])
-		c.heading = '%s payment for user %s' % (action, c.member_id)
+		c.heading = _('%s payment for user %s') % (action, c.member_id)
 
 		c.actions = list()
 		c.actions.append( ('List payments', 'payments', 'listPayments', request.params['member_id']) )
@@ -367,7 +367,7 @@ class PaymentsController(BaseController):
 		Session.add(np)
 		Session.commit()
 
-		session['flash'] = 'Payment saved successfully.'
+		session['flash'] = _('Payment saved successfully.')
 		session['flash_class'] = 'success'
 		session.save()
 

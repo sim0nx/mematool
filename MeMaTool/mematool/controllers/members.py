@@ -49,12 +49,12 @@ class MembersController(BaseController):
 		self.ldapcon = LdapConnector()
 
 		c.actions = list()
-		c.actions.append( ('Show all members', 'members', 'showAllMembers') )
-		c.actions.append( ('Add member', 'members', 'addMember') )
-		c.actions.append( ('Active members', 'members', 'showActiveMembers') )
-		c.actions.append( ('Former members', 'members', 'showFormerMembers') )
+		c.actions.append( (_('Show all members'), 'members', 'showAllMembers') )
+		c.actions.append( (_('Add member'), 'members', 'addMember') )
+		c.actions.append( (_('Active members'), 'members', 'showActiveMembers') )
+		c.actions.append( (_('Former members'), 'members', 'showFormerMembers') )
 		#c.actions.append( ('RCSL export', 'members', 'rcslExport') )
-		c.actions.append( ('Groups', 'groups', 'index') )
+		c.actions.append( (_('Groups'), 'groups', 'index') )
 
 	@BaseController.needAdmin
 	def __before__(self):
@@ -71,7 +71,7 @@ class MembersController(BaseController):
 
 	@BaseController.needAdmin
 	def addMember(self):
-		c.heading = 'Add member'
+		c.heading = _('Add member')
 		c.mode = 'add'
 
 
@@ -87,7 +87,7 @@ class MembersController(BaseController):
 		try:
 			member = Member(request.params['member_id'])
 
-			c.heading = 'Edit member'
+			c.heading = _('Edit member')
 			c.mode = 'edit'
 
 			c.member = member
@@ -258,7 +258,7 @@ class MembersController(BaseController):
 			else:
 				member.add()
 
-			session['flash'] = 'Member details successfully edited'
+			session['flash'] = _('Member details successfully edited')
 			session.save()
 
 			redirect(url(controller='members', action='showAllMembers'))
@@ -286,7 +286,7 @@ class MembersController(BaseController):
 
 	def showAllMembers(self, _filter='active'):
 		try:
-			c.heading = 'All members'
+			c.heading = _('All members')
 
 			members = self.getAllMembers()
 			c.members = []
@@ -345,10 +345,10 @@ class MembersController(BaseController):
 				Session.delete(tm)
 				Session.commit()
 			else:
-				session['flash'] = 'Nothing to validate!'
+				session['flash'] = _('Nothing to validate!')
 
 		except LookupError:
-			session['flash'] = 'Member validation failed!'
+			session['flash'] = _('Member validation failed!')
 
 		session.save()
 		redirect(url(controller='members', action='showAllMembers'))
@@ -366,10 +366,10 @@ class MembersController(BaseController):
 				Session.delete(tm)
 				Session.commit()
 			else:
-				session['flash'] = 'Nothing to reject!'
+				session['flash'] = _('Nothing to reject!')
 
 		except LookupError:
-			session['flash'] = 'Validation rejection failed!'
+			session['flash'] = _('Failed to reject validation!')
 
 		session.save()
 		redirect(url(controller='members', action='showAllMembers'))
