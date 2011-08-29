@@ -24,7 +24,6 @@ log = logging.getLogger(__name__)
 from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import redirect
 
-from mematool.model.schema.payments import PaymentForm
 from mematool.lib.base import BaseController, render, Session
 from mematool.lib.helpers import *
 from mematool.model import Payment, Member, Paymentmethod

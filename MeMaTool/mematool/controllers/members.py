@@ -48,6 +48,13 @@ class MembersController(BaseController):
 		super(MembersController, self).__init__()
 		self.ldapcon = LdapConnector()
 
+		c.actions = list()
+		c.actions.append( ('Show all members', 'members', 'showAllMembers') )
+		c.actions.append( ('Add member', 'members', 'addMember') )
+		c.actions.append( ('Active members', 'members', 'showActiveMembers') )
+		c.actions.append( ('Former members', 'members', 'showFormerMembers') )
+		#c.actions.append( ('RCSL export', 'members', 'rcslExport') )
+		c.actions.append( ('Groups', 'groups', 'index') )
 
 	@BaseController.needAdmin
 	def __before__(self):
@@ -82,9 +89,6 @@ class MembersController(BaseController):
 
 			c.heading = 'Edit member'
 			c.mode = 'edit'
-
-			c.actions = list()
-			c.actions.append( ('Show all members', 'members', 'showAllMembers') )
 
 			c.member = member
 
@@ -300,12 +304,6 @@ class MembersController(BaseController):
 					c.members.append(m)
 				elif _filter == 'all':
 					c.members.append(m)
-
-			c.actions = list()
-			c.actions.append( ('Add member', 'members', 'addMember') )
-			c.actions.append( ('Active members', 'members', 'showActiveMembers') )
-			c.actions.append( ('Former members', 'members', 'showFormerMembers') )
-			#c.actions.append( ('RCSL export', 'members', 'rcslExport') )
 
 			return render('/members/viewAll.mako')
 
