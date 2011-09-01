@@ -133,9 +133,12 @@ class GroupsController(BaseController):
 					print request.params['gid']
 					errors.append(_('Invalid group ID'))
 
-				if not self._isParamStr('members') or not re.match(r'([\w]{1,20}\n?)*', request.params['members'], re.I):
-					formok = False
-					errors.append(_('Invalid group names'))
+				if 'members' in request.params:
+					if not self._isParamStr('members') or not re.match(r'([\w]{1,20}\n?)*', request.params['members'], re.I):
+						formok = False
+						errors.append(_('Invalid group names'))
+					else:
+						items['members'] = request.params['members']
 
 				if not formok:
 					session['errors'] = errors
@@ -150,7 +153,6 @@ class GroupsController(BaseController):
 					redirect(url(controller='groups', action='editGroup'))
 				else:
 					items['gid'] = request.params['gid']
-					items['members'] = request.params['members']
 
 
 			return f(self, items)
@@ -169,30 +171,32 @@ class GroupsController(BaseController):
 			Session.add(g)
 			Session.commit()
 
-		try:
-			lgrp_members = self.ldapcon.getGroupMembers(items['gid'])
-		except LookupError:
-			lgrp_members = []
+		if 'members' in items and len(items['members']) > 0:
+			form_members = []
+			for k in items['members'].split('\n'):
+				m = k.replace('\r', '').replace(' ', '')
+				if m == '':
+					continue
 
-		form_members = []
-		for k in items['members'].split('\n'):
-			m = k.replace('\r', '')
-			if m == '':
-				continue
+				form_members.append(m)
 
-			form_members.append(m)
+			if len(form_members) > 0:
+				try:
+					lgrp_members = self.ldapcon.getGroupMembers(items['gid'])
+				except LookupError:
+					lgrp_members = []
 
-		# Adding new members
-		for m in form_members:
-			if not m in lgrp_members:
-				print 'adding -> ' + str(m)
-				self.ldapcon.changeUserGroup(m, items['gid'], True)
+				# Adding new members
+				for m in form_members:
+					if not m in lgrp_members:
+						#print 'adding -> ' + str(m)
+						self.ldapcon.changeUserGroup(m, items['gid'], True)
 
-		# Removing members
-		for m in lgrp_members:
-			if not m in form_members:
-				print 'removing -> ' + str(m)
-				self.ldapcon.changeUserGroup(m, items['gid'], False)
+				# Removing members
+				for m in lgrp_members:
+					if not m in form_members:
+						#print 'removing -> ' + str(m)
+						self.ldapcon.changeUserGroup(m, items['gid'], False)
 
 		# @TODO add ldap group if not exist
 
