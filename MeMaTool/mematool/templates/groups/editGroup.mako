@@ -22,6 +22,16 @@ ${h.form(url(controller='groups', action='doEditGroup'), method='post', name='ed
                 <td class="table_title"><label for="gid">${_('Group name:')}</label></td>
 		<td>${h.text('gid', value=getFormVar(session, c, 'gid'), class_='input text')}</td>
         </tr>
+	% if not c.group.id == None:
+	<tr>
+		<td class="table_title">
+			${_('Group members')}
+		</td>
+		<td>
+			<textarea rows='10' cols='60' name="members">${getFormVar(session, c, 'members')}</textarea>
+		</td>
+	</tr>
+	% endif
 	<tr>
 		<td class="table_title"/>
 		<td style="text-align:left;">

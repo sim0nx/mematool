@@ -51,6 +51,8 @@ _ = gettext.gettext
 class GroupsController(BaseController):
 	def __init__(self):
 		super(GroupsController, self).__init__()
+		self.ldapcon = LdapConnector()
+
 		c.actions = list()
 		c.actions.append((_('Show all groups'), 'groups', 'listGroups'))
 		c.actions.append((_('Add Group'), 'groups', 'editGroup'))
@@ -91,9 +93,22 @@ class GroupsController(BaseController):
 			c.gid = request.params['gid']
 			group_q = Session.query(Group).filter(Group.gid == request.params['gid'])
 			try:
-				group = group_q.one()
+				c.group = group_q.one()
 
-				c.group = group
+				try:
+					lgrp_members = self.ldapcon.getGroupMembers(request.params['gid'])
+					c.group.members = ''
+
+					for k in lgrp_members:
+						if not c.group.members == '':
+							c.group.members += '\n'
+
+						c.group.members += k
+				except LookupError:
+					# @TODO implement better handler
+					print 'No such group!'
+					redirect(url(controller='groups', action='index'))
+
 			except NoResultFound:
 				print "oops"
 				redirect(url(controller='groups', action='index'))
@@ -118,6 +133,10 @@ class GroupsController(BaseController):
 					print request.params['gid']
 					errors.append(_('Invalid group ID'))
 
+				if not self._isParamStr('members') or not re.match(r'([\w]{1,20}\n?)*', request.params['members'], re.I):
+					formok = False
+					errors.append(_('Invalid group names'))
+
 				if not formok:
 					session['errors'] = errors
 					session['reqparams'] = {}
@@ -131,6 +150,7 @@ class GroupsController(BaseController):
 					redirect(url(controller='groups', action='editGroup'))
 				else:
 					items['gid'] = request.params['gid']
+					items['members'] = request.params['members']
 
 
 			return f(self, items)
@@ -148,6 +168,31 @@ class GroupsController(BaseController):
 			g.gid = items['gid']
 			Session.add(g)
 			Session.commit()
+
+		try:
+			lgrp_members = self.ldapcon.getGroupMembers(items['gid'])
+		except LookupError:
+			lgrp_members = []
+
+		form_members = []
+		for k in items['members'].split('\n'):
+			m = k.replace('\r', '')
+			if m == '':
+				continue
+
+			form_members.append(m)
+
+		# Adding new members
+		for m in form_members:
+			if not m in lgrp_members:
+				print 'adding -> ' + str(m)
+				self.ldapcon.changeUserGroup(m, items['gid'], True)
+
+		# Removing members
+		for m in lgrp_members:
+			if not m in form_members:
+				print 'removing -> ' + str(m)
+				self.ldapcon.changeUserGroup(m, items['gid'], False)
 
 		# @TODO add ldap group if not exist
 

@@ -30,7 +30,6 @@ from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
 class LdapConnector(object):
 	__metaclass__ = Singleton
 
-
 	def __init__(self, con=None):
 		if con is not None:
 			self.con = con
@@ -56,16 +55,14 @@ class LdapConnector(object):
 				else:   
 					print e
 
+				# @TODO no sysexit
 				sys.exit
-
 
 	def getLdapConnection(self):
 		return self.con
 
-
 	def setLdapConnection(self, con):
 		self.con = con
-
 
 	def getGroup(self, cn):
 		filter = '(cn=' + cn + ')'
@@ -82,7 +79,6 @@ class LdapConnector(object):
 				group[k] = v[0]
 
 		return group
-
 
 	# @obsolete ... new groups follow a specific schema
 	def getGroupList(self):
@@ -112,12 +108,15 @@ class LdapConnector(object):
 
 		return groups
 
-
 	def getGroupMembers(self, group):
 		filter = '(cn=' + group + ')'
 		attrs = ['memberUid']
 
 		result = self.con.search_s(config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
+
+		if not result:
+			raise LookupError('No such group !')
+
 		members = []
 
 		for dn, attr in result:
@@ -129,7 +128,6 @@ class LdapConnector(object):
 						members.append(i)
 
 		return members
-
 
 	def getMember(self, uid):
 		filter = '(uid=' + uid + ')'
@@ -149,7 +147,6 @@ class LdapConnector(object):
 
 		return member
 
-
 	def getUidNumberFromUid(self, uid):
 		filter = '(uid=' + uid + ')'
 		attrs = ['uidNumber']
@@ -163,7 +160,6 @@ class LdapConnector(object):
 			uidNumber = attr['uidNumber'][0]
 
 		return uidNumber
-
 
 	def getMemberList(self):
 		filter = '(&(uid=*)(gidNumber=100))'
@@ -180,7 +176,6 @@ class LdapConnector(object):
 		members.sort()
 
 		return members
-
 
 	# see openldap slapo-memberof
 	def getActiveMemberList(self):
@@ -200,7 +195,6 @@ class LdapConnector(object):
 
 		return members
 
-
 	# get groups a user is member of
 	def getMemberGroups(self, uid):
 		filter = '(memberUid=' + uid + ')'
@@ -219,7 +213,6 @@ class LdapConnector(object):
 
 		return groups
 
-
 	def getHighestUidNumber(self):
 		result = self.con.search_s( config.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, config.get('ldap.uid_filter'), [config.get('ldap.uid_filter_attrs')] )
 
@@ -231,7 +224,6 @@ class LdapConnector(object):
 								uidNumber = int(value[0])
 
 		return str(uidNumber)
-
 
 	def saveMember(self, member):
 		mod_attrs = []
@@ -327,7 +319,6 @@ class LdapConnector(object):
 
 		return result
 
-
 	def addMember(self, member):
 		# @TODO we don't set all possible attributes !!! fix
 		add_record = [
@@ -358,7 +349,6 @@ class LdapConnector(object):
 		self.changeUserGroup(member.uid, 'syn2cat_locked_member', member.lockedMember)
 
 		return result
-
 
 	def changeUserGroup(self, uid, group, status):
 		mod_attrs = []

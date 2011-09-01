@@ -213,13 +213,12 @@ class MembersController(BaseController):
 
 	@checkMember
 	def doEditMember(self):
-		member = Member()
-		member.uid = request.params['member_id']
-
-
 		try:
-			if request.params['mode'] == 'edit': 
-				member.loadFromLdap()
+			if request.params['mode'] == 'edit':
+				member = Member(request.params['member_id'])
+			else:
+				member = Member()
+				member.uid = request.params['member_id']
 
 			# @TODO review: for now we don't allow custom GIDs
 			#member.gidNumber = request.params['gidNumber']
