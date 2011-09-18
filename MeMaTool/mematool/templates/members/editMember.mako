@@ -172,6 +172,14 @@ def getFormVar(s, c, var):
         </tr>
         <tr>
                 <td class="table_title">
+                        ${_('iButton UID')}
+                </td>
+                <td>
+                        <input type="text" name="iButtonUID" value="${getFormVar(session, c, 'iButtonUID')}" class="input text">
+                </td>
+        </tr>
+        <tr>
+                <td class="table_title">
                         ${_('SSH Public Key')}
                 </td>
                 <td>

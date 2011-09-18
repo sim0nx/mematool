@@ -167,6 +167,10 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid PGP key'))
 
+				if 'iButtonUID' in request.params and request.params['iButtonUID'] != '' and not re.match(regex.iButtonUID, request.params['iButtonUID'], re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid iButton UID'))
+
 				if 'conventionSigner' in request.params and request.params['conventionSigner'] != '' and not re.match(regex.username, request.params['conventionSigner']):
 					formok = False
 					errors.append(_('Invalid convention signer'))
@@ -239,6 +243,7 @@ class MembersController(BaseController):
 
 			self.prepareVolatileParameter(member, 'sshPublicKey')
 			self.prepareVolatileParameter(member, 'pgpKey')
+			self.prepareVolatileParameter(member, 'iButtonUID')
 			self.prepareVolatileParameter(member, 'conventionSigner')
 			self.prepareVolatileParameter(member, 'xmppID')
 

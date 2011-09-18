@@ -80,7 +80,6 @@ class LdapConnector(object):
 
 		return group
 
-	# @obsolete ... new groups follow a specific schema
 	def getGroupList(self):
 		filter = '(cn=*)'
 		attrs = ['cn', 'gidNumber']
@@ -90,21 +89,6 @@ class LdapConnector(object):
 		
 		for dn, attr in result:
 			groups.append( attr['cn'][0] )
-
-		return groups
-
-	# All syn2cat groups have a specific prefix -> s2c_
-	# Working-groups: s2c_wg_
-	# Member status groups: s2c_member_
-	def getGroups(self):
-		filter = '(cn=s2c_*)'
-		attrs = ['cn', 'gidNumber']
-		
-		result = self.con.search_s(config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
-		groups = []
-		
-		for dn, attr in result:
-			groups.append(attr['cn'][0])
 
 		return groups
 
@@ -219,9 +203,21 @@ class LdapConnector(object):
 		uidNumber = -1
 
 		for dn, attr in result:
-				for key, value in attr.iteritems():
-						if int(value[0]) > uidNumber and int(value[0]) < 65000:
-								uidNumber = int(value[0])
+			for key, value in attr.iteritems():
+				if int(value[0]) > uidNumber and int(value[0]) < 65000:
+					uidNumber = int(value[0])
+
+		return str(uidNumber)
+
+	def getHighestGidNumber(self):
+		result = self.con.search_s( config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, config.get('ldap.gid_filter'), [config.get('ldap.gid_filter_attrs')] )
+
+		gidNumber = -1
+
+		for dn, attr in result:
+			for key, value in attr.iteritems():
+				if int(value[0]) > uidNumber and int(value[0]) < 65000:
+					uidNumber = int(value[0])
 
 		return str(uidNumber)
 
@@ -299,6 +295,12 @@ class LdapConnector(object):
 			else:
 				mod_attrs.append((ldap.MOD_REPLACE, 'pgpKey', str(member.pgpKey)))
 
+		if member.iButtonUID:
+			if member.iButtonUID == 'removed':
+				mod_attrs.append((ldap.MOD_DELETE, 'iButtonUID', None))
+			else:
+				mod_attrs.append((ldap.MOD_REPLACE, 'iButtonUID', str(member.iButtonUID)))
+
 		if member.conventionSigner:
 			if member.conventionSigner == 'removed':
 				mod_attrs.append((ldap.MOD_DELETE, 'conventionSigner', None))
@@ -347,6 +349,20 @@ class LdapConnector(object):
 
 		self.changeUserGroup(member.uid, 'syn2cat_full_member', member.fullMember)
 		self.changeUserGroup(member.uid, 'syn2cat_locked_member', member.lockedMember)
+
+		return result
+
+	def addGroup(self, gid):
+		new_gidnumber = self.getHighestGidNumber()
+		add_record = [
+				('objectclass', ['posixGroup', 'top']),
+				('cn', [gid.encode('ascii','ignore')]),
+				('gidNumber', [str(new_gidnumber).encode('ascii','ignore')])
+			]
+
+		dn = 'cn=' + gid + ',' + config.get('ldap.basedn_groups')
+		dn = dn.encode('ascii','ignore')
+		result = self.con.add_s( dn, add_record)
 
 		return result
 

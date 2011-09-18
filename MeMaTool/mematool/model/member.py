@@ -49,6 +49,7 @@ class Member():
 	#userCertificate = '' # x509 certificate
 	sshPublicKey = '' # SSH public key
 	pgpKey = '' # PGP key
+	iButtonUID = '' # iButton UID
 	conventionSigner = '' # Member convention signer
 	uidNumber = '' # user id (uidNumber)
 	gidNumber = '' # group id (gidNumber)
@@ -108,6 +109,8 @@ class Member():
 			self.sshPublicKey = member['sshPublicKey']
 		if 'pgpKey' in member:
 			self.pgpKey = member['pgpKey']
+		if 'iButtonUID' in member:
+			self.iButtonUID = member['iButtonUID']
 		if 'conventionSigner' in member:
 			self.conventionSigner = member['conventionSigner']
 		if 'gidNumber'  in member:
