@@ -65,6 +65,7 @@ class LdapConnector(object):
 		self.con = con
 
 	def getGroup(self, cn):
+		''' Get a specific group'''
 		filter = '(cn=' + cn + ')'
 		attrs = ['*']
 
@@ -81,6 +82,7 @@ class LdapConnector(object):
 		return group
 
 	def getGroupList(self):
+		'''Get a list of all groups'''
 		filter = '(cn=*)'
 		attrs = ['cn', 'gidNumber']
 		
@@ -93,6 +95,7 @@ class LdapConnector(object):
 		return groups
 
 	def getGroupMembers(self, group):
+		'''Get all members of a specific group'''
 		filter = '(cn=' + group + ')'
 		attrs = ['memberUid']
 
@@ -114,6 +117,7 @@ class LdapConnector(object):
 		return members
 
 	def getMember(self, uid):
+		'''Get a specific Member'''
 		filter = '(uid=' + uid + ')'
 		attrs = ['*']
 		basedn = 'uid=' + str(uid) + ',' + str(config.get('ldap.basedn_users'))
@@ -132,6 +136,7 @@ class LdapConnector(object):
 		return member
 
 	def getUidNumberFromUid(self, uid):
+		'''Get a UID-number based on its UID'''
 		filter = '(uid=' + uid + ')'
 		attrs = ['uidNumber']
 
@@ -146,6 +151,8 @@ class LdapConnector(object):
 		return uidNumber
 
 	def getMemberList(self):
+		'''Get a list of all users belonging to the group "users" (gid-number = 100)
+		and having a uid-number >= 1000 and < 65000'''
 		filter = '(&(uid=*)(gidNumber=100))'
 		attrs = ['uid', 'uidNumber']
 
@@ -163,6 +170,9 @@ class LdapConnector(object):
 
 	# see openldap slapo-memberof
 	def getActiveMemberList(self):
+		'''Get a list of all users belonging to the group "users" (gid-number = 100)
+		and having a uid-number >= 1000 and < 65000 and not being a member of the locked group
+		i.e. active members'''
 		filter = '(&(uid=*)(gidNumber=100))'
 		attrs = ['uid', 'uidNumber']
 
@@ -179,8 +189,8 @@ class LdapConnector(object):
 
 		return members
 
-	# get groups a user is member of
 	def getMemberGroups(self, uid):
+		'''Get a list of groups a user is a member of'''
 		filter = '(memberUid=' + uid + ')'
 		attrs = ['cn']
 		groups = []
@@ -198,6 +208,8 @@ class LdapConnector(object):
 		return groups
 
 	def getHighestUidNumber(self):
+		'''Get the highest used uid-number
+		this is used when adding a new user'''
 		result = self.con.search_s( config.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, config.get('ldap.uid_filter'), [config.get('ldap.uid_filter_attrs')] )
 
 		uidNumber = -1
@@ -210,6 +222,8 @@ class LdapConnector(object):
 		return str(uidNumber)
 
 	def getHighestGidNumber(self):
+		'''Get the highest used gid-number
+		this is used when adding a new group'''
 		result = self.con.search_s( config.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, config.get('ldap.gid_filter'), [config.get('ldap.gid_filter_attrs')] )
 
 		gidNumber = -1
@@ -222,6 +236,7 @@ class LdapConnector(object):
 		return str(uidNumber)
 
 	def saveMember(self, member):
+		'''Save a user'''
 		mod_attrs = []
 
 		if member.cn != '':
@@ -322,6 +337,7 @@ class LdapConnector(object):
 		return result
 
 	def addMember(self, member):
+		'''Add a new user'''
 		# @TODO we don't set all possible attributes !!! fix
 		add_record = [
 				('objectclass', ['posixAccount', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount', 'top', 'samsePerson', 'sambaSamAccount', 'ldapPublicKey', 'syn2catPerson']),
@@ -353,6 +369,7 @@ class LdapConnector(object):
 		return result
 
 	def addGroup(self, gid):
+		'''Add a new group'''
 		new_gidnumber = self.getHighestGidNumber()
 		add_record = [
 				('objectclass', ['posixGroup', 'top']),
@@ -367,6 +384,7 @@ class LdapConnector(object):
 		return result
 
 	def changeUserGroup(self, uid, group, status):
+		'''Change user/group membership'''
 		mod_attrs = []
 		result = ''
 		import sys
