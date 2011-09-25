@@ -235,6 +235,27 @@ class LdapConnector(object):
 
 		return str(uidNumber)
 
+	def prepareVolatileAttribute(self, member, attribute, encoding='utf-8'):
+		'''Checks if an attribute is present in the member object and
+		whether it should be updated or else deleted.
+		While doing that it converts the attribute value to the specified
+		encoding, which by default is UTF-8
+		Returns None if the attribute it not present or nothing should be
+		changed'''
+		retVal = None
+
+		if hasattr(member, attribute):
+			a = getattr(member, attribute)
+
+			if a:
+				if a == 'removed':
+					retVal = (ldap.MOD_DELETE, attribute, None)
+				else:
+					a = str(a.encode(encoding, ignore))
+					retVal = (ldap.MOD_REPLACE, attribute, a)
+
+		return retVal
+
 	def saveMember(self, member):
 		'''Save a user'''
 		mod_attrs = []
