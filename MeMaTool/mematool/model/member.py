@@ -38,7 +38,7 @@ class Member():
 	uid = ''   # uid
 	cn = ''	# fullname
 	sn = ''	# family name
-	gn = ''	# given name
+	givenName = ''	# given name
 	homePhone = '' # phone (homePhone)
 	mobile = '' # mobile
 	mail = '' # mail
@@ -66,76 +66,23 @@ class Member():
 
 	
 
-	def __init__(self, uid=None):
-		if uid is not None:
-			self.uid = uid
-			self.loadFromLdap()
-
-			if (Session.query(TmpMember).filter(TmpMember.id == self.uidNumber).count() > 0):
-				self.validate = True
-
+	def __init__(self):
+		pass
 
 	def __str__(self):
 		return "<Member('uidNumber=%s, uid=%s')>" % (self.uidNumber, self.uid)
 
+	@property
+	def validate(self):
+		if self.uidNumber:
+			if (Session.query(TmpMember).filter(TmpMember.id == self.uidNumber).count() > 0):
+				return True
 
-	def loadFromLdap(self):
-		self.ldapcon = LdapConnector()
-		member = self.ldapcon.getMember(self.uid)
+		return False
 
-		if 'cn' in member:
-			self.cn = member['cn']
-		if 'sn' in member:
-			self.sn = member['sn']
-		if 'givenName' in member:
-			self.gn = member['givenName']
-		if 'homePostalAddress' in member:
-			self.homePostalAddress = member['homePostalAddress']
-		if 'homePhone'  in member:
-			self.phone = member['homePhone']
-		if 'mobile'  in member:
-			self.mobile = member['mobile']
-		if 'mail'  in member:
-			self.mail = member['mail']
-		if 'xmppID'  in member:
-			self.xmppID = member['xmppID']
-		if 'sambaNTPassword' in member and member['sambaNTPassword'] != '':
-			self.sambaNTPassword = 'yes'
-		if 'sambaSID' in member and member['sambaSID'] != '':
-			self.sambaSID = member['sambaSID']
-		#if 'certificate'  in member:
-		#	self.userCertificate = member['certificate']
-		if 'sshPublicKey' in member:
-			self.sshPublicKey = member['sshPublicKey']
-		if 'pgpKey' in member:
-			self.pgpKey = member['pgpKey']
-		if 'iButtonUID' in member:
-			self.iButtonUID = member['iButtonUID']
-		if 'conventionSigner' in member:
-			self.conventionSigner = member['conventionSigner']
-		if 'gidNumber'  in member:
-			self.gidNumber = member['gidNumber']
-		if 'uidNumber' in member:
-			self.uidNumber = member['uidNumber']
-		if 'loginShell'  in member:
-			self.loginShell = member['loginShell']
-		if 'homeDirectory'  in member:
-			self.homeDirectory = member['homeDirectory']
-		if 'birthDate'  in member:
-			self.birthDate = member['birthDate']
-		if 'homePostalAddress' in member:
-			self.homePostalAddress = member['homePostalAddress']
-		if 'arrivalDate'  in member:
-			self.arrivalDate = member['arrivalDate']
-		if 'leavingDate'  in member:
-			self.leavingDate = member['leavingDate']
-
-		self.groups = self.ldapcon.getMemberGroups(self.uid)
-		if 'syn2cat_full_member' in self.groups:
-			self.fullMember = True
-		if 'syn2cat_locked_member' in self.groups:
-			self.lockedMember = True
-
+	@property
+	def gn(self):
+		return self.givenName
 
 	def save(self):
 		self.ldapcon = LdapConnector()

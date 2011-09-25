@@ -72,11 +72,11 @@ class ProfileController(BaseController):
 			if member.validate:
 				tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
 				member.cn = tm.gn + ' ' + tm.sn
-				member.gn = tm.gn
+				member.givenName = tm.gn
 				member.sn = tm.sn
 				member.birthDate = tm.birthDate
 				member.homePostalAddress = tm.homePostalAddress
-				member.phone = tm.phone
+				member.homePhone = tm.phone
 				member.mobile = tm.mobile
 				member.mail = tm.mail
 				member.xmppID = tm.xmppID
@@ -117,7 +117,7 @@ class ProfileController(BaseController):
 				formok = False
 				errors.append(_('Invalid surname'))
 
-			if not self._isParamStr('gn', max_len=20):
+			if not self._isParamStr('givenName', max_len=20):
 				formok = False
 				errors.append(_('Invalid given name'))
 
@@ -129,7 +129,7 @@ class ProfileController(BaseController):
 				formok = False
 				errors.append(_('Invalid address'))
 
-			if self._isParamSet('phone') and not self._isParamStr('phone', max_len=30, regex=regex.phone):
+			if self._isParamSet('homePhone') and not self._isParamStr('homePhone', max_len=30, regex=regex.phone):
 				formok = False
 				errors.append(_('Invalid phone number'))
 
@@ -184,10 +184,10 @@ class ProfileController(BaseController):
 			changes = False
 
 			if request.params['sn'] != m.sn or\
-				request.params['gn'] != m.gn or\
+				request.params['givenName'] != m.givenName or\
 				request.params['birthDate'] != m.birthDate or\
 				request.params['homePostalAddress'] != m.homePostalAddress or\
-				('phone' in request.params and m.homePhone != '' and request.params['phone'] != m.homePhone) or\
+				('homePhone' in request.params and m.homePhone != '' and request.params['homePhone'] != m.homePhone) or\
 				request.params['mobile'] != m.mobile or\
 				request.params['mail'] != m.mail or\
 				request.params['xmppID'] != m.xmppID:
@@ -196,14 +196,14 @@ class ProfileController(BaseController):
 			if changes:
 				tm = TmpMember(m.uidNumber)
 				tm.sn = str(request.params['sn'].encode( "utf-8" ))
-				tm.gn = str(request.params['gn'].encode( "utf-8" ))
+				tm.gn = str(request.params['givenName'].encode( "utf-8" ))
 				tm.birthDate = request.params['birthDate']
 				tm.homePostalAddress = str(request.params['homePostalAddress'].encode( "utf-8" ))
 
-				if 'phone' not in request.params or (request.params['phone'] == '' and not m.homePhone is ''):
+				if 'homePhone' not in request.params or (request.params['homePhone'] == '' and not m.homePhone is ''):
 					tm.phone = '>>REMOVE<<'
 				else:
-					tm.phone = request.params['phone']
+					tm.phone = request.params['homePhone']
 
 				if 'xmppID' not in request.params or (request.params['xmppID'] == '' and not m.xmppID is ''):
 					tm.xmppID = 'removed'

@@ -79,7 +79,7 @@ def getFormVar(s, c, var):
                         ${_('Given name')}
                 </td>
                 <td>
-                        <input type="text" name="gn" value="${getFormVar(session, c, 'gn')}" class="input text">
+                        <input type="text" name="givenName" value="${getFormVar(session, c, 'givenName')}" class="input text">
                 </td>
         </tr>
 	<tr>
@@ -111,7 +111,7 @@ def getFormVar(s, c, var):
                         ${_('Phone')} (+xxx.yyyyyyyyy)
                 </td>
                 <td>
-                        <input type="text" name="phone" value="${getFormVar(session, c, 'phone')}" class="input text">
+                        <input type="text" name="homePhone" value="${getFormVar(session, c, 'homePhone')}" class="input text">
                 </td>
         </tr>
         <tr>

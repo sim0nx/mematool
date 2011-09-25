@@ -34,6 +34,7 @@ from mematool.lib.syn2cat.ldapConnector import LdapConnector
 from sqlalchemy.orm.exc import NoResultFound
 import re
 from mematool.lib.syn2cat import regex
+from mematool.model.ldapModelFactory import LdapModelFactory
 
 from webob.exc import HTTPUnauthorized
 
@@ -47,6 +48,7 @@ class MembersController(BaseController):
 	def __init__(self):
 		super(MembersController, self).__init__()
 		self.ldapcon = LdapConnector()
+		self.lmf = LdapModelFactory()
 
 		c.actions = list()
 		c.actions.append( (_('Show all members'), 'members', 'showAllMembers') )
@@ -85,7 +87,8 @@ class MembersController(BaseController):
 		#member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
 
 		try:
-			member = Member(request.params['member_id'])
+			#member = Member(request.params['member_id'])
+			member = self.lmf.getUser(request.params['member_id'])
 
 			c.heading = _('Edit member')
 			c.mode = 'edit'
@@ -123,7 +126,7 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid surname'))
 
-				if not 'gn' in request.params or request.params['gn'] == '' or len(request.params['gn']) > 20:
+				if not 'givenName' in request.params or request.params['givenName'] == '' or len(request.params['givenName']) > 20:
 					formok = False
 					errors.append(_('Invalid given name'))
 
@@ -135,7 +138,7 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid address'))
 
-				if 'phone' in request.params and request.params['phone'] != '' and not re.match(regex.phone, request.params['phone'], re.IGNORECASE):
+				if 'homePhone' in request.params and request.params['homePhone'] != '' and not re.match(regex.phone, request.params['homePhone'], re.IGNORECASE):
 					formok = False
 					errors.append(_('Invalid phone number'))
 
@@ -219,7 +222,8 @@ class MembersController(BaseController):
 	def doEditMember(self):
 		try:
 			if request.params['mode'] == 'edit':
-				member = Member(request.params['member_id'])
+				#member = Member(request.params['member_id'])
+				member = self.lmf.getUser(request.params['member_id'])
 			else:
 				member = Member()
 				member.uid = request.params['member_id']
@@ -227,19 +231,18 @@ class MembersController(BaseController):
 			# @TODO review: for now we don't allow custom GIDs
 			#member.gidNumber = request.params['gidNumber']
 			member.gidNumber = '100'
-			member.cn = request.params['gn'].lstrip(' ').rstrip(' ') + ' ' + request.params['sn'].lstrip(' ').rstrip(' ')
+			member.cn = request.params['givenName'].lstrip(' ').rstrip(' ') + ' ' + request.params['sn'].lstrip(' ').rstrip(' ')
 			member.sn = request.params['sn'].lstrip(' ').rstrip(' ')
-			member.gn = request.params['gn'].lstrip(' ').rstrip(' ')
+			member.givenName = request.params['givenName'].lstrip(' ').rstrip(' ')
 			member.birthDate = request.params['birthDate']
 			member.homePostalAddress = request.params['homePostalAddress']
-			member.phone = request.params['phone']
+			member.homePhone = request.params['homePhone']
 			member.mobile = request.params['mobile']
 			member.mail = request.params['mail']
 			member.loginShell = request.params['loginShell']
 			member.homeDirectory = '/home/' + request.params['member_id']
 			member.arrivalDate = request.params['arrivalDate']
 			member.leavingDate = request.params['leavingDate']
-
 
 			self.prepareVolatileParameter(member, 'sshPublicKey')
 			self.prepareVolatileParameter(member, 'pgpKey')
@@ -258,7 +261,8 @@ class MembersController(BaseController):
 				member.lockedMember = True
 
 			if request.params['mode'] == 'edit':
-				member.save()
+				#member.save()
+				self.lmf.saveMember(member)
 			else:
 				member.add()
 
@@ -281,7 +285,7 @@ class MembersController(BaseController):
 		members = []
 
 		for key in memberlist:
-			member = Member(key)
+			member = self.lmf.getUser(key)
 
 			members.append(member)
 
@@ -336,11 +340,11 @@ class MembersController(BaseController):
 			if member.validate:
 				tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
 				member.cn = tm.gn + ' ' + tm.sn
-				member.gn = tm.gn
+				member.givenName = tm.gn
 				member.sn = tm.sn
 				member.birthDate = tm.birthDate
 				member.homePostalAddress = tm.homePostalAddress
-				member.phone = tm.phone
+				member.homePhone = tm.phone
 				member.mobile = tm.mobile
 				member.mail = tm.mail
 				member.xmppID = tm.xmppID
