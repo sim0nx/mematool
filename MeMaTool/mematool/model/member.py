@@ -84,27 +84,7 @@ class Member():
 	def gn(self):
 		return self.givenName
 
-	def save(self):
-		self.ldapcon = LdapConnector()
-
-		if self.gn == '':
-			self.gn = '_'
-
-		if self.mobile == '':
-			self.mobile = '0'
-
-		self.ldapcon.saveMember(self)
-
-
 	def add(self):
-		self.ldapcon = LdapConnector()
-
-		if self.gn == '':
-			self.gn = '_'
-
-		if self.mobile == '':
-			self.mobile = '0'
-
 		self.uidNumber = self.ldapcon.getHighestUidNumber()
 		self.generateUserSID()
 		self.ldapcon.addMember(self)

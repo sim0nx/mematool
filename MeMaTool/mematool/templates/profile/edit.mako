@@ -76,7 +76,7 @@ def getFormVar(s, c, var):
 		                        ${_('Given name')}
 		                </td>
 		                <td>
-		                        <input type="text" name="gn" value="${getFormVar(session, c, 'gn')}" class="input" ${c.formDisabled}>
+		                        <input type="text" name="givenName" value="${getFormVar(session, c, 'givenName')}" class="input" ${c.formDisabled}>
 		                </td>
 		        </tr>
 			<tr>

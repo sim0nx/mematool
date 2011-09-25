@@ -244,11 +244,17 @@ class MembersController(BaseController):
 			member.arrivalDate = request.params['arrivalDate']
 			member.leavingDate = request.params['leavingDate']
 
-			self.prepareVolatileParameter(member, 'sshPublicKey')
-			self.prepareVolatileParameter(member, 'pgpKey')
-			self.prepareVolatileParameter(member, 'iButtonUID')
-			self.prepareVolatileParameter(member, 'conventionSigner')
-			self.prepareVolatileParameter(member, 'xmppID')
+			member.sshPublicKey = request.params['sshPublicKey']
+			member.pgpKey = request.params['pgpKey']
+			member.iButtonUID = request.params['iButtonUID']
+			member.conventionSigner = request.params['conventionSigner']
+			member.xmppID = request.params['xmppID']
+
+			#self.prepareVolatileParameter(member, 'sshPublicKey')
+			#self.prepareVolatileParameter(member, 'pgpKey')
+			#self.prepareVolatileParameter(member, 'iButtonUID')
+			#self.prepareVolatileParameter(member, 'conventionSigner')
+			#self.prepareVolatileParameter(member, 'xmppID')
 
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
@@ -264,7 +270,7 @@ class MembersController(BaseController):
 				#member.save()
 				self.lmf.saveMember(member)
 			else:
-				member.add()
+				self.lmf.saveMember(member)
 
 			session['flash'] = _('Member details successfully edited')
 			session.save()
@@ -335,7 +341,7 @@ class MembersController(BaseController):
 			redirect(url(controller='members', action='showAllMembers'))
 
 		try:
-			member = Member(request.params['member_id'])
+			member = self.lmf.getUser(request.params['member_id'])
 
 			if member.validate:
 				tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
@@ -349,7 +355,7 @@ class MembersController(BaseController):
 				member.mail = tm.mail
 				member.xmppID = tm.xmppID
 
-				member.save()
+				self.lmf.saveMember(member)
 				Session.delete(tm)
 				Session.commit()
 			else:

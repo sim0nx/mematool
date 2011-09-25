@@ -31,6 +31,7 @@ from mematool.model import Member, TmpMember
 log = logging.getLogger(__name__)
 
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
+from mematool.model.ldapModelFactory import LdapModelFactory
 import re
 from mematool.lib.syn2cat import regex
 
@@ -45,7 +46,7 @@ class ProfileController(BaseController):
 
 	def __init__(self):
 		super(ProfileController, self).__init__()
-
+		self.lmf = LdapModelFactory()
 
 	def __before__(self):
 		super(ProfileController, self).__before__()
@@ -67,7 +68,7 @@ class ProfileController(BaseController):
 		c.formDisabled = ''
 
 		try:
-			member = Member( session['identity'] )
+			member = self.lmf.getUser(session['identity'])
 
 			if member.validate:
 				tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
@@ -175,7 +176,7 @@ class ProfileController(BaseController):
 
 	@checkMember
 	def doEdit(self):
-		m = Member(session['identity'])
+		m = self.lmf.getUser(session['identity'])
 
 		if m.validate:
 			# member locked for validation
@@ -225,7 +226,7 @@ class ProfileController(BaseController):
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				m.setPassword(request.params['userPassword'])
-				m.save()
+				self.lmf.saveMember(m)
 				session['flash'] = _('Password updated!')
 				session['flash_class'] = 'success'
 		
