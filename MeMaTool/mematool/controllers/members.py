@@ -241,9 +241,13 @@ class MembersController(BaseController):
 
 			if 'full_member' in request.params:
 				member.fullMember = True
+			else:
+				member.fullMember = False
 
 			if 'locked_member' in request.params:
 				member.lockedMember = True
+			else:
+				member.lockedMember = False
 
 			if request.params['mode'] == 'edit':
 				self.lmf.saveMember(member)
