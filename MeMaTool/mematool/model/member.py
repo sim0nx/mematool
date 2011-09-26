@@ -35,6 +35,34 @@ import os
 
 class Member():
 	# ldap
+	str_vars = ['uid',\
+		'cn',\
+		'sn',\
+		'givenName',\
+		'homePhone',\
+		'mobile',\
+		'mail',\
+		'xmppID',\
+		'userPassword',\
+		'sambaNTPassword',\
+		'sambaSID',\
+		'sshPublicKey',\
+		'pgpKey',\
+		'iButtonUID',\
+		'conventionSigner',\
+		'uidNumber',\
+		'gidNumber',\
+		'loginShell',\
+		'hDirectory',\
+		'birthDate',\
+		'hPostalAddress',\
+		'arrivalDate',\
+		'leavingDate']
+	list_vars = ['groups']
+	bool_vars = ['fullMember',\
+		'lockedMember']
+
+	'''
 	uid = ''   # uid
 	cn = ''	# fullname
 	sn = ''	# family name
@@ -46,7 +74,6 @@ class Member():
 	userPassword = '' # SSHA password
 	sambaNTPassword = '' # NT Password
 	sambaSID = ''
-	#userCertificate = '' # x509 certificate
 	sshPublicKey = '' # SSH public key
 	pgpKey = '' # PGP key
 	iButtonUID = '' # iButton UID
@@ -62,15 +89,40 @@ class Member():
 	groups = [] # additional user groups
 	fullMember = False
 	lockedMember = False
+	'''
 	validate = False	# validation needed ?
 
 	
 
 	def __init__(self):
-		pass
+		for v in self.str_vars:
+			setattr(self, v, '')
+		for v in self.list_vars:
+			setattr(self, v, [])
+		for v in self.bool_vars:
+			setattr(self, v, False)
+
+		self.all_vars = []
+		self.all_vars.extend(self.str_vars)
+		self.all_vars.extend(self.list_vars)
+		self.all_vars.extend(self.bool_vars)
 
 	def __str__(self):
 		return "<Member('uidNumber=%s, uid=%s')>" % (self.uidNumber, self.uid)
+
+	def __eq__(self, om):
+		equal = True
+
+		for v in self.all_vars:
+			if not getattr(self, v) == getattr(om, v):
+				equal = False
+				break
+
+		return equal
+
+	def __ne__(self, om):
+		return not self == om
+
 
 	@property
 	def validate(self):

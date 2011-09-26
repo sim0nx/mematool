@@ -30,7 +30,6 @@ from mematool.model import Member, TmpMember
 
 log = logging.getLogger(__name__)
 
-from mematool.lib.syn2cat.ldapConnector import LdapConnector
 from sqlalchemy.orm.exc import NoResultFound
 import re
 from mematool.lib.syn2cat import regex
@@ -47,7 +46,6 @@ class MembersController(BaseController):
 
 	def __init__(self):
 		super(MembersController, self).__init__()
-		self.ldapcon = LdapConnector()
 		self.lmf = LdapModelFactory()
 
 		c.actions = list()
@@ -62,32 +60,24 @@ class MembersController(BaseController):
 	def __before__(self):
 		super(MembersController, self).__before__()
 
-
 	def _require_auth(self):
 		return True
 
-
 	def index(self):
 		return self.showAllMembers()
-
 
 	@BaseController.needAdmin
 	def addMember(self):
 		c.heading = _('Add member')
 		c.mode = 'add'
 
-
 		return render('/members/editMember.mako')
-
 
 	def editMember(self):
 		if (not 'member_id' in request.params):
 			redirect(url(controller='members', action='showAllMembers'))
 
-		#member_q = Session.query(Member).filter(Member.dtusername == request.params['member_id'])
-
 		try:
-			#member = Member(request.params['member_id'])
 			member = self.lmf.getUser(request.params['member_id'])
 
 			c.heading = _('Edit member')
@@ -103,11 +93,9 @@ class MembersController(BaseController):
 			return render('/members/editMember.mako')
 
 		except LookupError:
-			print 'No such ldap user !'
-
+			print 'No such user !'
 
 		return 'ERROR 4x0'
-
 
 	def checkMember(f):
 		def new_f(self):
@@ -182,8 +170,6 @@ class MembersController(BaseController):
 					formok = False
 					errors.append(_('Invalid XMPP/Jabber/GTalk ID'))
 
-
-
 				if 'userPassword' in request.params and 'userPassword2' in request.params:
 					if request.params['userPassword'] != request.params['userPassword2']:
 						formok = False
@@ -217,7 +203,6 @@ class MembersController(BaseController):
 			return f(self)
 		return new_f
 
-
 	@checkMember
 	def doEditMember(self):
 		try:
@@ -250,12 +235,6 @@ class MembersController(BaseController):
 			member.conventionSigner = request.params['conventionSigner']
 			member.xmppID = request.params['xmppID']
 
-			#self.prepareVolatileParameter(member, 'sshPublicKey')
-			#self.prepareVolatileParameter(member, 'pgpKey')
-			#self.prepareVolatileParameter(member, 'iButtonUID')
-			#self.prepareVolatileParameter(member, 'conventionSigner')
-			#self.prepareVolatileParameter(member, 'xmppID')
-
 
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				member.setPassword(request.params['userPassword'])
@@ -267,7 +246,6 @@ class MembersController(BaseController):
 				member.lockedMember = True
 
 			if request.params['mode'] == 'edit':
-				#member.save()
 				self.lmf.saveMember(member)
 			else:
 				self.lmf.saveMember(member)
@@ -278,31 +256,16 @@ class MembersController(BaseController):
 			redirect(url(controller='members', action='showAllMembers'))
 
 		except LookupError:
-			print 'No such ldap user !'
+			print 'No such user !'
 
 		# @TODO make much more noise !
 		redirect(url(controller='members', action='showAllMembers'))
-
-
-
-	def getAllMembers(self):
-		'''This methods retireves all members from LDAP and returns a list object containing them all'''
-		memberlist = self.ldapcon.getMemberList()
-		members = []
-
-		for key in memberlist:
-			member = self.lmf.getUser(key)
-
-			members.append(member)
-
-		return members
-
 
 	def showAllMembers(self, _filter='active'):
 		try:
 			c.heading = _('All members')
 
-			members = self.getAllMembers()
+			members = self.lmf.getUsers()
 			c.members = []
 
 			# make sure to clean out some vars
@@ -367,7 +330,6 @@ class MembersController(BaseController):
 		session.save()
 		redirect(url(controller='members', action='showAllMembers'))
 
-
 	def rejectValidation(self):
 		if (not 'member_id' in request.params):
 			redirect(url(controller='members', action='showAllMembers'))
@@ -387,4 +349,3 @@ class MembersController(BaseController):
 
 		session.save()
 		redirect(url(controller='members', action='showAllMembers'))
-

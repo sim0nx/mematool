@@ -30,7 +30,6 @@ from mematool.model import Member, TmpMember
 
 log = logging.getLogger(__name__)
 
-from mematool.lib.syn2cat.ldapConnector import LdapConnector
 from mematool.model.ldapModelFactory import LdapModelFactory
 import re
 from mematool.lib.syn2cat import regex
@@ -102,7 +101,7 @@ class ProfileController(BaseController):
 			return render('/profile/edit.mako')
 
 		except LookupError:
-			print 'Edit :: No such ldap user !'
+			print 'Edit :: No such user !'
 
 
 		return 'ERROR 4x0'

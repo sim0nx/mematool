@@ -31,11 +31,11 @@ from mematool.model import Group
 import re
 from mematool.lib.syn2cat import regex
 
-from mematool.lib.syn2cat.ldapConnector import LdapConnector
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import and_
 from webob.exc import HTTPUnauthorized
 from datetime import date
+from mematool.model.ldapModelFactory import LdapModelFactory
 
 # Decorators
 from pylons.decorators import validate
@@ -51,7 +51,7 @@ _ = gettext.gettext
 class GroupsController(BaseController):
 	def __init__(self):
 		super(GroupsController, self).__init__()
-		self.ldapcon = LdapConnector()
+		self.lmf = LdapModelFactory()
 
 		c.actions = list()
 		c.actions.append((_('Show all groups'), 'groups', 'listGroups'))
@@ -66,7 +66,7 @@ class GroupsController(BaseController):
 		return True
 
 	def index(self):
-		if self.authAdapter.user_in_group('office', self.identity):
+		if self.lmf.isUserInGroup(self.identity, 'office'):
 			return self.listGroups()
 
 		return redirect(url(controller='profile', action='index'))
@@ -96,7 +96,7 @@ class GroupsController(BaseController):
 				c.group = group_q.one()
 
 				try:
-					lgrp_members = self.ldapcon.getGroupMembers(request.params['gid'])
+					lgrp_members = self.lmf.getGroupMembers(request.params['gid'])
 					c.group.members = ''
 
 					for k in lgrp_members:
@@ -182,7 +182,7 @@ class GroupsController(BaseController):
 
 			if len(form_members) > 0:
 				try:
-					lgrp_members = self.ldapcon.getGroupMembers(items['gid'])
+					lgrp_members = self.lmf.getGroupMembers(items['gid'])
 				except LookupError:
 					lgrp_members = []
 
@@ -190,15 +190,15 @@ class GroupsController(BaseController):
 				for m in form_members:
 					if not m in lgrp_members:
 						#print 'adding -> ' + str(m)
-						self.ldapcon.changeUserGroup(m, items['gid'], True)
+						self.lmf.changeUserGroup(m, items['gid'], True)
 
 				# Removing members
 				for m in lgrp_members:
 					if not m in form_members:
 						#print 'removing -> ' + str(m)
-						self.ldapcon.changeUserGroup(m, items['gid'], False)
+						self.lmf.changeUserGroup(m, items['gid'], False)
 
-		# @TODO add ldap group if not exist
+		# @TODO add group if not exist
 
 		session['flash'] = _('Group saved successfully')
 		session['flash_class'] = 'success'
