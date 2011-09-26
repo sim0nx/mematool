@@ -21,13 +21,6 @@ class AuthController(BaseController):
 			redirect(url(controller='members', action='showAllMembers'))
 		else:
 			redirect(url(controller='auth', action='login'))
-	
-		#if notAuthenticated:
-		#	abort(401, 'You are not authenticated')
-		
-		#if isForbidden:
-		#	abort(403, 'You don\'t have rights to accesss this page')
-
 
 	@https()
 	def login(self):
@@ -70,7 +63,6 @@ class AuthController(BaseController):
 
 		redirect(url(controller='auth', action='login'))
 
-
 	def _clearSession(self):
 		if self.identity is not None:
 			session['identity'] = None
@@ -78,7 +70,6 @@ class AuthController(BaseController):
 			session.save()
 			session.delete()
 			request.environ["REMOTE_USER"] = ''
-
 
 	def logout(self):
 		self._clearSession()
