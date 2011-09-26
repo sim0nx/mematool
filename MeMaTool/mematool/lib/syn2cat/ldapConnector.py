@@ -26,11 +26,16 @@ import ldap
 from pylons import config, session
 from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
 
+class InvalidCredentials(Exception):
+	pass
+
+class ServerError(Exception):
+	pass
 
 class LdapConnector(object):
-	__metaclass__ = Singleton
+	#__metaclass__ = Singleton
 
-	def __init__(self, con=None):
+	def __init__(self, con=None, uid=None, password=None):
 		if con is not None:
 			self.con = con
 		else:
@@ -41,12 +46,14 @@ class LdapConnector(object):
 				try:
 					if 'identity' in session:
 						uid = session['identity']
-						binddn = 'uid=' + uid + ',' + config.get('ldap.basedn_users')
 						password = decodeAES(session['secret'])
 
+					if not uid is None and not password is None:
+						binddn = 'uid=' + uid + ',' + config.get('ldap.basedn_users')
 						self.con.simple_bind_s(binddn, password)
 				except ldap.INVALID_CREDENTIALS:
 					print "Your username or password is incorrect."
+					raise InvalidCredentials()
 			except ldap.LDAPError, e:
 				''' @TODO better handle errors and don't use "sys.exit" ;-) '''
 				print e.message['info']
@@ -55,8 +62,7 @@ class LdapConnector(object):
 				else:   
 					print e
 
-				# @TODO no sysexit
-				sys.exit
+				raise ServerError()
 
 	def getLdapConnection(self):
 		return self.con

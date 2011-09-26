@@ -48,6 +48,9 @@ def load_environment(global_conf, app_conf):
     engine = engine_from_config(config, 'sqlalchemy.')
     init_model(engine)
 
+    # mematool specific request wide variables
+    config['mematool'] = {}
+
     # CONFIGURATION OPTIONS HERE (note: all config options will override
     # any Pylons config options)
     

@@ -9,14 +9,12 @@ from pylons import session, request, url, config
 import logging
 
 from mematool.model.meta import Session
-from mematool.lib.syn2cat.auth.auth_ldap import LDAPAuthAdapter
 from mematool.lib.helpers import *
 import re
 
 
 class BaseController(WSGIController):
 	def __init__(self):
-		self.authAdapter = LDAPAuthAdapter()
 		self.identity = None
 		self.log = logging.getLogger(__name__)
 

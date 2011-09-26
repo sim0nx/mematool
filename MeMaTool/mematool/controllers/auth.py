@@ -6,12 +6,15 @@ from pylons.controllers.util import abort, redirect
 from mematool.lib.base import BaseController, render
 from pylons.decorators.secure import https
 from mematool.lib.syn2cat.auth.auth_ldap import LDAPAuthAdapter
+from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
 
 
 log = logging.getLogger(__name__)
 
 class AuthController(BaseController):
+	def __init__(self):
+		super(AuthController, self).__init__()
 
 	def index(self,environ):
 		if self.identity is not None:
@@ -45,14 +48,15 @@ class AuthController(BaseController):
 			print "crap"
 		else:
 			authAdapter = LDAPAuthAdapter()
-			ret = authAdapter.authenticate_ldap(request.params['username'], request.params['password'])
+			ret = authAdapter.authenticate(request.params['username'], request.params['password'])
 
 			if ret:
 				self._clearSession()
+				lmf = LdapModelFactory()
 
 				session['identity'] = request.params['username']
 				session['secret'] = encodeAES( request.params['password'] )
-				session['groups'] = authAdapter.getUserGroups()
+				session['groups'] = lmf.getUserGroupList(request.params['username'])
 				session.save()
 
 				if 'after_login' in session and not 'forbidden' in session["after_login"]:
