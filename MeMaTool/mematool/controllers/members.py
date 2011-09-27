@@ -30,10 +30,14 @@ from mematool.model import Member, TmpMember
 
 log = logging.getLogger(__name__)
 
+from mematool.lib.helpers import *
+
 from sqlalchemy.orm.exc import NoResultFound
 import re
 from mematool.lib.syn2cat import regex
 from mematool.model.ldapModelFactory import LdapModelFactory
+
+from pylons.decorators.rest import restrict
 
 from webob.exc import HTTPUnauthorized
 
@@ -204,6 +208,7 @@ class MembersController(BaseController):
 		return new_f
 
 	@checkMember
+	@restrict('POST')
 	def doEditMember(self):
 		try:
 			if request.params['mode'] == 'edit':

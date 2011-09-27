@@ -14,7 +14,7 @@
 				<td>${g.gid}</td>
 				<td>${h.link_to(_('Edit'),url(controller='groups', action='editGroup', gid=g.gid))}</td>
 				<td>${h.link_to(_('Un-manage'),url(controller='groups', action='unmanageGroup', gid=g.gid))}</td>
-				<td>${h.link_to(_('Delete'),url(controller='groups', action='deleteGroup', gid=g.gid))}</td>
+				<td>${h.link_to(_('Delete'),url(controller='groups', action='deleteGroup', gid=g.gid), onclick='return confirm(\'' + _('Are you sure you want to delete') + ' "' + g.gid + '"?\')')}</td>
 			</tr>
 			%endfor
 		</table>

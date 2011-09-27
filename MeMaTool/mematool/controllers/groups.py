@@ -25,7 +25,6 @@ from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import redirect
 
 from mematool.lib.base import BaseController, render, Session
-from mematool.lib.helpers import *
 from mematool.model import Group
 
 import re
@@ -163,46 +162,43 @@ class GroupsController(BaseController):
 	@checkEdit
 	@restrict('POST')
 	def doEditGroup(self, items):
-		try:
-			g = Session.query(Group).filter(Group.gid == items['gid']).one()
-		except:
-			g = Group()
-			g.gid = items['gid']
-			Session.add(g)
-			Session.commit()
+		if not self.lmf.addGroup(items['gid']):
+			session['flash'] = _('Failed to add group!')
+			session['flash_class'] = 'error'
+			session.save()
+		else:
+			if 'members' in items and len(items['members']) > 0:
+				form_members = []
+				for k in items['members'].split('\n'):
+					m = k.replace('\r', '').replace(' ', '')
+					if m == '':
+						continue
 
-		if 'members' in items and len(items['members']) > 0:
-			form_members = []
-			for k in items['members'].split('\n'):
-				m = k.replace('\r', '').replace(' ', '')
-				if m == '':
-					continue
+					form_members.append(m)
 
-				form_members.append(m)
+				if len(form_members) > 0:
+					try:
+						lgrp_members = self.lmf.getGroupMembers(items['gid'])
+					except LookupError:
+						lgrp_members = []
 
-			if len(form_members) > 0:
-				try:
-					lgrp_members = self.lmf.getGroupMembers(items['gid'])
-				except LookupError:
-					lgrp_members = []
+					# Adding new members
+					for m in form_members:
+						if not m in lgrp_members:
+							#print 'adding -> ' + str(m)
+							self.lmf.changeUserGroup(m, items['gid'], True)
 
-				# Adding new members
-				for m in form_members:
-					if not m in lgrp_members:
-						#print 'adding -> ' + str(m)
-						self.lmf.changeUserGroup(m, items['gid'], True)
+					# Removing members
+					for m in lgrp_members:
+						if not m in form_members:
+							#print 'removing -> ' + str(m)
+							self.lmf.changeUserGroup(m, items['gid'], False)
 
-				# Removing members
-				for m in lgrp_members:
-					if not m in form_members:
-						#print 'removing -> ' + str(m)
-						self.lmf.changeUserGroup(m, items['gid'], False)
+			# @TODO add group if not exist
 
-		# @TODO add group if not exist
-
-		session['flash'] = _('Group saved successfully')
-		session['flash_class'] = 'success'
-		session.save()
+			session['flash'] = _('Group saved successfully')
+			session['flash_class'] = 'success'
+			session.save()
 
 		redirect(url(controller='groups', action='index'))
 
@@ -218,5 +214,23 @@ class GroupsController(BaseController):
 		except:
 			''' Don't care '''
 			pass
+
+		redirect(url(controller='groups', action='index'))
+
+	@BaseController.needAdmin
+	def deleteGroup(self):
+		if not self._isParamStr('gid'):
+			redirect(url(controller='groups', action='index'))
+
+		result = self.lmf.deleteGroup(request.params['gid'])
+
+		if result:
+			session['flash'] = _('Group successfully deleted')
+			session['flash_class'] = 'success'
+		else:
+			session['flash'] = _('Failed to delete group!')
+			session['flash_class'] = 'error'
+
+		session.save()
 
 		redirect(url(controller='groups', action='index'))

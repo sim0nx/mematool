@@ -38,3 +38,7 @@ class Group(Base):
 
 	def __repr__(self):
 		return "<Group('id=%d, gid=%s')>" % (self.id, self.gid)
+
+	@property
+	def cn(self):
+		return self.gid
