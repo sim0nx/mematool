@@ -24,15 +24,11 @@ log = logging.getLogger(__name__)
 from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import redirect
 
-from mematool.lib.base import BaseController, render, Session
-from mematool.model import Group
+from mematool.lib.base import BaseController, render
 
 import re
 from mematool.lib.syn2cat import regex
 
-from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import and_
-from webob.exc import HTTPUnauthorized
 from datetime import date
 from mematool.model.ldapModelFactory import LdapModelFactory
 
@@ -74,8 +70,7 @@ class GroupsController(BaseController):
 	def listGroups(self):
 		c.heading = _('Managed groups')
 
-		groups_q = Session.query(Group).order_by(Group.gid)
-		c.groups = groups_q.all()
+		c.groups = self.lmf.getManagedGroupList()
 
 		return render('/groups/listGroups.mako')
 
@@ -90,26 +85,19 @@ class GroupsController(BaseController):
 		elif not request.params['gid'] == '' and len(request.params['gid']) > 0:
 			action = 'Editing'
 			c.gid = request.params['gid']
-			group_q = Session.query(Group).filter(Group.gid == request.params['gid'])
 			try:
-				c.group = group_q.one()
+				c.group = self.lmf.getGroup(request.params['gid'])
+				users = ''
 
-				try:
-					lgrp_members = self.lmf.getGroupMembers(request.params['gid'])
-					c.group.members = ''
+				for u in c.group.users:
+					if not users == '':
+						users += '\n'
+					users += u
 
-					for k in lgrp_members:
-						if not c.group.members == '':
-							c.group.members += '\n'
-
-						c.group.members += k
-				except LookupError:
-					# @TODO implement better handler
-					print 'No such group!'
-					redirect(url(controller='groups', action='index'))
-
-			except NoResultFound:
-				print "oops"
+				c.group.users = users
+			except LookupError:
+				# @TODO implement better handler
+				print 'No such group!'
 				redirect(url(controller='groups', action='index'))
 		else:
 			redirect(url(controller='groups', action='index'))
@@ -132,12 +120,12 @@ class GroupsController(BaseController):
 					print request.params['gid']
 					errors.append(_('Invalid group ID'))
 
-				if 'members' in request.params:
-					if not self._isParamStr('members') or not re.match(r'([\w]{1,20}\n?)*', request.params['members'], re.I):
+				if 'users' in request.params:
+					if not self._isParamStr('users') or not re.match(r'([\w]{1,20}\n?)*', request.params['users'], re.I):
 						formok = False
 						errors.append(_('Invalid group names'))
 					else:
-						items['members'] = request.params['members']
+						items['users'] = request.params['users']
 
 				if not formok:
 					session['errors'] = errors
@@ -167,9 +155,9 @@ class GroupsController(BaseController):
 			session['flash_class'] = 'error'
 			session.save()
 		else:
-			if 'members' in items and len(items['members']) > 0:
+			if 'users' in items and len(items['users']) > 0:
 				form_members = []
-				for k in items['members'].split('\n'):
+				for k in items['users'].split('\n'):
 					m = k.replace('\r', '').replace(' ', '')
 					if m == '':
 						continue
@@ -207,13 +195,16 @@ class GroupsController(BaseController):
 		if not self._isParamStr('gid'):
 			redirect(url(controller='groups', action='index'))
 
-		try:
-			g = Session.query(Group).filter(Group.gid == request.params['gid']).one()
-			Session.delete(g)
-			Session.commit()
-		except:
-			''' Don't care '''
-			pass
+		result = self.lmf.unmanageGroup(request.params['gid'])
+
+		if result:
+			session['flash'] = _('Group no longer managed')
+			session['flash_class'] = 'success'
+		else:
+			session['flash'] = _('Failed to remove group from management!')
+			session['flash_class'] = 'error'
+
+		session.save()
 
 		redirect(url(controller='groups', action='index'))
 
