@@ -31,6 +31,7 @@ from mematool.lib.syn2cat import regex
 
 from datetime import date
 from mematool.model.ldapModelFactory import LdapModelFactory
+from mematool.model import Group
 
 # Decorators
 from pylons.decorators import validate
