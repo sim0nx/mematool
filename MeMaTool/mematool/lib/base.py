@@ -23,7 +23,6 @@ class BaseController(WSGIController):
 		self.admins = re.sub(r' ', '', config.get('mematool.admins')).split(',')
 		self.financeadmins = re.sub(r' ', '', config.get('mematool.financeadmins')).split(',')
 
-
 	def __call__(self, environ, start_response):
 		"""Invoke the Controller"""
 		# WSGIController.__call__ dispatches to the Controller method

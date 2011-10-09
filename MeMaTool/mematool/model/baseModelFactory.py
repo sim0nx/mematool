@@ -109,23 +109,47 @@ class BaseModelFactory(object):
 		pass
 
 	def addGroup(self, gid):
-		pass
+		try:
+			sql_group = Session.query(Group).filter(Group.gid == gid).one()
+			return True
+		except LookupError:
+			print 'Fatal error...'
+			return False
+		except NoResultFound:
+			'''SQL entry does not exist, create it'''
+			try:
+				g = Group()
+				g.gid = gid
+				Session.add(g)
+				Session.commit()
+				return True
+			except:
+				return False
 
 	def unmanageGroup(self, gid):
 		try:
-			g = Session.query(Group).filter(Group.gid == request.params['gid']).one()
+			g = Session.query(Group).filter(Group.gid == gid).one()
 			Session.delete(g)
 			Session.commit()
 
 			return True
-		except:
+		except Exception as e:
 			''' Don't care '''
 			pass
 
 		return False
 
 	def deleteGroup(self, gid):
-		pass
+		try:
+			sql_group = Session.query(Group).filter(Group.gid == gid).one()
+			Session.delete(sql_group)
+			Session.commit()
+			return True
+		except:
+			'''Don't care'''
+			pass
+
+		return False
 
 	def getHighestGidNumber(self):
 		pass

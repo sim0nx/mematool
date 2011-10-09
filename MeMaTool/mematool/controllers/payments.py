@@ -33,7 +33,7 @@ from mematool.model import Payment, Member, Paymentmethod
 import re
 from mematool.lib.syn2cat import regex
 
-from mematool.lib.syn2cat.ldapConnector import LdapConnector
+from mematool.model.ldapModelFactory import LdapModelFactory
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import and_
 from webob.exc import HTTPUnauthorized
@@ -53,6 +53,11 @@ _ = gettext.gettext
 class PaymentsController(BaseController):
 	def __init__(self):
 		super(PaymentsController, self).__init__()
+		self.lmf = LdapModelFactory()
+
+		c.actions = list()
+		c.actions.append( (_('All payments'), 'payments', 'listPayments') )
+		c.actions.append( (_('Outstanding payment'), 'payments', 'index') )
 
 	def __before__(self, action, **param):
 		super(PaymentsController, self).__before__()
@@ -60,9 +65,8 @@ class PaymentsController(BaseController):
 	def _require_auth(self):
 		return True
 
-
 	def index(self):
-		if self.authAdapter.user_in_group('office', self.identity):
+		if self.lmf.isUserInGroup(self.identity, 'office'):
 			return self.showOutstanding()
 
 		return redirect(url(controller='payments', action='listPayments', member_id=self.identity))
@@ -130,8 +134,7 @@ class PaymentsController(BaseController):
 	def showOutstanding(self):
 		""" Show which users still need to pay their membership fees and if a reminder has already been sent """
 
-		ldapcon = LdapConnector()
-		activeMembers = ldapcon.getActiveMemberList()
+		activeMembers = self.lmf.getActiveMemberList()
 
 		#try:
 		#	nummissing = Session.query(Payment).filter("dtdate<:now AND dtverified=:verified AND dtmode=:mode").params(now=date.today(),verified=0,mode='recurring').count()
@@ -153,7 +156,7 @@ class PaymentsController(BaseController):
 				''' Don't care if there is no payment '''
 				pass
 
-			m = Member(uid)
+			m = self.lmf.getUser(uid)
 			m.paymentGood = False
 
 			if last_payment:
@@ -167,8 +170,6 @@ class PaymentsController(BaseController):
 				c.members.append(m)
 
 			c.member_ids.append(uid)
-
-		c.actions = list()
 
 		return render('/payments/showOutstanding.mako')
 
@@ -225,7 +226,6 @@ class PaymentsController(BaseController):
 		# but only that the call sets a session variable
 		self.isFinanceAdmin()
 
-		c.actions = list()
 		c.actions.append( ('Add payment', 'payments', 'editPayment', request.params['member_id']) )
 
 		return render('/payments/listPayments.mako')
@@ -269,7 +269,6 @@ class PaymentsController(BaseController):
 			c.methods.append([m.idpaymentmethod,m.dtname])
 		c.heading = _('%s payment for user %s') % (action, c.member_id)
 
-		c.actions = list()
 		c.actions.append( ('List payments', 'payments', 'listPayments', request.params['member_id']) )
 
 

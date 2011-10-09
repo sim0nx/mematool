@@ -20,9 +20,7 @@
 
 
 from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, Date, ForeignKeyConstraint
-from sqlalchemy.ext.declarative import declarative_base
 from mematool.model.meta import Base
-from mematool.lib.base import Session
 
 
 class TmpMember(Base):
@@ -46,8 +44,3 @@ class TmpMember(Base):
 
 	def __str__(self):
 		return "<TmpMember('id=%d, gn=%s', sn=%s, birthDate=%s, homePostalAddress=%s, phone=%s, mobile=%s, mail=%s, xmppID=%s)>" % (self.id, self.gn, self.sn, self.birthDate, self.homePostalAddress, self.phone, self.mobile, self.mail, self.xmppID)
-
-
-	def save(self):
-		Session.commit()
-

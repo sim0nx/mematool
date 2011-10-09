@@ -62,7 +62,7 @@ class GroupsController(BaseController):
 		return True
 
 	def index(self):
-		if self.lmf.isUserInGroup(self.identity, 'office'):
+		if self.lmf.isUserInGroup(self.identity, 'office') or self.lmf.isUserInGroup(self.identity, 'sysops'):
 			return self.listGroups()
 
 		return redirect(url(controller='profile', action='index'))

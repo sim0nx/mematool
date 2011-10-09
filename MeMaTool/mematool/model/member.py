@@ -27,7 +27,6 @@ from datetime import date
 from mematool.lib.base import Session
 from mematool.model import TmpMember
 
-from mematool.lib.syn2cat.ldapConnector import LdapConnector
 import hashlib
 from binascii import b2a_base64, a2b_base64
 import os
@@ -123,7 +122,6 @@ class Member():
 	def __ne__(self, om):
 		return not self == om
 
-
 	@property
 	def validate(self):
 		if self.uidNumber:
@@ -135,12 +133,6 @@ class Member():
 	@property
 	def gn(self):
 		return self.givenName
-
-	def add(self):
-		self.uidNumber = self.ldapcon.getHighestUidNumber()
-		self.generateUserSID()
-		self.ldapcon.addMember(self)
-
 
 	def setPassword(self, password):
 		salt = os.urandom(4)

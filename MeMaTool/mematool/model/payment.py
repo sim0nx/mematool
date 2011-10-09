@@ -40,6 +40,7 @@ class Payment(Base):
 	dtamount = Column(Float, nullable=False)
 	dtverified = Column(Boolean)
 	lipaymentmethod = Column(Integer, ForeignKey('paymentmethod.idpaymentmethod'))
+	paymentperiod = Column(Integer, ForeignKey('paymentperiod.id_'))
 
 	# Members can have many payments, thus the foreign key belongs here
 	#limember = Column(Integer, ForeignKey('member.idmember'))
@@ -59,3 +60,21 @@ class Payment(Base):
 	def save(self):
 		Session.commit()
 
+
+class PaymentPeriod(Base):
+	__tablename__ = 'paymentperiod'
+	__table_args__ = (
+		{'mysql_engine':'InnoDB'}
+		)
+
+	id = Column(Integer, primary_key=True)
+	member_id = Column(String(255))
+	start = Column(Date, nullable=False)
+	end = Column(Date, nullable=False)
+
+
+	def __init__(self):
+		pass	
+
+	def __repr__(self):
+		return "<PaymentPeriod('id=%d, member=%s', start=%s, end=%s)>" % (self.id, self.member_id, self.start, self.end)

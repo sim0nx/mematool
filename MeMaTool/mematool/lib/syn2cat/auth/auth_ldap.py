@@ -29,7 +29,7 @@ class LDAPAuthAdapter(object):
 		 """
 
 		try:
-			ldapcon = LdapConnector()
+			ldapcon = LdapConnector(uid=username, password=password)
 
 			return True
 		except:
