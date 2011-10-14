@@ -86,9 +86,9 @@
 			<!-- sidebar end !-->
 			
 			<!-- content !-->
-		${self.header()}
-		${next.body()}
-		${self.footer()}
+			${self.header()}
+			${next.body()}
+			${self.footer()}
 			<!-- content end !-->
 			
 		</section>

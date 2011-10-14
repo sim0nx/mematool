@@ -7,6 +7,9 @@
 				${parent.flash()}
 			        <tr> 
 			                <th class="table_title">
+			                        #
+			                </th>
+			                <th class="table_title">
 			                        ${_('Username')}
 			                </th>
 			                <th class="table_title">
@@ -30,13 +33,16 @@
 					<th colspan="3" class="table_title">
 						${_('Tools')}
 					</th>
-				</tr> 
+				</tr>
+<% i = 0 %>
 % for m in c.members:
 	<%
-			peapPossible = h.literal('<img src="/images/icons/notok.png">') if not m.sambaNTPassword else h.literal('<img src="/images/icons/ok.png">')
-			sshPublicKey = h.literal('<img src="/images/icons/notok.png">') if not m.sshPublicKey else h.literal('<img src="/images/icons/ok.png">')
+		peapPossible = h.literal('<img src="/images/icons/notok.png">') if not m.sambaNTPassword  else h.literal('<img src="/images/icons/ok.png">')
+		sshPublicKey = h.literal('<img src="/images/icons/notok.png">') if not m.sshPublicKey else h.literal('<img src="/images/icons/ok.png">')
+		i += 1
 	%>
 	<tr class="table_row"> 
+		<td>${i}</td>
 		<td>${m.uid}</td>
 	        <td>${m.sn}</td>
 	        <td>${m.gn}</td>
