@@ -141,6 +141,8 @@ class LdapModelFactory(BaseModelFactory):
 				if int(value[0]) > uidNumber and int(value[0]) < 65000:
 					uidNumber = int(value[0])
 
+		uidNumber += 1
+
 		return str(uidNumber)
 
 	def getUidNumberFromUid(self, uid):
@@ -408,5 +410,7 @@ class LdapModelFactory(BaseModelFactory):
 			for key, value in attr.iteritems():
 				if int(value[0]) > gidNumber and int(value[0]) < 65000:
 					gidNumber = int(value[0])
+
+		gidNumber += 1
 
 		return str(gidNumber)
