@@ -89,8 +89,6 @@ class Member():
 	fullMember = False
 	lockedMember = False
 	'''
-	validate = False	# validation needed ?
-
 	
 
 	def __init__(self):
@@ -105,6 +103,8 @@ class Member():
 		self.all_vars.extend(self.str_vars)
 		self.all_vars.extend(self.list_vars)
 		self.all_vars.extend(self.bool_vars)
+
+		self.validate = False        # validation needed ?
 
 	def __str__(self):
 		return "<Member('uidNumber=%s, uid=%s')>" % (self.uidNumber, self.uid)

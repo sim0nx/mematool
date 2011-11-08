@@ -351,7 +351,7 @@ class LdapModelFactory(BaseModelFactory):
 		for dn, attr in result:
 			for key, value in attr.iteritems():
 				if len(value) == 1:
-					items.append(value[0])
+					members.append(value[0])
 				else:
 					for i in value:
 						members.append(i)
