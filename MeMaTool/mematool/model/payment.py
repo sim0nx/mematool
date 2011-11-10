@@ -35,46 +35,17 @@ class Payment(Base):
 
 	idpayment = Column(Integer, primary_key=True)
 	member_id = Column(String(255))
-	dtreason = Column(String(255))
 	dtdate = Column(Date, nullable=False)
-	dtamount = Column(Float, nullable=False)
-	dtverified = Column(Boolean)
 	lipaymentmethod = Column(Integer, ForeignKey('paymentmethod.idpaymentmethod'))
-	paymentperiod = Column(Integer, ForeignKey('paymentperiod.id_'))
+	dtverified = Column(Boolean)
+	ignore = Column(Boolean) # ignore a payment/month -> placeholder
 
 	# Members can have many payments, thus the foreign key belongs here
 	#limember = Column(Integer, ForeignKey('member.idmember'))
 	dtpaymentmethod = relation(Paymentmethod, primaryjoin=lipaymentmethod == Paymentmethod.idpaymentmethod)
 	
-	# trying to set up the relation in the Member class
-	#limember = relation(Member, backref=backref('payments', order_by=idpayment))
-
-	#def __init__(self,reason,date,amount,limethod,limember):
 	def __init__(self):
 		pass	
 
 	def __repr__(self):
 		return "<Payment('idpayment=%d, member=%s', dtdate=%s, dtverified=%d)>" % (self.idpayment, self.member_id, self.dtdate, self.dtverified)
-
-
-	def save(self):
-		Session.commit()
-
-
-class PaymentPeriod(Base):
-	__tablename__ = 'paymentperiod'
-	__table_args__ = (
-		{'mysql_engine':'InnoDB'}
-		)
-
-	id = Column(Integer, primary_key=True)
-	member_id = Column(String(255))
-	start = Column(Date, nullable=False)
-	end = Column(Date, nullable=False)
-
-
-	def __init__(self):
-		pass	
-
-	def __repr__(self):
-		return "<PaymentPeriod('id=%d, member=%s', start=%s, end=%s)>" % (self.id, self.member_id, self.start, self.end)

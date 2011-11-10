@@ -37,14 +37,12 @@ from mematool.model.ldapModelFactory import LdapModelFactory
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import and_
 from webob.exc import HTTPUnauthorized
-from datetime import date
+from datetime import date, datetime
+from dateutil import parser
 
 # Decorators
 from pylons.decorators import validate
 from pylons.decorators.rest import restrict
-
-import dateutil.parser
-import datetime
 
 import gettext
 _ = gettext.gettext
@@ -108,9 +106,7 @@ class PaymentsController(BaseController):
 
 			np = Payment()
 			np.member_id = p.member_id
-			np.dtreason = p.dtreason
-			np.dtdate = datetime.datetime.now().date()
-			np.dtamount = p.dtamount
+			np.dtdate = datetime.now().date()
 			np.dtverified = False
 			np.lipaymentmethod = p.lipaymentmethod
 
@@ -161,7 +157,7 @@ class PaymentsController(BaseController):
 
 			if last_payment:
 				d = last_payment.dtdate
-				today = datetime.datetime.now().date()
+				today = datetime.now().date()
 
 				if d.year > today.year or (d.year == today.year and d.month >= today.month):
 					m.paymentGood = True
@@ -184,19 +180,12 @@ class PaymentsController(BaseController):
 		elif not self.isAdmin() and not self.isFinanceAdmin() and not request.params['member_id'] == self.identity:
 			redirect(url(controller='error', action='forbidden'))
 
+		year = datetime.now().year
+		if 'year' in request.params and IsInt(request.params['year']) and int(request.params['year']) > 1970 and int(request.params['year']) < 2222:
+			year = int(request.params['year'])
 
-		c.heading = _('Payments for user %s') % request.params['member_id']
+		c.heading = _('Payments for the year %s, user %s') % (str(year), request.params['member_id'])
 		c.member_id = request.params['member_id']
-
-		## ideally, fetch monthly from member and the rest from payment (one to many relation)
-		## http://www.sqlalchemy.org/docs/05/reference/ext/declarative.html
-		#payment_q = Session.query(Payment).filter(Payment.limember == request.params['member_id'])
-
-		## having problems establishing relations, thus doing a second query
-		#member_q = Session.query(Member).filter(Member.idmember == request.params['member_id'])
-		
-		## using a join while trying to figure out how to make relations work (can't get this to work either)
-		#query = Session.query(Member,Payment).filter(Payment.limember == Member.idmember).filter(Member.idmember == request.params['member_id'])
 
 		## consider pagination
 		# http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html#using-pagination
@@ -204,15 +193,21 @@ class PaymentsController(BaseController):
 			#c.member.leavingDate = date(int(member.leavingDate[:4]),int(member.leavingDate[5:6]),int(member.leavingDate[7:8]))
 			## ideally, fetch monthly from member and the rest from payment (one to many relation)
 			## http://www.sqlalchemy.org/docs/05/reference/ext/declarative.html
-			payment_q = Session.query(Payment).filter(Payment.member_id == request.params['member_id'])
 
+			y_start = date(year, 1, 1)
+			y_end = date(year, 12, 31)
+			payment_sql = Session.query(Payment).filter(Payment.member_id == request.params['member_id']).filter(Payment.dtdate.between(y_start, y_end)).order_by(Payment.dtdate.desc()).all()
 
-			c.payments = payment_q.all()
-		
+			payments = {}
 			c.unverifiedPledges = 0
-			for payment in c.payments:
-				if payment.dtverified == 0:
+			for p in payment_sql:
+				if p.dtverified == 0:
 					c.unverifiedPledges += 1
+				payments[p.dtdate.month] = p
+
+			c.year = year
+			c.payments = payments
+		
 
 		except AttributeError, e:
 			return 'This member has made no payments o.O ?!: %s' % e
@@ -244,6 +239,12 @@ class PaymentsController(BaseController):
 		if not 'idPayment' in request.params or request.params['idPayment'] == '0':
 			c.payment = Payment()
 			action = 'Adding'
+
+			if 'year' in request.params and 'month' in request.params and\
+				IsInt(request.params['year']) and int(request.params['year']) > 1970 and int(request.params['year']) < 2222 and\
+				IsInt(request.params['month']) and int(request.params['month']) >= 1 and int(request.params['month']) <= 12:
+				c.dtdate = str(date(int(request.params['year']), int(request.params['month']), 1))
+
 		elif not request.params['idPayment'] == '' and IsInt(request.params['idPayment']) and int(request.params['idPayment']) > 0:
 			action = 'Editing'
 			payment_q = Session.query(Payment).filter(Payment.idpayment == int(request.params['idPayment']))
@@ -280,25 +281,20 @@ class PaymentsController(BaseController):
 			# @TODO request.params may contain multiple values per key... test & fix
 			if (not 'member_id' in request.params):
 				redirect(url(controller='members', action='index'))
-			elif not self.isAdmin() and not request.params['member_id'] == self.identity:
+			elif not self.isAdmin() and not request.params['member_id'] == self.identity or (request.params['member_id'] == self.identity and self._isParamInt('idPayment')):
 				redirect(url(controller='error', action='forbidden'))
 			else:
 				formok = True
 				errors = []
 				items = {}
-
-				if not self._isParamFloat('dtamount', max_len=6):
-					#uest.params or request.params['dtamount'] == '' or not IsInt(request.params['dtamount']) or  len(request.params['dtamount']) > 4:
-					formok = False
-					errors.append(_('Invalid amount'))
+				d = None
 
 				if not 'dtdate' in request.params or not re.match(regex.date, request.params['dtdate'], re.IGNORECASE):
 					formok = False
 					errors.append(_('Invalid date'))
-
-				if not self._isParamStr('dtreason', max_len=150):
-					formok = False
-					errors.append(_('Malformated reason'))
+				else:
+					d = parser.parse(request.params['dtdate'])
+					d = date(d.year, d.month, 1)
 
 				if not self._isParamInt('lipaymentmethod') or not int(request.params['lipaymentmethod']) <= 3:
 					formok = False
@@ -310,6 +306,12 @@ class PaymentsController(BaseController):
 				else:
 					items['idPayment'] = 0
 
+				if not d is None and items['idPayment'] == 0:
+					p_count = Session.query(Payment).filter(Payment.member_id == request.params['member_id']).filter(Payment.dtdate == d).count()
+
+					if p_count > 0:
+						formok = False
+						errors.append(_('That month is already on records!'))
 
 				if not formok:
 					session['errors'] = errors
@@ -323,9 +325,7 @@ class PaymentsController(BaseController):
 
 					redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=items['idPayment']))
 				else:
-					items['dtamount'] = float(request.params['dtamount'])
-					items['dtdate'] = request.params['dtdate']
-					items['dtreason'] = request.params['dtreason']
+					items['dtdate'] = d
 					items['lipaymentmethod'] = request.params['lipaymentmethod']
 
 
@@ -340,15 +340,19 @@ class PaymentsController(BaseController):
 		""" Save a new or edited payment """
 
 		if items['idPayment'] > 0:
-			np = Session.query(Payment).filter(Payment.idpayment == items['idPayment']).one()
+			try:
+				np = Session.query(Payment).filter(Payment.idpayment == items['idPayment']).one()
+			except:
+				session['flash'] = _('Invalid record')
+				session.save()
+				redirect(url(controller='payments', action='listPayments', member_id=member_id))
 		else:
 			np = Payment()
 			np.dtverified = False
+			np.ignore = False
 
 		for key, value in items.iteritems():
 			setattr(np, key, value)
-
-		ldapcon = LdapConnector()
 
 		try:
 			np.member_id = member_id

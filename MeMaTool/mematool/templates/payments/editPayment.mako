@@ -2,13 +2,15 @@
 
 <%!
 def getFormVar(s, c, var):
+	if hasattr(c, var):
+		return getattr(c, var)
+
 	if 'reqparams' in s:
 		if var in s['reqparams']:
 			return s['reqparams'][var]
 
 	if var in vars(c.payment):
 		return vars(c.payment)[var]
-
 %>
 
 
@@ -26,16 +28,8 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 <table class="table_content" width="95%">
 	${parent.all_messages()}
         <tr>
-                <td class="table_title"><label for="dtamount">${_('Amount payed')}</label></td>
-		<td>${h.text('dtamount', value=getFormVar(session, c, 'dtamount'), class_='input text')}</td>
-        </tr>
-        <tr>
                 <td class="table_title"><label for="dtdate">${_('Date payed')}</label></td>
 		<td>${h.text('dtdate', value=getFormVar(session, c, 'dtdate'), class_='input text')}(YYYY-MM-DD)</td>
-        </tr>
-        <tr>
-                <td class="table_title"><label for="dtreason">${_('Reason for payment')}</label></td>
-		<td><textarea name="dtreason" class="input text" >${getFormVar(session, c, 'dtreason')}</textarea></td>
         </tr>
         <tr>
                 <td class="table_title"><label for="lipaymentmethod">${_('payment method')}</label></td>
