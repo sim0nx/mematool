@@ -52,6 +52,8 @@ class AuthController(BaseController):
 				session['groups'] = lmf.getUserGroupList(request.params['username'])
 				session.save()
 
+				log.info(request.params['username'] + ' logged in')
+
 				if 'after_login' in session and not 'forbidden' in session["after_login"]:
 					print session["after_login"]
 					redirect(session["after_login"])

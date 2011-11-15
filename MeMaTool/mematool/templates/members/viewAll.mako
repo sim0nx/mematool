@@ -19,10 +19,7 @@
 			                        ${_('Given name')}
 			                </th>
 			                <th class="table_title">
-			                        ${_('Home directory')}
-			                </th>
-			                <th class="table_title">
-			                        ${_('Mobile')}
+			                        ${_('E-Mail')}
 			                </th>
 					<th class="table_title">
 						${_('PEAP')}
@@ -39,15 +36,15 @@
 	<%
 		peapPossible = h.literal('<img src="/images/icons/notok.png">') if not m.sambaNTPassword  else h.literal('<img src="/images/icons/ok.png">')
 		sshPublicKey = h.literal('<img src="/images/icons/notok.png">') if not m.sshPublicKey else h.literal('<img src="/images/icons/ok.png">')
+		uid = '<font color="green"><b>' + m.uid + '</b></font>' if m.fullMember else '<font color="#0479FF">' + m.uid + '</font>'
 		i += 1
 	%>
 	<tr class="table_row"> 
 		<td>${i}</td>
-		<td>${m.uid}</td>
+		<td>${uid|n}</td>
 	        <td>${m.sn}</td>
 	        <td>${m.gn}</td>
-		<td>${m.homeDirectory}</td>
-		<td>${m.mobile}</td>
+		<td>${m.mail}</td>
 		<td>${peapPossible}</td>
 		<td>${sshPublicKey}</td>
 		<td><a href="${url(controller='members', action='editMember', member_id=m.uid)}"><img src="/images/icons/pencil.png"></a></td>
