@@ -42,11 +42,16 @@ _ = gettext.gettext
 class LdapModelFactory(BaseModelFactory):
 	def __init__(self):
 		super(LdapModelFactory, self).__init__()
+		self.ldapcon = None
+
 		if 'ldapcon' in config['mematool'] and not config['mematool']['ldapcon'] is None:
 			self.ldapcon = config['mematool']['ldapcon']
 		else:
 			config['mematool']['ldapcon'] = LdapConnector().getLdapConnection()
 			self.ldapcon = config['mematool']['ldapcon']
+
+	def close(self):
+		self.ldapcon = None
 
 	def getUser(self, uid):
 		filter_ = '(uid=' + uid + ')'

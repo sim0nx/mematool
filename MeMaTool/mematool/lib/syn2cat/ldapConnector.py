@@ -21,7 +21,6 @@
 # -*- coding: utf-8 -*-
 
 
-from mematool.lib.syn2cat.singleton import Singleton
 import ldap
 from pylons import config, session
 from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
@@ -33,9 +32,9 @@ class ServerError(Exception):
 	pass
 
 class LdapConnector(object):
-	#__metaclass__ = Singleton
-
 	def __init__(self, con=None, uid=None, password=None):
+		self.con = None
+
 		if con is not None:
 			self.con = con
 		else:
@@ -48,7 +47,7 @@ class LdapConnector(object):
 						uid = session['identity']
 						password = decodeAES(session['secret'])
 
-					if not uid is None and not password is None:
+					if not (uid is None or password is None):
 						binddn = 'uid=' + uid + ',' + config.get('ldap.basedn_users')
 						self.con.simple_bind_s(binddn, password)
 				except ldap.INVALID_CREDENTIALS:

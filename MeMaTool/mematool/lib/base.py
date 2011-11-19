@@ -18,6 +18,10 @@ class BaseController(WSGIController):
 		self.identity = None
 		self.log = logging.getLogger(__name__)
 
+		# seems to be necessary, else the connection is kept around giving unwanted results
+		if 'ldapcon' in config['mematool']:
+			del(config['mematool']['ldapcon'])
+
 		# get the list of admins from the configuration file
 		# replace whitespace and split on comma
 		self.admins = re.sub(r' ', '', config.get('mematool.admins')).split(',')
@@ -78,14 +82,14 @@ class BaseController(WSGIController):
 
 
 	def _isParamInt(self, param, min_val=0, min_len=0, max_len=4):
-		if self._isParamStr(param, min_len, max_len) and IsInt(request.params[param]) and int(request.params[param]) > min_val:
+		if self._isParamStr(param, min_len, max_len) and IsInt(request.params[param]) and int(request.params[param]) >= min_val:
 			return True
 
 		return False
 
 
 	def _isParamFloat(self, param, min_val=0, min_len=0, max_len=4):
-		if self._isParamStr(param, min_len, max_len) and IsFloat(request.params[param]) and float(request.params[param]) > min_val:
+		if self._isParamStr(param, min_len, max_len) and IsFloat(request.params[param]) and float(request.params[param]) >= min_val:
 			return True
 
 		return False

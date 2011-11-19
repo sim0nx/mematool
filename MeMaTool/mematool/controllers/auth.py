@@ -45,11 +45,13 @@ class AuthController(BaseController):
 
 			if ret:
 				self._clearSession()
-				lmf = LdapModelFactory()
 
 				session['identity'] = request.params['username']
 				session['secret'] = encodeAES( request.params['password'] )
+				lmf = LdapModelFactory()
 				session['groups'] = lmf.getUserGroupList(request.params['username'])
+				# dummy call to set the variable
+				self.isFinanceAdmin()
 				session.save()
 
 				log.info(request.params['username'] + ' logged in')
@@ -65,17 +67,13 @@ class AuthController(BaseController):
 
 		redirect(url(controller='auth', action='login'))
 
-	def _clearSession(self):
-		if self.identity is not None:
-			session['identity'] = None
+	def _clearSession(self, force=False):
+		if self.identity is not None or force:
 			session.invalidate()
-			session.save()
 			session.delete()
-			request.environ["REMOTE_USER"] = ''
 
 	def logout(self):
-		self._clearSession()
-
+		self._clearSession(force=True)
 		redirect(url(controller='auth', action='login'))
 
 	def _require_auth(self):
