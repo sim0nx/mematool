@@ -33,19 +33,15 @@ class Payment(Base):
 		{'mysql_engine':'InnoDB'}
 		)
 
-	idpayment = Column(Integer, primary_key=True)
-	member_id = Column(String(255))
-	dtdate = Column(Date, nullable=False)
-	lipaymentmethod = Column(Integer, ForeignKey('paymentmethod.idpaymentmethod'))
-	dtverified = Column(Boolean)
-	ignore = Column(Boolean) # ignore a payment/month -> placeholder
+	id = Column(Integer, primary_key=True)
+	uid = Column(String(255))
+	date = Column(Date, nullable=False)
+	verified = Column(Boolean)
+	status = Column(Integer(1))
 
-	# Members can have many payments, thus the foreign key belongs here
-	#limember = Column(Integer, ForeignKey('member.idmember'))
-	dtpaymentmethod = relation(Paymentmethod, primaryjoin=lipaymentmethod == Paymentmethod.idpaymentmethod)
 	
 	def __init__(self):
 		pass	
 
 	def __repr__(self):
-		return "<Payment('idpayment=%d, member=%s', dtdate=%s, dtverified=%d)>" % (self.idpayment, self.member_id, self.dtdate, self.dtverified)
+		return "<Payment('id=%d, uid=%s', date=%s, verified=%d, status%s)>" % (self.id, self.uid, self.date, self.verified, self.status)

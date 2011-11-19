@@ -3,32 +3,44 @@
 <div id="content" class="span-19 push-1 last ">
 	<header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
 	<article>
+		${h.form(url(controller='payments', action='listPayments'), method='post')}
+		<table class="table_content">
+			<tr>
+				<td class="table_title"><label for="year">${_('Year')}</label></td>
+				<td>${h.text('year', value=c.year, class_='input text')}</td>
+			</tr>
+		</table>
+		<input type="hidden" name="member_id" value="${c.member_id}">
+		${h.end_form()}
 		<li><table class="table_content">
 			${parent.flash()}
 			<tr>
 				<th class="table_title">${_('Date')}</th>
-				<th class="table_title">${_('by method')}</th>
-				<th class="table_title">${_('validated')}</th>
+				<th class="table_title">${_('Validated')}</th>
+				<th class="table_title">${_('Status')}</th>
 				<th class="table_title">${_('Tools')}</th>
 			</tr>
 			% for i in range(1, 13):
 			<%
 			p_id = None
+			validated = 'no record'
+			status = h.literal('<img src="/images/icons/notok.png">')
 
 			if i in c.payments:
 				p = c.payments[i]
 
-				p_id = p.idpayment
-				validated = h.literal('<img src="/images/icons/notok.png">') if not p.dtverified else h.literal('<img src="/images/icons/ok.png">')
-				payment_method = p.dtpaymentmethod.dtname
-			else:
-				validated = 'no record'
-				payment_method = 'no record'
+				p_id = p.id
+				validated = h.literal('<img src="/images/icons/notok.png">') if not p.verified else h.literal('<img src="/images/icons/ok.png">')
+
+				if p.status == 0:
+					status = h.literal('<img src="/images/icons/ok.png">')
+				elif p.status == 2:
+					status = '-'
 			%>
 			<tr class="table_row">
 				<td>${str(c.year) + '-' + str(i)}</td>
-				<td>${payment_method}</td>
 				<td>${validated}</td>
+				<td>${status}</td>
 				% if not p_id is None:
 				<td>${h.link_to(_('Modify'),url(controller='payments', action='editPayment', idPayment=p_id, member_id=c.member_id))}</td>
 				% if session.has_key('isFinanceAdmin') and session['isFinanceAdmin']:

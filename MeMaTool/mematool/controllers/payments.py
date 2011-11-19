@@ -76,12 +76,12 @@ class PaymentsController(BaseController):
 			redirect(url(controller='payments', action='index'))
 
 		try:
-			np = Session.query(Payment).filter(Payment.idpayment == request.params['idPayment']).one()
+			np = Session.query(Payment).filter(Payment.id == request.params['idPayment']).one()
 
-			if np.dtverified:
-				np.dtverified = False
+			if np.verified:
+				np.verified = False
 			else:
-				np.dtverified = True
+				np.verified = True
 			Session.commit()
 
 			session['flash'] = _('Payment validation successfully toggled')
@@ -105,10 +105,10 @@ class PaymentsController(BaseController):
 			p = Session.query(Payment).filter(Payment.idpayment == request.params['idPayment']).one()
 
 			np = Payment()
-			np.member_id = p.member_id
-			np.dtdate = datetime.now().date()
-			np.dtverified = False
-			np.lipaymentmethod = p.lipaymentmethod
+			np.uid = p.uid
+			np.date = datetime.now().date()
+			np.status = p.status
+			np.verified = False
 
 			Session.add(np)
 			Session.commit()
@@ -124,7 +124,6 @@ class PaymentsController(BaseController):
 		session.save()
 
 		redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=npID))
-		
 
 	@BaseController.needAdmin
 	def showOutstanding(self):
@@ -132,13 +131,6 @@ class PaymentsController(BaseController):
 
 		activeMembers = self.lmf.getActiveMemberList()
 
-		#try:
-		#	nummissing = Session.query(Payment).filter("dtdate<:now AND dtverified=:verified AND dtmode=:mode").params(now=date.today(),verified=0,mode='recurring').count()
-		#	nummissing += 0
-		#	c.heading = "%d outstanding payments" % nummissing
-		#except NoResultFound:
-		#	return 'No unpaid fees'
-		
 		# Prepare add payment form
 		c.heading = _('Outstanding payments')
 		c.members = []
@@ -147,7 +139,7 @@ class PaymentsController(BaseController):
 			last_payment = None
 
 			try:
-				last_payment = Session.query(Payment).filter(and_(Payment.member_id == uid, Payment.dtverified == 1)).order_by(Payment.dtdate.desc()).limit(1)[0]
+				last_payment = Session.query(Payment).filter(and_(Payment.uid == uid, Payment.verified == 1)).order_by(Payment.date.desc()).limit(1)[0]
 			except:
 				''' Don't care if there is no payment '''
 				pass
@@ -156,7 +148,7 @@ class PaymentsController(BaseController):
 			m.paymentGood = False
 
 			if last_payment:
-				d = last_payment.dtdate
+				d = last_payment.date
 				today = datetime.now().date()
 
 				if d.year > today.year or (d.year == today.year and d.month >= today.month):
@@ -168,7 +160,6 @@ class PaymentsController(BaseController):
 			c.member_ids.append(uid)
 
 		return render('/payments/showOutstanding.mako')
-
 
 	def listPayments(self):
 		""" Show a specific user's payments """
@@ -196,14 +187,14 @@ class PaymentsController(BaseController):
 
 			y_start = date(year, 1, 1)
 			y_end = date(year, 12, 31)
-			payment_sql = Session.query(Payment).filter(Payment.member_id == request.params['member_id']).filter(Payment.dtdate.between(y_start, y_end)).order_by(Payment.dtdate.desc()).all()
+			payment_sql = Session.query(Payment).filter(Payment.uid == request.params['member_id']).filter(Payment.date.between(y_start, y_end)).order_by(Payment.date.desc()).all()
 
 			payments = {}
 			c.unverifiedPledges = 0
 			for p in payment_sql:
-				if p.dtverified == 0:
+				if p.verified == 0:
 					c.unverifiedPledges += 1
-				payments[p.dtdate.month] = p
+				payments[p.date.month] = p
 
 			c.year = year
 			c.payments = payments
@@ -225,7 +216,6 @@ class PaymentsController(BaseController):
 
 		return render('/payments/listPayments.mako')
 
-
 	def editPayment(self):
 		""" Add or edit a payment to/of a specific user """
 		if not 'member_id' in request.params or request.params['member_id'] == '':
@@ -234,6 +224,9 @@ class PaymentsController(BaseController):
 			redirect(url(controller='error', action='forbidden'))
 
 		c.member_id = request.params['member_id']
+		c.status_0 = False
+		c.status_1 = False
+		c.status_2 = False
 
 		# vary form depending on mode (do that over ajax)
 		if not 'idPayment' in request.params or request.params['idPayment'] == '0':
@@ -243,38 +236,32 @@ class PaymentsController(BaseController):
 			if 'year' in request.params and 'month' in request.params and\
 				IsInt(request.params['year']) and int(request.params['year']) > 1970 and int(request.params['year']) < 2222 and\
 				IsInt(request.params['month']) and int(request.params['month']) >= 1 and int(request.params['month']) <= 12:
-				c.dtdate = str(date(int(request.params['year']), int(request.params['month']), 1))
+				c.date = str(date(int(request.params['year']), int(request.params['month']), 1))
 
 		elif not request.params['idPayment'] == '' and IsInt(request.params['idPayment']) and int(request.params['idPayment']) > 0:
 			action = 'Editing'
-			payment_q = Session.query(Payment).filter(Payment.idpayment == int(request.params['idPayment']))
+			payment_q = Session.query(Payment).filter(Payment.id == int(request.params['idPayment']))
 			try:
 				payment = payment_q.one()
-				payment.dtdate = payment.dtdate.strftime("%Y-%m-%d") #str(payment.dtdate.year) + '-' + str(payment.dtdate.month) + '-' + str(payment.dtdate.day)
+				payment.date = payment.date.strftime("%Y-%m-%d")
 
 				# @TODO allow member editing if not verified???
-				if payment.dtverified and not self.isAdmin():
+				if payment.verified and not self.isAdmin():
 					redirect(url(controller='error', action='forbidden'))
 
 				c.payment = payment
+				setattr(c, 'status_' + str(payment.status), True)
 			except NoResultFound:
 				print "oops"
 				redirect(url(controller='members', action='index'))
 		else:
 			redirect(url(controller='members', action='index'))
 
-		methods = Session.query(Paymentmethod).all()
-		## how to easily turn a result object into a list? (more efficiently than this)
-		c.methods = []
-		for m in methods:
-			c.methods.append([m.idpaymentmethod,m.dtname])
 		c.heading = _('%s payment for user %s') % (action, c.member_id)
 
 		c.actions.append( ('List payments', 'payments', 'listPayments', request.params['member_id']) )
 
-
 		return render('/payments/editPayment.mako')
-
 
 	def checkPayment(f):
 		def new_f(self):
@@ -289,17 +276,19 @@ class PaymentsController(BaseController):
 				items = {}
 				d = None
 
-				if not 'dtdate' in request.params or not re.match(regex.date, request.params['dtdate'], re.IGNORECASE):
+				if not 'date' in request.params or not re.match(regex.date, request.params['date'], re.IGNORECASE):
 					formok = False
 					errors.append(_('Invalid date'))
 				else:
-					d = parser.parse(request.params['dtdate'])
+					d = parser.parse(request.params['date'])
 					d = date(d.year, d.month, 1)
 
-				if not self._isParamInt('lipaymentmethod') or not int(request.params['lipaymentmethod']) <= 3:
+				if not 'status' in request.params or not self._isParamInt('status'):
 					formok = False
-					errors.append(_('Invalid payment method'))
-
+					errors.append(_('Invalid payment status'))
+					print request.params['status']
+				else:
+					items['status'] = int(request.params['status'])
 
 				if self._isParamInt('idPayment'):
 					items['idPayment'] = int(request.params['idPayment'])
@@ -307,7 +296,7 @@ class PaymentsController(BaseController):
 					items['idPayment'] = 0
 
 				if not d is None and items['idPayment'] == 0:
-					p_count = Session.query(Payment).filter(Payment.member_id == request.params['member_id']).filter(Payment.dtdate == d).count()
+					p_count = Session.query(Payment).filter(Payment.uid == request.params['member_id']).filter(Payment.date == d).count()
 
 					if p_count > 0:
 						formok = False
@@ -325,14 +314,11 @@ class PaymentsController(BaseController):
 
 					redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=items['idPayment']))
 				else:
-					items['dtdate'] = d
-					items['lipaymentmethod'] = request.params['lipaymentmethod']
+					items['date'] = d
 
 
 			return f(self, request.params['member_id'], items)
 		return new_f
-
-
 
 	@checkPayment
 	@restrict('POST')
@@ -341,21 +327,21 @@ class PaymentsController(BaseController):
 
 		if items['idPayment'] > 0:
 			try:
-				np = Session.query(Payment).filter(Payment.idpayment == items['idPayment']).one()
+				np = Session.query(Payment).filter(Payment.id == items['idPayment']).one()
 			except:
 				session['flash'] = _('Invalid record')
 				session.save()
 				redirect(url(controller='payments', action='listPayments', member_id=member_id))
 		else:
 			np = Payment()
-			np.dtverified = False
-			np.ignore = False
+			np.verified = False
+			np.status = 0
 
 		for key, value in items.iteritems():
 			setattr(np, key, value)
 
 		try:
-			np.member_id = member_id
+			np.uid = member_id
 		except:
 			session['flash'] = _('Invalid member')
 			session.save()
@@ -383,7 +369,7 @@ class PaymentsController(BaseController):
 			redirect(url(controller='members', action='index'))
 
 		try:
-			np = Session.query(Payment).filter(Payment.idpayment == request.params['idPayment']).one()
+			np = Session.query(Payment).filter(Payment.id == request.params['idPayment']).one()
 			Session.delete(np)
 			Session.commit()
 		except:

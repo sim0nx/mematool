@@ -91,10 +91,10 @@ mematool/templates/unauthorized.mako
 mematool/templates/auth/login.mako
 mematool/templates/groups/editGroup.mako
 mematool/templates/groups/listGroups.mako
-mematool/templates/members/.viewAll.mako.swp
 mematool/templates/members/editMember.mako
 mematool/templates/members/view.mako
 mematool/templates/members/viewAll.mako
+mematool/templates/payments/.listPayments.mako.swp
 mematool/templates/payments/editPayment.mako
 mematool/templates/payments/listPayments.mako
 mematool/templates/payments/showOutstanding.mako
