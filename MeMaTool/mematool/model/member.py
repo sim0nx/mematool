@@ -104,10 +104,8 @@ class Member():
 		self.all_vars.extend(self.list_vars)
 		self.all_vars.extend(self.bool_vars)
 
-		self.validate = False        # validation needed ?
-
 	def __str__(self):
-		return "<Member('uidNumber=%s, uid=%s')>" % (self.uidNumber, self.uid)
+		return "<Member('uidNumber=%s, uid=%s, validate=%s')>" % (self.uidNumber, self.uid, self.validate)
 
 	def __eq__(self, om):
 		equal = True
@@ -124,8 +122,8 @@ class Member():
 
 	@property
 	def validate(self):
-		if self.uidNumber:
-			if (Session.query(TmpMember).filter(TmpMember.id == self.uidNumber).count() > 0):
+		if not self.uidNumber == '':
+			if Session.query(TmpMember).filter(TmpMember.id == self.uidNumber).count() > 0:
 				return True
 
 		return False
