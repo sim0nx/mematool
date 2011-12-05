@@ -54,8 +54,8 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Additional groups')}
                 </td>
                 <td>
-                        ${h.checkbox('full_member', value='', checked=getFormVar(session, c, 'full_member'), class_='text')}${_('full member')}<br>
-                        ${h.checkbox('locked_member', value='', checked=getFormVar(session, c, 'locked_member'), class_='text')}${_('locked member')}<br>
+                        ${h.checkbox('full_member', value='1', checked=getFormVar(session, c, 'full_member'), class_='text')}${_('full member')}<br>
+                        ${h.checkbox('locked_member', value='1', checked=getFormVar(session, c, 'locked_member'), class_='text')}${_('locked member')}<br>
                 </td>
         </tr>
 	<tr>
