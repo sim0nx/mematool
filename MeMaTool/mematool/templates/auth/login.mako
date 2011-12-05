@@ -7,10 +7,10 @@
 <article>
 	<h3>Mematool Login</h3>
 	${h.form(url(controller='auth', action='doLogin'), method='post', name='authform')}
-     	<div><input type="text" class="text" name="username" tabindex=1 placeholder="${_('syn2cat username')}" required /></div> 
-	<div><input type="password" class="text" name="password" tabindex=2 placeholder="${_('password')}" required /></div> 
-	<div><input type="submit" class="text" name="submit" tabindex=3 value="${_('Login')}" /></div>
-	</form> 
+     	<div>${h.text('username', tabindex='1', placeholder=_('syn2cat username'), class_='text', required=True)}</div>
+	<div>${h.password('password', tabindex='2', placeholder=_('password'), class_='text', required=True)}</div> 
+	<div>${h.submit('submit', _('Login'), tabindex='3', class_='text')}</div>
+	${h.end_form()}
 	 <div class="clear">&nbsp;</div>
 </article>
 

@@ -68,7 +68,7 @@ def getFormVar(s, c, var):
 		                        ${_('Surname')}
 		                </td>
 		                <td>
-		                        <input type="text" name="sn" value="${getFormVar(session, c, 'sn')}" class="input" ${c.formDisabled}>
+		                        <input type="text" name="sn" value="${getFormVar(session, c, 'sn')}" class="text" ${c.formDisabled}>
 		                </td>
 		        </tr>
 			<tr>
@@ -76,7 +76,7 @@ def getFormVar(s, c, var):
 		                        ${_('Given name')}
 		                </td>
 		                <td>
-		                        <input type="text" name="givenName" value="${getFormVar(session, c, 'givenName')}" class="input" ${c.formDisabled}>
+		                        <input type="text" name="givenName" value="${getFormVar(session, c, 'givenName')}" class="text" ${c.formDisabled}>
 		                </td>
 		        </tr>
 			<tr>
@@ -92,7 +92,7 @@ def getFormVar(s, c, var):
 		                        ${_('Birth Date')} (YYYY-MM-DD)
 		                </td>
 		                <td>
-		                        <input type="text" name="birthDate" value="${getFormVar(session, c, 'birthDate')}" class="input" ${c.formDisabled}>
+		                        <input type="text" name="birthDate" value="${getFormVar(session, c, 'birthDate')}" class="text" ${c.formDisabled}>
 		                </td>
 		        </tr>
 		        <tr>
@@ -108,7 +108,7 @@ def getFormVar(s, c, var):
 		                        ${_('Phone')} (+xxx.yyyyyyyyy)
 		                </td>
 		                <td>
-		                        <input type="text" name="homePhone" value="${getFormVar(session, c, 'homePhone')}" class="input" ${c.formDisabled}>
+		                        <input type="text" name="homePhone" value="${getFormVar(session, c, 'homePhone')}" class="text" ${c.formDisabled}>
 		                </td>
 		        </tr>
 		        <tr>
@@ -116,7 +116,7 @@ def getFormVar(s, c, var):
 		                        ${_('Mobile')} (+xxx.yyyyyyyyy)
 		                </td>
 		                <td>
-		                        <input type="text" name="mobile" value="${getFormVar(session, c, 'mobile')}" class="input" ${c.formDisabled}>
+		                        <input type="text" name="mobile" value="${getFormVar(session, c, 'mobile')}" class="text" ${c.formDisabled}>
 		                </td>
 		        </tr>
 		        <tr>
@@ -124,7 +124,7 @@ def getFormVar(s, c, var):
 		                        ${_('E-Mail')}
 		                </td>
 		                <td>
-		                        <input type="text" name="mail" value="${getFormVar(session, c, 'mail')}" class="input" ${c.formDisabled}>
+		                        <input type="text" name="mail" value="${getFormVar(session, c, 'mail')}" class="text" ${c.formDisabled}>
 		                </td>
 		        </tr>
 		        <tr>
@@ -132,7 +132,7 @@ def getFormVar(s, c, var):
 		                        ${_('XMPP/Jabber/GTalk ID')}
 		                </td>
 		                <td>
-		                        <input type="text" name="xmppID" value="${getFormVar(session, c, 'xmppID')}" class="input" ${c.formDisabled}>
+		                        <input type="text" name="xmppID" value="${getFormVar(session, c, 'xmppID')}" class="text" ${c.formDisabled}>
 		                </td>
 		        </tr>
 		        <tr>
@@ -180,7 +180,7 @@ def getFormVar(s, c, var):
 		                        ${_('Password')} (min 8, ${_('only ASCII chars')})
 		                </td>
 		                <td>
-		                        <input type="password" name="userPassword" value="" class="input" ${c.formDisabled}>
+		                        <input type="password" name="userPassword" value="" class="text" ${c.formDisabled}>
 		                </td>
 		        </tr>
 		        <tr>
@@ -188,7 +188,7 @@ def getFormVar(s, c, var):
 		                        ${_('Repeat Password')} (min 8)
 		                </td>
 		                <td>
-		                        <input type="password" name="userPassword2" value="" class="input" ${c.formDisabled}>
+		                        <input type="password" name="userPassword2" value="" class="text" ${c.formDisabled}>
 		                </td>
 		        </tr>
 		</table>

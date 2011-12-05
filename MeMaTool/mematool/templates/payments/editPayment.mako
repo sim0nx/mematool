@@ -30,14 +30,14 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 	${parent.all_messages()}
         <tr>
                 <td class="table_title"><label for="date">${_('Date payed')}</label></td>
-		<td>${h.text('date', value=getFormVar(session, c, 'date'), class_='input text')}(YYYY-MM-DD)</td>
+		<td>${h.text('date', value=getFormVar(session, c, 'date'), class_='text')}(YYYY-MM-DD)</td>
         </tr>
 	<tr>
                 <td class="table_title"><label for="Status">${_('Status')}</label></td>
 		<td>
-			${_('Normal payment')}${h.radio('status', value=0, checked=c.status_0, class_='input text')}
-			${_('No payment')}${h.radio('status', value=1, checked=c.status_1, class_='input text')}
-			${_('Not a member')}${h.radio('status', value=2, checked=c.status_2, class_='input text')}
+			${h.radio('status', value=0, checked=c.status_0, class_='text')}${_('Normal payment')}<br>
+			${h.radio('status', value=1, checked=c.status_1, class_='text')}${_('No payment')}<br>
+			${h.radio('status', value=2, checked=c.status_2, class_='text')}${_('Not a member')}<br>
 		</td>
 	</tr>
 	<tr>
@@ -49,9 +49,9 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 			else:
 				label = _('Edit payment')
 		%>
-		${h.submit('send', label, class_='input text')}</td>
+		${h.submit('send', label, class_='text')}</td>
 	</tr>
-	<input type="hidden" name="member_id" value="${c.member_id}">
-	<input type="hidden" name="idPayment" value="${c.payment.id}">
+	${h.hidden('member_id', value=c.member_id)}
+	${h.hidden('idPayment', value=c.payment.id)}
 </table>
 ${h.end_form()}

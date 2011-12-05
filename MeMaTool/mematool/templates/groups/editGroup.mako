@@ -20,7 +20,7 @@ ${h.form(url(controller='groups', action='doEditGroup'), method='post', name='ed
 	${parent.all_messages()}
         <tr>
                 <td class="table_title"><label for="gid">${_('Group name:')}</label></td>
-		<td>${h.text('gid', value=getFormVar(session, c, 'gid'), class_='input text')}</td>
+		<td>${h.text('gid', value=getFormVar(session, c, 'gid'), class_='text')}</td>
         </tr>
 	% if hasattr(c.group, 'gidNumber') and not c.group.gidNumber == None:
 	<tr>
@@ -28,7 +28,7 @@ ${h.form(url(controller='groups', action='doEditGroup'), method='post', name='ed
 			${_('Group members')}
 		</td>
 		<td>
-			<textarea rows='10' cols='60' name="users">${getFormVar(session, c, 'users')}</textarea>
+			${h.textarea('users', content=getFormVar(session, c, 'users'), rows='10', cols='60', class_='text')}
 		</td>
 	</tr>
 	% endif
@@ -41,7 +41,7 @@ ${h.form(url(controller='groups', action='doEditGroup'), method='post', name='ed
 			else:
 				label = _('Edit group')
 		%>
-		${h.submit('send', label, class_='input text')}</td>
+		${h.submit('send', label, class_='text')}</td>
 	</tr>
 </table>
 ${h.end_form()}

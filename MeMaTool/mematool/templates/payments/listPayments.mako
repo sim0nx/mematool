@@ -7,7 +7,7 @@
 		<table class="table_content">
 			<tr>
 				<td class="table_title"><label for="year">${_('Year')}</label></td>
-				<td>${h.text('year', value=c.year, class_='input text')}</td>
+				<td>${h.text('year', value=c.year, class_='text')}</td>
 			</tr>
 		</table>
 		<input type="hidden" name="member_id" value="${c.member_id}">
