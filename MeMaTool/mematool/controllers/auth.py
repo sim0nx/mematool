@@ -9,6 +9,8 @@ from mematool.lib.syn2cat.auth.auth_ldap import LDAPAuthAdapter
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
 
+import gettext
+_ = gettext.gettext
 
 log = logging.getLogger(__name__)
 
@@ -64,6 +66,10 @@ class AuthController(BaseController):
 						redirect(url(controller='members', action='index'))
 					else:
 						redirect(url(controller='profile', action='index'))
+			else:
+				session['flash'] = _('Login failed!')
+				session['flash_class'] = 'error'
+				session.save()
 
 		redirect(url(controller='auth', action='login'))
 
