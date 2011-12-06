@@ -4,11 +4,6 @@
 <html lang="en-US">
 <head>
 	<meta charset="UTF-8">
-	<meta name="" content="" />
-	<meta name="" content="" />
-	<meta name="" content="" />
-	<meta name="" content="" />
-	<meta name="" content="" />
 	
 	<!-- Stylesheets !-->
 	<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection">
