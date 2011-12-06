@@ -33,6 +33,7 @@ log = logging.getLogger(__name__)
 from mematool.model.ldapModelFactory import LdapModelFactory
 import re
 from mematool.lib.syn2cat import regex
+from mematool.lib.syn2cat.crypto import encodeAES
 
 from webob.exc import HTTPUnauthorized
 
@@ -226,6 +227,8 @@ class ProfileController(BaseController):
 			if 'userPassword' in request.params and request.params['userPassword'] != '':
 				m.setPassword(request.params['userPassword'])
 				self.lmf.saveMember(m)
+                                session['secret'] = encodeAES(request.params['userPassword'])
+
 				session['flash'] = _('Password updated!')
 				session['flash_class'] = 'success'
 		
