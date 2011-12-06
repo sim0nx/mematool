@@ -6,6 +6,7 @@
 				
 <article>
 	<h3>Mematool Login</h3>
+	${parent.flash()}
 	${h.form(url(controller='auth', action='doLogin'), method='post', name='authform')}
      	<div>${h.text('username', tabindex='1', placeholder=_('syn2cat username'), class_='text', required=True)}</div>
 	<div>${h.password('password', tabindex='2', placeholder=_('password'), class_='text', required=True)}</div> 
