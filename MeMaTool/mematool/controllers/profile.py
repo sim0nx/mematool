@@ -196,10 +196,10 @@ class ProfileController(BaseController):
 
 			if changes:
 				tm = TmpMember(m.uidNumber)
-				tm.sn = str(request.params['sn'].encode( "utf-8" ))
-				tm.gn = str(request.params['givenName'].encode( "utf-8" ))
+				tm.sn = str(request.params['sn'].encode('utf-8'))
+				tm.gn = str(request.params['givenName'].encode('utf-8'))
 				tm.birthDate = request.params['birthDate']
-				tm.homePostalAddress = str(request.params['homePostalAddress'].encode( "utf-8" ))
+				tm.homePostalAddress = str(request.params['homePostalAddress'].encode('utf-8'))
 
 				if 'homePhone' not in request.params or (request.params['homePhone'] == '' and not m.homePhone is ''):
 					tm.phone = '>>REMOVE<<'
