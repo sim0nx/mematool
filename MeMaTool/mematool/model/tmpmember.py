@@ -20,6 +20,7 @@
 
 
 from sqlalchemy import schema, types, orm, create_engine, Table, Column, Integer, String, MetaData, ForeignKey, Boolean, Date, ForeignKeyConstraint
+from sqlalchemy.types import Unicode
 from mematool.model.meta import Base
 
 
@@ -30,14 +31,14 @@ class TmpMember(Base):
 		)
 
 	id			= Column(Integer, primary_key=True)
-	gn			= Column(String(60))
-	sn 			= Column(String(60))
-	birthDate		= Column(String(10))
-	homePostalAddress	= Column(String(255))
-	phone			= Column(String(30))
-	mobile			= Column(String(30))
-	mail			= Column(String(255))
-	xmppID			= Column(String(255))
+	gn			= Column(Unicode(60))
+	sn 			= Column(Unicode(60))
+	birthDate		= Column(Unicode(10))
+	homePostalAddress	= Column(Unicode(255))
+	phone			= Column(Unicode(30))
+	mobile			= Column(Unicode(30))
+	mail			= Column(Unicode(255))
+	xmppID			= Column(Unicode(255))
 
 	def __init__(self, uidNumber):
 		self.id = uidNumber
