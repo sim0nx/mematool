@@ -129,6 +129,10 @@ class PaymentsController(BaseController):
 	def showOutstanding(self):
 		""" Show which users still need to pay their membership fees and if a reminder has already been sent """
 
+		showAll = False
+		if 'showAll' in request.params and request.params['showAll'] == '1':
+			showAll = True
+
 		activeMembers = self.lmf.getActiveMemberList()
 
 		# Prepare add payment form
@@ -154,7 +158,7 @@ class PaymentsController(BaseController):
 				if d.year > today.year or (d.year == today.year and d.month >= today.month):
 					m.paymentGood = True
 
-			if not m.paymentGood:
+			if not m.paymentGood or showAll:
 				c.members.append(m)
 
 			c.member_ids.append(uid)
@@ -167,7 +171,7 @@ class PaymentsController(BaseController):
 			if not self.isAdmin() and not self.isFinanceAdmin():
 				redirect(url(controller='error', action='forbidden'))
 			else:
-				redirect(url(controller='payments', action='showOutstanding'))
+				redirect(url(controller='payments', action='showOutstanding', showAll='1'))
 		elif not self.isAdmin() and not self.isFinanceAdmin() and not request.params['member_id'] == self.identity:
 			redirect(url(controller='error', action='forbidden'))
 

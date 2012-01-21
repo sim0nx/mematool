@@ -14,6 +14,9 @@ ${h.end_form()}
 	<article>
 		<li><table class="table_content"> 
 		        <tr> 
+				<th class="table_title">
+					#
+				</th>
 		                <th class="table_title">
 		                        ${_('Username')}
 		                </th>
@@ -23,6 +26,9 @@ ${h.end_form()}
 		                <th class="table_title">
 		                        ${_('Given name')}
 		                </th>
+				<th class="table_title">
+					${_('E-Mail')}
+				</th>
 		                <th class="table_title">
 		                        ${_('Payment good')}
 		                </th>
@@ -30,14 +36,18 @@ ${h.end_form()}
 		                        ${_('Tools')}
 		                </th>
 		        </tr>
+			<% i = 0 %>
 			% for m in c.members:
 		        <%
 	                        paymentGood = h.literal('<font color="red">' + _('no') + '</font>') if not m.paymentGood else h.literal('<font color="green">' + _('yes') + '</font>')
+				i += 1
 		        %>
 		        <tr class="table_row">
-		                <td>${m.uid}</td>
+				<td>${i}</td>
+		                <td><a href="${url(controller='members', action='editMember', member_id=m.uid)}">${m.uid}</a></td>
 		                <td>${m.sn}</td>
 		                <td>${m.gn}</td>
+				<td>${m.mail}</td>
 		                <td>${paymentGood}</td>
 		                <td><a href="${url(controller='payments', action='listPayments', member_id=m.uid)}">${_('payments')}</a></td>
 		        </tr>

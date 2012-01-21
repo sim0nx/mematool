@@ -24,6 +24,7 @@ mematool/controllers/groups.py
 mematool/controllers/members.py
 mematool/controllers/payments.py
 mematool/controllers/profile.py
+mematool/controllers/statistics.py
 mematool/lib/__init__.py
 mematool/lib/app_globals.py
 mematool/lib/base.py
@@ -98,6 +99,8 @@ mematool/templates/payments/editPayment.mako
 mematool/templates/payments/listPayments.mako
 mematool/templates/payments/showOutstanding.mako
 mematool/templates/profile/edit.mako
+mematool/templates/statistics/.index.mako.swp
+mematool/templates/statistics/index.mako
 mematool/tests/__init__.py
 mematool/tests/test_models.py
 mematool/tests/functional/__init__.py
