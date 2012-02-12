@@ -35,10 +35,11 @@ from mematool.lib.syn2cat import regex
 
 from mematool.model.ldapModelFactory import LdapModelFactory
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from webob.exc import HTTPUnauthorized
 from datetime import date, datetime
 from dateutil import parser
+from dateutil.relativedelta import relativedelta
 
 # Decorators
 from pylons.decorators import validate
@@ -94,36 +95,59 @@ class PaymentsController(BaseController):
 
 		redirect(url(controller='payments', action='listPayments', member_id=request.params['member_id']))
 
-	@BaseController.needFinanceAdmin
-	def duplicatePayment(self):
-		if not self._isParamStr('member_id') or not self._isParamInt('idPayment'):
-			redirect(url(controller='payments', action='index'))
-
-		npID = -1
+	def _getLastPayment(self, uid):
+		member = self.lmf.getUser(uid)
+		lastDate = parser.parse(member.arrivalDate)
 
 		try:
-			p = Session.query(Payment).filter(Payment.idpayment == request.params['idPayment']).one()
+			p = Session.query(Payment).filter(and_(Payment.uid == uid, or_(Payment.status == 0, Payment.status == 2))).order_by(Payment.date.desc()).first()
+			lastDate = p.date + relativedelta(months = +1)
+		except Exception as e:
+			pass
 
-			np = Payment()
-			np.uid = p.uid
-			np.date = datetime.now().date()
-			np.status = p.status
-			np.verified = False
+		return lastDate
 
-			Session.add(np)
+	def bulkAdd(self):
+		if not self._isParamStr('member_id'):
+			redirect(url(controller='payments', action='index'))
+
+		c.member_id = request.params['member_id']
+		c.heading = _('Add bulk payments')
+
+		return render('/payments/bulkAdd.mako')
+
+	def doBulkAdd(self):
+		if not self._isParamStr('member_id') or not self._isParamInt('months'):
+			redirect(url(controller='payments', action='index'))
+
+		lastDate = self._getLastPayment(request.params['member_id'])
+		months = int(request.params['months'])
+		verified = False
+
+		if self.isFinanceAdmin() and self._isParamInt('verified'):
+			verified = True
+
+		try:
+			for i in range(months):
+				p = Payment()
+				p.uid = request.params['member_id']
+				p.date = lastDate + relativedelta(months = i)
+				p.status = 0
+				p.verified = verified
+
+				Session.add(p)
+
 			Session.commit()
 
-			npID = np.idpayment
-
-			session['flash'] = _('Payment duplicated')
+			session['flash'] = _('Payments added')
 			session['flash_class'] = 'success'
-		except:
-			session['flash'] = _('Duplication failed')
+		except Exception as e:
+			session['flash'] = _('Operation failed')
 			session['flash_class'] = 'error'
 
 		session.save()
 
-		redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=npID))
+		redirect(url(controller='payments', action='listPayments', member_id=request.params['member_id']))
 
 	@BaseController.needAdmin
 	def showOutstanding(self):
@@ -178,6 +202,8 @@ class PaymentsController(BaseController):
 		year = datetime.now().year
 		if 'year' in request.params and IsInt(request.params['year']) and int(request.params['year']) > 1970 and int(request.params['year']) < 2222:
 			year = int(request.params['year'])
+		elif self._isParamStr('member_id'):
+			year = self._getLastPayment(request.params['member_id']).year
 
 		c.heading = _('Payments for the year %s, user %s') % (str(year), request.params['member_id'])
 		c.member_id = request.params['member_id']
@@ -329,16 +355,22 @@ class PaymentsController(BaseController):
 	def savePayment(self, member_id, items):
 		""" Save a new or edited payment """
 
+		verified = False
+
+		if self.isFinanceAdmin() and self._isParamInt('verified'):
+			verified = True
+
 		if items['idPayment'] > 0:
 			try:
 				np = Session.query(Payment).filter(Payment.id == items['idPayment']).one()
+				np.verified = verified
 			except:
 				session['flash'] = _('Invalid record')
 				session.save()
 				redirect(url(controller='payments', action='listPayments', member_id=member_id))
 		else:
 			np = Payment()
-			np.verified = False
+			np.verified = verified
 			np.status = 0
 
 		for key, value in items.iteritems():

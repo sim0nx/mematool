@@ -95,11 +95,12 @@ mematool/templates/groups/listGroups.mako
 mematool/templates/members/editMember.mako
 mematool/templates/members/view.mako
 mematool/templates/members/viewAll.mako
+mematool/templates/payments/.listPayments.mako.swp
+mematool/templates/payments/bulkAdd.mako
 mematool/templates/payments/editPayment.mako
 mematool/templates/payments/listPayments.mako
 mematool/templates/payments/showOutstanding.mako
 mematool/templates/profile/edit.mako
-mematool/templates/statistics/.index.mako.swp
 mematool/templates/statistics/index.mako
 mematool/tests/__init__.py
 mematool/tests/test_models.py

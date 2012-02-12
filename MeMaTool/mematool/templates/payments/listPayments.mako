@@ -12,6 +12,9 @@
 		</table>
 		<input type="hidden" name="member_id" value="${c.member_id}">
 		${h.end_form()}
+
+		${h.link_to(_('Bulk add multiple months'),url(controller='payments', action='bulkAdd', member_id=c.member_id))}
+
 		<li><table class="table_content">
 			${parent.flash()}
 			<tr>
@@ -42,12 +45,13 @@
 				<td>${validated}</td>
 				<td>${status}</td>
 				% if not p_id is None:
-				<td>${h.link_to(_('Modify'),url(controller='payments', action='editPayment', idPayment=p_id, member_id=c.member_id))}</td>
-				% if session.has_key('isFinanceAdmin') and session['isFinanceAdmin']:
-				<td>${h.link_to(_('Duplicate'),url(controller='payments', action='duplicatePayment', idPayment=p_id, member_id=c.member_id))}</td>
-				<td>${h.link_to(_('Validate'),url(controller='payments', action='validatePayment', idPayment=p_id, member_id=c.member_id))}</td>
-				<td>${h.link_to(_('Delete'),url(controller='payments', action='deletePayment', idPayment=p_id, member_id=c.member_id))}</td>
-				% endif
+					% if p.verified != 1 or (session.has_key('isFinanceAdmin') and session['isFinanceAdmin']):
+					<td>${h.link_to(_('Modify'),url(controller='payments', action='editPayment', idPayment=p_id, member_id=c.member_id))}</td>
+					% endif
+					% if session.has_key('isFinanceAdmin') and session['isFinanceAdmin']:
+					<td>${h.link_to(_('Validate'),url(controller='payments', action='validatePayment', idPayment=p_id, member_id=c.member_id))}</td>
+					<td>${h.link_to(_('Delete'),url(controller='payments', action='deletePayment', idPayment=p_id, member_id=c.member_id))}</td>
+					% endif
 				% else:
 				<td>${h.link_to(_('Add'),url(controller='payments', action='editPayment', year=c.year, month=i, member_id=c.member_id))}</td>
 				% endif

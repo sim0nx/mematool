@@ -40,6 +40,12 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 			${h.radio('status', value=2, checked=c.status_2, class_='text')}${_('Not a member')}<br>
 		</td>
 	</tr>
+        % if session.has_key('isFinanceAdmin') and session['isFinanceAdmin']:
+        <tr>
+                <td class="table_title"><label for="verified">${_('Payment verified')}</label></td>
+                <td>${h.checkbox('verified', value='1', checked=getFormVar(session, c, 'verified'), class_='text')}</td>
+        </tr>
+        % endif
 	<tr>
 		<td class="table_title"/>
 		<td style="text-align:left;">
