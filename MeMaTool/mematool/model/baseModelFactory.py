@@ -153,3 +153,35 @@ class BaseModelFactory(object):
 
 	def getHighestGidNumber(self):
 		pass
+
+	def getDomain(self, domain):
+		pass
+
+	def getDomainList(self):
+		pass
+
+	def getDomains(self):
+		'''Return a list of all domain objects'''
+		dl = self.getDomainList()
+		domains = []
+
+		for v in dl:
+			domains.append(self.getDomain(v))
+
+		return domains
+
+	def getAlias(self, alias):
+		pass
+
+	def getAliasList(self, domain):
+		pass
+
+	def getAliases(self, domain):
+		'''Return a list of all alias objects'''
+		al = self.getAliasList(domain)
+		aliases = []
+
+		for v in al:
+			aliases.append(self.getAlias(v))
+
+		return aliases
