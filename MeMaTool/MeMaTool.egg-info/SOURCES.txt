@@ -21,6 +21,7 @@ mematool/controllers/__init__.py
 mematool/controllers/auth.py
 mematool/controllers/error.py
 mematool/controllers/groups.py
+mematool/controllers/mails.py
 mematool/controllers/members.py
 mematool/controllers/payments.py
 mematool/controllers/profile.py
@@ -37,7 +38,9 @@ mematool/lib/syn2cat/singleton.py
 mematool/lib/syn2cat/auth/__init__.py
 mematool/lib/syn2cat/auth/auth_ldap.py
 mematool/model/__init__.py
+mematool/model/alias.py
 mematool/model/baseModelFactory.py
+mematool/model/domain.py
 mematool/model/group.py
 mematool/model/ldapModelFactory.py
 mematool/model/member.py
@@ -92,10 +95,15 @@ mematool/templates/unauthorized.mako
 mematool/templates/auth/login.mako
 mematool/templates/groups/editGroup.mako
 mematool/templates/groups/listGroups.mako
+mematool/templates/mails/.editAlias.mako.swp
+mematool/templates/mails/editAlias.mako
+mematool/templates/mails/editGroup.mako
+mematool/templates/mails/listAliases.mako
+mematool/templates/mails/listDomains.mako
 mematool/templates/members/editMember.mako
+mematool/templates/members/exportCSV.mako
 mematool/templates/members/view.mako
 mematool/templates/members/viewAll.mako
-mematool/templates/payments/.listPayments.mako.swp
 mematool/templates/payments/bulkAdd.mako
 mematool/templates/payments/editPayment.mako
 mematool/templates/payments/listPayments.mako

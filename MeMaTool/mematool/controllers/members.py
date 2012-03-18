@@ -302,6 +302,32 @@ class MembersController(BaseController):
 
 		return 'ERROR 4x0'
 
+	def exportList(self):
+		try:
+			members = self.lmf.getUsers()
+			c.members = []
+
+			# make sure to clean out some vars
+			for m in members:
+				if m.sambaNTPassword != '':
+					m.sambaNTPassword = '******'
+				if m.userPassword != '':
+					m.userPassword = '******'
+
+				if not m.lockedMember:
+					c.members.append(m)
+
+			response.content_type = 'text/plain'
+
+			return render('/members/exportCSV.mako')
+
+		except LookupError as e:
+			print 'Lookup error!'
+			print e
+			pass
+
+		return 'ERROR 4x0'
+
 	def showActiveMembers(self):
 		return self.showAllMembers(_filter='active')
 

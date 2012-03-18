@@ -7,6 +7,8 @@ from mematool.model.member import Member
 from mematool.model.payment import Payment
 from mematool.model.group import Group
 from mematool.model.paymentmethod import Paymentmethod
+from mematool.model.domain import Domain
+from mematool.model.alias import Alias
 
 
 def init_model(engine):

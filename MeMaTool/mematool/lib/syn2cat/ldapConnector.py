@@ -32,23 +32,31 @@ class ServerError(Exception):
 	pass
 
 class LdapConnector(object):
-	def __init__(self, con=None, uid=None, password=None):
+	def __init__(self, con=None, uid=None, password=None, cnf=None):
 		self.con = None
+
+		if cnf is not None:
+			self.cnf = cnf
+		else:
+			self.cnf = config
 
 		if con is not None:
 			self.con = con
 		else:
 			""" Bind to server """
-			self.con = ldap.initialize(config.get('ldap.server'))
+			self.con = ldap.initialize(self.cnf.get('ldap.server'))
 			try:
 				self.con.start_tls_s()
 				try:
-					if 'identity' in session:
-						uid = session['identity']
-						password = decodeAES(session['secret'])
+					try:
+						if session and 'identity' in session:
+							uid = session['identity']
+							password = decodeAES(session['secret'])
+					except:
+						pass
 
 					if not (uid is None or password is None):
-						binddn = 'uid=' + uid + ',' + config.get('ldap.basedn_users')
+						binddn = 'uid=' + uid + ',' + self.cnf.get('ldap.basedn_users')
 						self.con.simple_bind_s(binddn, password)
 				except ldap.INVALID_CREDENTIALS:
 					print "Your username or password is incorrect."
