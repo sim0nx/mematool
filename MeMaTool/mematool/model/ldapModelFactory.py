@@ -427,6 +427,48 @@ class LdapModelFactory(BaseModelFactory):
 
 		return str(gidNumber)
 
+        def addDomain(self, domain):
+		'''Add a new domain'''
+		dl = self.getDomainList()
+
+		if not domain in dl:
+			d = Domain()
+			d.dc = domain
+			mod_attrs = []
+
+			mod_attrs.append(('objectClass', ['top', 'domain', 'mailDomain']))
+			mod_attrs.append(self.prepareVolatileAttribute(d, None, 'dc'))
+
+			while None in mod_attrs:
+				mod_attrs.remove(None)
+
+			dn = 'dc=' + domain + ',' + self.cnf.get('ldap.basedn')
+			dn = dn.encode('ascii','ignore')
+			result = self.ldapcon.add_s( dn, mod_attrs)
+
+			if result is None:
+				return False
+
+			return True
+
+		return False
+
+        def deleteDomain(self, domain):
+		'''Completely remove a domain'''
+		dl = self.getDomainList()
+
+		if domain in dl:
+			dn = 'dc=' + domain + ',' + self.cnf.get('ldap.basedn')
+			dn = dn.encode('ascii','ignore')
+			retVal = self.ldapcon.delete_s(dn)
+
+			if not retVal is None:
+				return True
+		else:
+			raise LookupError('No such domain!')
+
+		return False
+
 	def getDomain(self, domain):
 		filter_ = '(objectClass=mailDomain)'
 		attrs = ['*']
@@ -492,19 +534,19 @@ class LdapModelFactory(BaseModelFactory):
 							a.mail.append(i)
 
 					continue
-				elif k == 'mailDrop':
+				elif k == 'maildrop':
 					if len(v) == 1:
-						a.mailDrop.append(v)
+						a.maildrop.append(v[0])
 					else:
 						for i in v:
-							a.mailDrop.append(i)
+							a.maildrop.append(i)
 
 					continue
+				else:
+					# @TODO handle multiple results
+					v = v[0]
 
-				# @TODO handle multiple results
-				v = v[0]
-
-				setattr(a, k, v)
+					setattr(a, k, v)
 
 		return a
 
@@ -523,4 +565,121 @@ class LdapModelFactory(BaseModelFactory):
 			aliases.append(a)
 
 		return aliases
+
+	def addAlias(self, alias):
+		try:
+			oldalias = self.getAlias(alias.dn_mail)
+
+			raise Exception('Alias already exists!')
+		except:
+			mod_attrs = []
+			mod_attrs.append(('objectClass', ['mailAlias']))
+
+			for m in alias.mail:
+				mod_attrs.append(('mail', [str(m.encode('utf-8', 'ignore'))]))
+
+			for m in alias.maildrop:
+				mod_attrs.append(('maildrop', [str(m.encode('utf-8', 'ignore'))]))
+
+			while None in mod_attrs:
+				mod_attrs.remove(None)
+
+			dn = 'mail=' + alias.dn_mail + ',dc=' + alias.domain + ',' + self.cnf.get('ldap.basedn')
+			dn = dn.encode('ascii','ignore')
+
+			result = self.ldapcon.add_s( dn, mod_attrs)
+
+			if result is None:
+				return False
+
+			return True
+
+		return False
+
+	def updateAlias(self, alias):
+		oldalias = self.getAlias(alias.dn_mail)
+		mod_attrs = []
+
+		for m in alias.mail:
+			if m == alias.dn_mail:
+				continue
+
+			found = False
+			for n in oldalias.mail:
+				if m == n:
+					found = True
+					break
+
+			if not found:
+				mod_attrs.append((ldap.MOD_ADD, 'mail', m.encode('ascii','ignore')))
+
+		for m in oldalias.mail:
+			if m == oldalias.dn_mail:
+				continue
+
+			found = False
+			for n in alias.mail:
+				if m == n:
+					found = True
+					break
+
+			if not found:
+				mod_attrs.append((ldap.MOD_DELETE, 'mail', m.encode('ascii','ignore')))
+
+		for m in alias.maildrop:
+			if m == alias.dn_mail:
+				continue
+
+			found = False
+			for n in oldalias.maildrop:
+				if m == n:
+					found = True
+					break
+
+			if not found:
+				mod_attrs.append((ldap.MOD_ADD, 'maildrop', m.encode('ascii','ignore')))
+
+		for m in oldalias.maildrop:
+			if m == oldalias.dn_mail:
+				continue
+
+			found = False
+			for n in alias.maildrop:
+				if m == n:
+					found = True
+					break
+
+			if not found:
+				mod_attrs.append((ldap.MOD_DELETE, 'maildrop', m.encode('ascii','ignore')))
+
+
+		while None in mod_attrs:
+			mod_attrs.remove(None)
+
+
+		# nothing to do
+		if len(mod_attrs) == 0:
+			return True
+
+		dn = alias.getDN(self.cnf.get('ldap.basedn')).encode('ascii','ignore')
+		result = self.ldapcon.modify_s( dn, mod_attrs)
+
+		if result is None:
+			return False
+
+		return True
+
+        def deleteAlias(self, alias):
+		'''Completely remove a alias'''
+
+		a = self.getAlias(alias)
+		dn =  a.getDN(self.cnf.get('ldap.basedn')).encode('ascii','ignore')
+		retVal = self.ldapcon.delete_s(dn)
+
+		if not retVal is None:
+			return True
+
+		return False
+
+
 

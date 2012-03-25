@@ -42,6 +42,7 @@
 					<li>${h.link_to(_('Payments'),url(controller='payments', action='index'))}</li>
 						% if session['isFinanceAdmin'] or session['isAdmin']:
 					<li>${h.link_to(_('Statistics'),url(controller='statistics', action='index'))}</li>
+					<li>${h.link_to(_('Mails'),url(controller='mails', action='index'))}</li>
 						% endif
 					<li>${h.link_to(_('Profile'),url(controller='profile', action='index'))}</li>
 					<li>${h.link_to(_('Logout'),url(controller='auth', action='logout',id=None))}</li>
@@ -164,6 +165,11 @@ ${self.flash()}
 ${self.error_messages()}
 </%def>
 
+<%
+if session.has_key('reqparams'):
+	del session['reqparams']
+	session.save()
+%>
 
 <% 
 	# We should be able to dynmically get all available controllers and list them (where?) 

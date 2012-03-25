@@ -31,7 +31,7 @@ from mematool.lib.syn2cat import regex
 
 from datetime import date
 from mematool.model.ldapModelFactory import LdapModelFactory
-from mematool.model import Group
+from mematool.model import Group, Alias
 
 # Decorators
 from pylons.decorators import validate
@@ -52,6 +52,7 @@ class MailsController(BaseController):
 		c.actions = list()
 		c.actions.append((_('Show all domains'), 'mails', 'listDomains'))
 		c.actions.append((_('Add domain'), 'mails', 'editDomain'))
+		c.actions.append((_('Add alias'), 'mails', 'editAlias'))
 
 	def __before__(self, action, **param):
 		super(MailsController, self).__before__()
@@ -76,54 +77,38 @@ class MailsController(BaseController):
 	@BaseController.needAdmin
 	def editDomain(self):
 		# vary form depending on mode (do that over ajax)
-		if not 'gid' in request.params or request.params['gid'] == '':
-			c.mail = Group()
+		if not 'domain' in request.params or request.params['domain'] == '':
 			action = 'Adding'
-			c.gid = ''
-		elif not request.params['gid'] == '' and len(request.params['gid']) > 0:
+			c.mode = 'add'
+		elif not request.params['domain'] == '' and len(request.params['domain']) > 0:
 			action = 'Editing'
-			c.gid = request.params['gid']
+			c.mode = 'edit'
 			try:
-				c.mail = self.lmf.getGroup(request.params['gid'])
-				users = ''
-
-				for u in c.mail.users:
-					if not users == '':
-						users += '\n'
-					users += u
-
-				c.mail.users = users
+				c.domain = self.lmf.getDomain(request.params['domain'])
 			except LookupError:
 				# @TODO implement better handler
-				print 'No such mail!'
-				redirect(url(controller='mail', action='index'))
+				print 'No such domain!'
+				redirect(url(controller='mails', action='index'))
 		else:
-			redirect(url(controller='mail', action='index'))
+			redirect(url(controller='mails', action='index'))
 
-		c.heading = '%s mail' % (action)
+		c.heading = '%s domain' % (action)
 
-		return render('/mail/editGroup.mako')
+		return render('/mails/editDomain.mako')
 
-	def checkEdit(f):
+	def checkEditDomain(f):
 		def new_f(self):
-			if (not 'gid' in request.params):
-				redirect(url(controller='mail', action='index'))
+			if (not 'domain' in request.params):
+				redirect(url(controller='mails', action='index'))
 			else:
 				formok = True
 				errors = []
 				items = {}
 
-				if not self._isParamStr('gid', max_len=64):
+				if not self._isParamStr('domain', max_len=64) or not re.match(regex.domain, request.params['domain'], re.IGNORECASE):
 					formok = False
-					print request.params['gid']
-					errors.append(_('Invalid mail ID'))
-
-				if 'users' in request.params:
-					if not self._isParamStr('users') or not re.match(r'([\w]{1,20}\n?)*', request.params['users'], re.I):
-						formok = False
-						errors.append(_('Invalid mail names'))
-					else:
-						items['users'] = request.params['users']
+					print request.params['domain']
+					errors.append(_('Invalid domain'))
 
 				if not formok:
 					session['errors'] = errors
@@ -135,58 +120,47 @@ class MailsController(BaseController):
 						
 					session.save()
 
-					redirect(url(controller='mail', action='editGroup'))
+					redirect(url(controller='mails', action='editDomain'))
 				else:
-					items['gid'] = request.params['gid']
-
+					items['domain'] = request.params['domain']
 
 			return f(self, items)
 		return new_f
 
 
 	@BaseController.needAdmin
-	@checkEdit
+	@checkEditDomain
 	@restrict('POST')
-	def doEditGroup(self, items):
-		if not self.lmf.addGroup(items['gid']):
-			session['flash'] = _('Failed to add mail!')
+	def doEditDomain(self, items):
+		if not self.lmf.addDomain(items['domain']):
+			session['flash'] = _('Failed to add domain!')
 			session['flash_class'] = 'error'
 			session.save()
-		else:
-			if 'users' in items and len(items['users']) > 0:
-				form_members = []
-				for k in items['users'].split('\n'):
-					m = k.replace('\r', '').replace(' ', '')
-					if m == '':
-						continue
 
-					form_members.append(m)
+		redirect(url(controller='mails', action='index'))
 
-				if len(form_members) > 0:
-					try:
-						lgrp_members = self.lmf.getGroupMembers(items['gid'])
-					except LookupError:
-						lgrp_members = []
+	@BaseController.needAdmin
+	def deleteDomain(self):
+		return 'HARD disabled ... you do not want to mess with this in production!!!'
 
-					# Adding new members
-					for m in form_members:
-						if not m in lgrp_members:
-							#print 'adding -> ' + str(m)
-							self.lmf.changeUserGroup(m, items['gid'], True)
+		if not self._isParamStr('domain'):
+			redirect(url(controller='mails', action='index'))
 
-					# Removing members
-					for m in lgrp_members:
-						if not m in form_members:
-							#print 'removing -> ' + str(m)
-							self.lmf.changeUserGroup(m, items['gid'], False)
+		try:
+			result = self.lmf.deleteDomain(request.params['domain'])
 
-			# @TODO add mail if not exist
+			if result:
+				session['flash'] = _('Domain successfully deleted')
+				session['flash_class'] = 'success'
+			else:
+				session['flash'] = _('Failed to delete domain!')
+				session['flash_class'] = 'error'
+		except:
+			session['flash'] = _('Failed to delete domain!')
+			session['flash_class'] = 'error'
 
-			session['flash'] = _('Group saved successfully')
-			session['flash_class'] = 'success'
-			session.save()
-
-		redirect(url(controller='mail', action='index'))
+		session.save()
+		redirect(url(controller='mails', action='index'))
 
 	@BaseController.needAdmin
 	def listAliases(self):
@@ -203,22 +177,40 @@ class MailsController(BaseController):
 	def editAlias(self):
 		# vary form depending on mode (do that over ajax)
 		if not 'alias' in request.params or request.params['alias'] == '':
-			c.alias = Alias()
 			action = 'Adding'
-			c.alias = ''
+			c.mode = 'add'
+
+			domains = self.lmf.getDomains()
+			c.select_domains = []
+			for d in domains:
+				c.select_domains.append([d.dc, d.dc])
+
 		elif not request.params['alias'] == '':
 			action = 'Editing'
 			c.alias = request.params['alias']
+			c.mode = 'edit'
 			try:
-				c.alias = self.lmf.getAlias(request.params['alias'])
-				mails = ''
+				alias = self.lmf.getAlias(request.params['alias'])
+				mail = ''
 
-				for m in c.alias.mail:
-					if not mails == '':
-						mails += '\n'
-					mails += m
+				for m in alias.mail:
+					if not mail == '':
+						mail += '\n'
+					if not m == alias.dn_mail:
+						mail += m
 
-				c.alias.mails = mails
+				c.mail = mail
+
+				maildrop = ''
+
+				for m in alias.maildrop:
+					if not maildrop == '':
+						maildrop += '\n'
+					if not m == alias.dn_mail:
+						maildrop += m
+
+				c.maildrop = maildrop
+
 			except LookupError:
 				# @TODO implement better handler
 				print 'No such alias!'
@@ -230,21 +222,150 @@ class MailsController(BaseController):
 
 		return render('/mails/editAlias.mako')
 
+	def checkEditAlias(f):
+		def new_f(self):
+			if (not 'mode' in request.params) or (not 'alias' in request.params) or (not 'domain' in request.params):
+				redirect(url(controller='mails', action='index'))
+			else:
+				formok = True
+				errors = []
+				items = {}
+
+				mode = request.params['mode']
+				if not mode == 'add' and not mode == 'edit':
+					redirect(url(controller='mails', action='index'))
+
+				if mode == 'add':
+					if not self._isParamStr('alias', max_len=64) or not re.match(regex.username, request.params['alias'], re.IGNORECASE):
+						formok = False
+						errors.append(_('Invalid alias'))
+
+					if not self._isParamStr('domain', max_len=64) or not re.match(regex.domain, request.params['domain'], re.IGNORECASE):
+						formok = False
+						errors.append(_('Invalid domain'))
+
+					alias = request.params['alias'] + '@' + request.params['domain']
+				else:
+					alias = request.params['alias']
+
+				if not re.match(regex.email, alias, re.IGNORECASE):
+					formok = False
+					errors.append(_('Invalid alias!'))
+
+				domain = alias.split('@')[1]
+
+				if not 'maildrop' in request.params or request.params['maildrop'] == '' or not len(request.params['maildrop']) > 0 or len(request.params['maildrop']) > 300:
+					formok = False
+					errors.append(_('Invalid mail destination!'))
+
+
+				if 'mail' in request.params and not request.params['mail'] == '':
+					for k in request.params['mail'].split('\n'):
+						m = k.replace('\r', '').replace(' ', '')
+						if m == '':
+							continue
+
+						if not re.match(regex.email, m, re.IGNORECASE):
+							formok = False
+							break
+
+						m_domain = m.split('@')[1]
+						if not m_domain == domain:
+							formok = False
+							errors.append(_('All aliases need to be within the same domain!'))
+							break
+
+					if len(request.params['mail']) > 300:
+						formok = False
+
+					if not formok:
+						errors.append(_('Invalid related aliases!'))
+
+				if not formok:
+					session['errors'] = errors
+					session['reqparams'] = {}
+
+					# @TODO request.params may contain multiple values per key... test & fix
+					for k in request.params.iterkeys():
+						session['reqparams'][k] = request.params[k]
+
+					session.save()
+
+					if mode == 'edit':
+						redirect(url(controller='mails', action='editAlias', alias=alias))
+					else:
+						redirect(url(controller='mails', action='editAlias'))
+				else:
+					items['mode'] = mode
+					items['alias'] = alias
+					items['mail'] = []
+					items['maildrop'] = []
+
+					if 'mail' in request.params and len(request.params['mail']) > 0:
+						for k in request.params['mail'].split('\n'):
+							m = k.replace('\r', '').replace(' ', '')
+							if m == '':
+								continue
+
+							items['mail'].append(m)
+
+					if 'maildrop' in request.params and len(request.params['maildrop']) > 0:
+						for k in request.params['maildrop'].split('\n'):
+							m = k.replace('\r', '').replace(' ', '')
+							if m == '':
+								continue
+
+							items['maildrop'].append(m)
+
+			return f(self, items)
+		return new_f
 
 	@BaseController.needAdmin
-	def deleteGroup(self):
-		if not self._isParamStr('gid'):
-			redirect(url(controller='mail', action='index'))
+	@checkEditAlias
+	@restrict('POST')
+	def doEditAlias(self, items):
+		try:
+			alias = Alias()
+			alias.dn_mail = items['alias']
+			alias.mail = items['mail']
+			alias.maildrop = items['maildrop']
 
-		result = self.lmf.deleteGroup(request.params['gid'])
+			if items['mode'] == 'edit':
+				self.lmf.updateAlias(alias)
+			else:
+				self.lmf.addAlias(alias)
 
-		if result:
-			session['flash'] = _('Group successfully deleted')
-			session['flash_class'] = 'success'
-		else:
-			session['flash'] = _('Failed to delete mail!')
+			session['flash'] = _('Alias successfully edited')
+			session.save()
+		except Exception as e:
+			import sys, traceback
+			traceback.print_exc(file=sys.stdout)
+			session['flash'] = _('Error while editing alias')
+			session.save()
+			redirect(url(controller='mails', action='index'))
+
+		redirect(url(controller='mails', action='editAlias', alias=alias.dn_mail))
+		#redirect(url(controller='mails', action='listAliases', domain=alias.domain))
+
+	@BaseController.needAdmin
+	def deleteAlias(self):
+		if not self._isParamStr('alias'):
+			redirect(url(controller='mails', action='index'))
+
+		try:
+			result = self.lmf.deleteAlias(request.params['alias'])
+
+			if result:
+				session['flash'] = _('Alias successfully deleted')
+				session['flash_class'] = 'success'
+			else:
+				session['flash'] = _('Failed to delete alias!')
+				session['flash_class'] = 'error'
+		except:
+			import sys, traceback
+			traceback.print_exc(file=sys.stdout)
+			session['flash'] = _('Failed to delete alias!')
 			session['flash_class'] = 'error'
 
 		session.save()
-
-		redirect(url(controller='mail', action='index'))
+		redirect(url(controller='mails', action='index'))

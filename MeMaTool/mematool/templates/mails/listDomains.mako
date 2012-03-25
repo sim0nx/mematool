@@ -12,7 +12,6 @@
 			%for d in c.domains:
 			<tr class="table_row">
 				<td>${d.dc}</td>
-				<td>${h.link_to(_('Edit'),url(controller='mails', action='editDomain', domain=d.dc))}</td>
 				<td>${h.link_to(_('Aliases'),url(controller='mails', action='listAliases', domain=d.dc))}</td>
 				<td>${h.link_to(_('Delete'),url(controller='mails', action='deleteDomain', domain=d.dc), onclick='return confirm(\'' + _('Are you _really_ sure you want to delete') + ' "' + d.dc + '"?\')')}</td>
 			</tr>

@@ -22,7 +22,7 @@
 
 class Alias(object):
 	str_vars = ['dn_mail']
-	list_vars = ['mail', 'mailDrop']
+	list_vars = ['mail', 'maildrop']
 
 	def __repr__(self):
 		return "<Alias('dn_mail=%s')>" % (self.dn_mail)
@@ -53,3 +53,15 @@ class Alias(object):
 	def __ne__(self, om):
 		return not self == om
 
+	@property
+	def domain(self):
+		if not self.dn_mail == '':
+			return self.dn_mail.split('@')[1]
+
+		return None
+
+	def getDN(self, basedn):
+		if not self.dn_mail == '':
+			return 'mail=' + self.dn_mail + ',dc=' + self.domain + ',' + basedn
+
+		raise Exception('Uninitialized object')
