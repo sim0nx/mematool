@@ -154,6 +154,12 @@ class BaseModelFactory(object):
 	def getHighestGidNumber(self):
 		pass
 
+	def addDomain(self, domain):
+		pass
+
+	def deleteDomain(self, domain):
+		pass
+
 	def getDomain(self, domain):
 		pass
 
@@ -185,3 +191,6 @@ class BaseModelFactory(object):
 			aliases.append(self.getAlias(v))
 
 		return aliases
+
+	def deleteAlias(self, alias):
+		pass
