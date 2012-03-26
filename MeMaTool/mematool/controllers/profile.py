@@ -224,7 +224,7 @@ class ProfileController(BaseController):
 				session['flash_class'] = 'info'
 
 
-			if 'userPassword' in request.params and request.params['userPassword'] != '':
+			if 'userPassword' in request.params and 'userPassword2' in request.params and request.params['userPassword'] != '':
 				m.setPassword(request.params['userPassword'])
 				self.lmf.saveMember(m)
                                 session['secret'] = encodeAES(request.params['userPassword'])
