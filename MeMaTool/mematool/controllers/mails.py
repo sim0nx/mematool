@@ -32,7 +32,7 @@ from mematool.lib.syn2cat import regex
 from datetime import date
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model import Group, Alias
-from mematool.model.lechecker import ParamChecker
+from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
 # Decorators
 from pylons.decorators import validate
@@ -110,14 +110,7 @@ class MailsController(BaseController):
           ParamChecker.checkDomain('domain')
         except InvalidParameterFormat as ipf:
           formok = False
-          errors.append(ipf.msg)
-
-        '''
-        if not self._isParamStr('domain', max_len=64) or not re.match(regex.domain, request.params['domain'], re.IGNORECASE):
-          formok = False
-          print request.params['domain']
-          errors.append(_('Invalid domain'))
-        '''
+          errors.append(ipf.message)
 
         if not formok:
           session['errors'] = errors
@@ -245,24 +238,31 @@ class MailsController(BaseController):
           redirect(url(controller='mails', action='index'))
 
         if mode == 'add':
-          if not self._isParamStr('domain', max_len=64) or not re.match(regex.domain, request.params['domain'], re.IGNORECASE):
+          try:
+            ParamChecker.checkDomain('domain')
+          except InvalidParameterFormat as ipf:
             formok = False
-            errors.append(_('Invalid domain'))
+            errors.append(ipf.message)
 
           alias = request.params['alias'] + '@' + request.params['domain']
+          request.params['alias'] = alias
         else:
           alias = request.params['alias']
 
-        if not re.match(regex.email, alias, re.IGNORECASE):
+        try:
+          ParamChecker.checkDomain(alias, param=False)
+        except InvalidParameterFormat as ipf:
           formok = False
-          errors.append(_('Invalid alias!'))
+          errors.append(ipf.message)
 
         domain = alias.split('@')[1]
 
-        if not 'maildrop' in request.params or request.params['maildrop'] == '' or not len(request.params['maildrop']) > 0 or len(request.params['maildrop']) > 300:
+        # @TODO improve check
+        try:
+          ParamChecker.checkString('maildrop', min_len=0, max_len=300)
+        except InvalidParameterFormat as ipf:
           formok = False
           errors.append(_('Invalid mail destination!'))
-
 
         if 'mail' in request.params and not request.params['mail'] == '':
           for k in request.params['mail'].split('\n'):

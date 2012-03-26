@@ -36,6 +36,7 @@ from sqlalchemy.orm.exc import NoResultFound
 import re
 from mematool.lib.syn2cat import regex
 from mematool.model.ldapModelFactory import LdapModelFactory
+from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
 from pylons.decorators.rest import restrict
 
@@ -110,15 +111,21 @@ class MembersController(BaseController):
         formok = True
         errors = []
 
-        if not 'mode' in request.params or (request.params['mode'] != 'add' and request.params['mode'] != 'edit'):
+        try:
+          ParamChecker.checkMode('mode', values=('add', 'edit'))
+        except InvalidParameterFormat as ipf:
           formok = False
-          errors.append(_('Invalid form data'))
+          errors.append(ipf.message)
 
-        if not 'sn' in request.params or request.params['sn'] == '' or len(request.params['sn']) > 20:
+        try:
+          ParamChecker.checkString('sn', min_len=0, max_len=20)
+        except InvalidParameterFormat as ipf:
           formok = False
           errors.append(_('Invalid surname'))
 
-        if not 'givenName' in request.params or request.params['givenName'] == '' or len(request.params['givenName']) > 20:
+        try:
+          ParamChecker.checkString('givenName', min_len=0, max_len=20)
+        except InvalidParameterFormat as ipf:
           formok = False
           errors.append(_('Invalid given name'))
 
@@ -126,37 +133,71 @@ class MembersController(BaseController):
           formok = False
           errors.append(_('Invalid birth date'))
 
-        if not 'homePostalAddress' in request.params or request.params['homePostalAddress'] == '' or len(request.params['homePostalAddress']) > 255:
+        try:
+          ParamChecker.checkString('homePostalAddress', min_len=0, max_len=255)
+        except InvalidParameterFormat as ipf:
           formok = False
           errors.append(_('Invalid address'))
 
-        if 'homePhone' in request.params and request.params['homePhone'] != '' and not re.match(regex.phone, request.params['homePhone'], re.IGNORECASE):
-          formok = False
-          errors.append(_('Invalid phone number'))
+        try:
+          '''optional'''
+          ParamChecker.checkString('homePhone')
 
-        if not 'mobile' in request.params or not re.match(regex.phone, request.params['mobile'], re.IGNORECASE):
+          try:
+            ParamChecker.checkPhone('homePhone')
+          except InvalidParameterFormat as ipf:
+            formok = False
+            errors.append(ipf.message)
+        except:
+          pass 
+
+        try:
+          ParamChecker.checkPhone('mobile')
+        except InvalidParameterFormat as ipf:
           formok = False
           errors.append(_('Invalid mobile number'))
 
-        if not 'mail' in request.params or not re.match(regex.email, request.params['mail'], re.IGNORECASE):
+        try:
+          ParamChecker.checkEmail('mail')
+        except InvalidParameterFormat as ipf:
           formok = False
-          errors.append(_('Invalid e-mail address'))
+          errors.append(ipf.message)
 
-        if not 'loginShell' in request.params or not re.match(regex.loginShell, request.params['loginShell'], re.IGNORECASE):
+        try:
+          ParamChecker.checkString('loginShell', min_len=0, max_len=20, regex=regex.loginShell)
+        except InvalidParameterFormat as ipf:
           formok = False
           errors.append(_('Invalid login shell'))
 
-        if not 'arrivalDate' in request.params or not re.match(regex.date, request.params['arrivalDate'], re.IGNORECASE):
+        try:
+          ParamChecker.checkDate('arrivalDate')
+        except InvalidParameterFormat as ipf:
           formok = False
           errors.append(_('Invalid "member since" date'))
 
-        if 'leavingDate' in request.params and request.params['leavingDate'] != '' and not re.match(regex.date, request.params['leavingDate'], re.IGNORECASE):
-          formok = False
-          errors.append(_('Invalid "membership canceled" date'))
+        try:
+          '''optional'''
+          ParamChecker.checkString('leavingDate')
 
-        if 'sshPublicKey' in request.params and request.params['sshPublicKey'] != '' and not re.match(regex.sshKey, request.params['sshPublicKey'], re.IGNORECASE) or len(request.params['sshPublicKey']) > 1200:
-          formok = False
-          errors.append(_('Invalid SSH key'))
+          try:
+            ParamChecker.checkDate('leavingDate')
+          except InvalidParameterFormat as ipf:
+            formok = False
+            errors.append(_('Invalid "membership canceled" date'))
+        except:
+          pass 
+
+        try:
+          '''optional'''
+          ParamChecker.checkString('sshPublicKey')
+
+          try:
+            ParamChecker.checkString('sshPublicKey', min_len=0, max_len=1200, regex=regex.sshKey)
+          except InvalidParameterFormat as ipf:
+            formok = False
+            errors.append(_('Invalid SSH key'))
+        except:
+          pass
 
         if 'pgpKey' in request.params and request.params['pgpKey'] != '' and not re.match(regex.pgpKey, request.params['pgpKey'], re.IGNORECASE):
           formok = False
