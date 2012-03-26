@@ -236,10 +236,6 @@ class MailsController(BaseController):
 					redirect(url(controller='mails', action='index'))
 
 				if mode == 'add':
-					if not self._isParamStr('alias', max_len=64) or not re.match(regex.username, request.params['alias'], re.IGNORECASE):
-						formok = False
-						errors.append(_('Invalid alias'))
-
 					if not self._isParamStr('domain', max_len=64) or not re.match(regex.domain, request.params['domain'], re.IGNORECASE):
 						formok = False
 						errors.append(_('Invalid domain'))

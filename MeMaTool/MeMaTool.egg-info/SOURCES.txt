@@ -95,7 +95,6 @@ mematool/templates/unauthorized.mako
 mematool/templates/auth/login.mako
 mematool/templates/groups/editGroup.mako
 mematool/templates/groups/listGroups.mako
-mematool/templates/mails/.editDomain.mako.swp
 mematool/templates/mails/editAlias.mako
 mematool/templates/mails/editDomain.mako
 mematool/templates/mails/listAliases.mako

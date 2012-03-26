@@ -575,11 +575,19 @@ class LdapModelFactory(BaseModelFactory):
 			mod_attrs = []
 			mod_attrs.append(('objectClass', ['mailAlias']))
 
+			mail = []
 			for m in alias.mail:
-				mod_attrs.append(('mail', [str(m.encode('utf-8', 'ignore'))]))
+				mail.append(str(m.encode('utf-8', 'ignore')))
 
+			if len(mail) > 0:
+				mod_attrs.append(('mail', mail))
+
+			maildrop = []
 			for m in alias.maildrop:
-				mod_attrs.append(('maildrop', [str(m.encode('utf-8', 'ignore'))]))
+				maildrop.append(str(m.encode('utf-8', 'ignore')))
+
+			if len(maildrop) > 0:
+				mod_attrs.append(('maildrop', maildrop))
 
 			while None in mod_attrs:
 				mod_attrs.remove(None)
