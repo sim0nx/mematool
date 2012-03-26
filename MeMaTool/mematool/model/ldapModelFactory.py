@@ -427,7 +427,7 @@ class LdapModelFactory(BaseModelFactory):
 
     return str(gidNumber)
 
-        def addDomain(self, domain):
+  def addDomain(self, domain):
     '''Add a new domain'''
     dl = self.getDomainList()
 
@@ -453,7 +453,7 @@ class LdapModelFactory(BaseModelFactory):
 
     return False
 
-        def deleteDomain(self, domain):
+  def deleteDomain(self, domain):
     '''Completely remove a domain'''
     dl = self.getDomainList()
 
@@ -677,7 +677,7 @@ class LdapModelFactory(BaseModelFactory):
 
     return True
 
-        def deleteAlias(self, alias):
+  def deleteAlias(self, alias):
     '''Completely remove a alias'''
 
     a = self.getAlias(alias)

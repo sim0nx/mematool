@@ -10,53 +10,52 @@ from mematool.lib.base import BaseController, render
 from pylons import tmpl_context as c
 
 class ErrorController(BaseController):
+  """Generates error documents as and when they are required.
 
-    """Generates error documents as and when they are required.
+  The ErrorDocuments middleware forwards to ErrorController when error
+  related status codes are returned from the application.
 
-    The ErrorDocuments middleware forwards to ErrorController when error
-    related status codes are returned from the application.
+  This behaviour can be altered by changing the parameters to the
+  ErrorDocuments middleware in your config/middleware.py file.
 
-    This behaviour can be altered by changing the parameters to the
-    ErrorDocuments middleware in your config/middleware.py file.
+  """
 
-    """
+  def document(self):
+    """Render the error document"""
+    '''
+          resp = request.environ.get('pylons.original_response')
 
-    def document(self):
-        """Render the error document"""
-  '''
-        resp = request.environ.get('pylons.original_response')
+    content = ''
+    try:
+      content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
+    except:
+      pass
 
-  content = ''
-  try:
-    content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
-  except:
-    pass
+    c.heading = content
 
-  c.heading = content
+    return render('/unauthorized.mako')
+    '''
+    request = self._py_object.request
+    resp = request.environ.get('pylons.original_response')
+    try:
+        content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
 
-  return render('/unauthorized.mako')
-  '''
-        request = self._py_object.request
-        resp = request.environ.get('pylons.original_response')
-  try:
-          content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
+        page = error_document_template % \
+            dict(prefix=request.environ.get('SCRIPT_NAME', ''),
+                 code=cgi.escape(request.GET.get('code', str(resp.status_int))),
+                 message=content)
+    except:
+      # resp can be None !
+      # @TODO do log what happened here ... not normal
+      redirect(url(controller='profile', action='index'))
+      pass
 
-          page = error_document_template % \
-              dict(prefix=request.environ.get('SCRIPT_NAME', ''),
-                   code=cgi.escape(request.GET.get('code', str(resp.status_int))),
-                   message=content)
-  except:
-    # resp can be None !
-    # @TODO do log what happened here ... not normal
-    redirect(url(controller='profile', action='index'))
-    pass
+    return page
 
-        return page
+  def unauthorized(self):
+    c.heading = '401'
+    return render('/unauthorized.mako')
 
-    def unauthorized(self):
-  c.heading = '401'
-  return render('/unauthorized.mako')
-
-    def forbidden(self):
-  c.heading = '403'
-  return render('/unauthorized.mako')
+  def forbidden(self):
+    c.heading = '403'
+    return render('/unauthorized.mako')

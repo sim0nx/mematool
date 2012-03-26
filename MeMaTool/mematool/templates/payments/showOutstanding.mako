@@ -39,8 +39,8 @@ ${h.end_form()}
       <% i = 0 %>
       % for m in c.members:
             <%
-                          paymentGood = h.literal('<font color="red">' + _('no') + '</font>') if not m.paymentGood else h.literal('<font color="green">' + _('yes') + '</font>')
-        i += 1
+              paymentGood = h.literal('<font color="red">' + _('no') + '</font>') if not m.paymentGood else h.literal('<font color="green">' + _('yes') + '</font>')
+              i += 1
             %>
             <tr class="table_row">
         <td>${i}</td>

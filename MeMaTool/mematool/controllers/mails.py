@@ -32,6 +32,7 @@ from mematool.lib.syn2cat import regex
 from datetime import date
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model import Group, Alias
+from mematool.model.lechecker import ParamChecker
 
 # Decorators
 from pylons.decorators import validate
@@ -105,10 +106,18 @@ class MailsController(BaseController):
         errors = []
         items = {}
 
+        try:
+          ParamChecker.checkDomain('domain')
+        except InvalidParameterFormat as ipf:
+          formok = False
+          errors.append(ipf.msg)
+
+        '''
         if not self._isParamStr('domain', max_len=64) or not re.match(regex.domain, request.params['domain'], re.IGNORECASE):
           formok = False
           print request.params['domain']
           errors.append(_('Invalid domain'))
+        '''
 
         if not formok:
           session['errors'] = errors

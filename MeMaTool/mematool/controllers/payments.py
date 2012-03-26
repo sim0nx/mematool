@@ -210,7 +210,7 @@ class PaymentsController(BaseController):
 
     ## consider pagination
     # http://pylonsbook.com/en/1.1/starting-the-simplesite-tutorial.html#using-pagination
-                try:
+    try:
       #c.member.leavingDate = date(int(member.leavingDate[:4]),int(member.leavingDate[5:6]),int(member.leavingDate[7:8]))
       ## ideally, fetch monthly from member and the rest from payment (one to many relation)
       ## http://www.sqlalchemy.org/docs/05/reference/ext/declarative.html

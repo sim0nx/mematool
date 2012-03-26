@@ -227,7 +227,7 @@ class ProfileController(BaseController):
       if 'userPassword' in request.params and 'userPassword2' in request.params and request.params['userPassword'] != '' and request.params['userPassword'] == request.params['userPassword2']:
         m.setPassword(request.params['userPassword'])
         self.lmf.saveMember(m)
-                                session['secret'] = encodeAES(request.params['userPassword'])
+        session['secret'] = encodeAES(request.params['userPassword'])
 
         session['flash'] = _('Password updated!')
         session['flash_class'] = 'success'
