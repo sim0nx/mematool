@@ -16,21 +16,21 @@ from mematool.lib.syn2cat.ldapConnector import LdapConnector
 
 
 class LDAPAuthAdapter(object):
-	"""The base class for LDAP source adapters"""
-	
-	def __init__(self, **kwargs):
-		super(LDAPAuthAdapter, self).__init__(**kwargs)
+  """The base class for LDAP source adapters"""
+  
+  def __init__(self, **kwargs):
+    super(LDAPAuthAdapter, self).__init__(**kwargs)
 
-	def authenticate(self, username, password):
-		"""Authenticate a user via LDAP and return his/her LDAP properties.
+  def authenticate(self, username, password):
+    """Authenticate a user via LDAP and return his/her LDAP properties.
 
-		 Raises AuthenticationError if the credentials are rejected, or
-		 EnvironmentError if the LDAP server can't be reached.
-		 """
+     Raises AuthenticationError if the credentials are rejected, or
+     EnvironmentError if the LDAP server can't be reached.
+     """
 
-		try:
-			ldapcon = LdapConnector(uid=username, password=password)
+    try:
+      ldapcon = LdapConnector(uid=username, password=password)
 
-			return True
-		except:
-			return False
+      return True
+    except:
+      return False

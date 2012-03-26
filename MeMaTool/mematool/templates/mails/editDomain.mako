@@ -2,12 +2,12 @@
 
 <%!
 def getFormVar(s, c, var):
-	if 'reqparams' in s:
-		if var in s['reqparams']:
-			return s['reqparams'][var]
+  if 'reqparams' in s:
+    if var in s['reqparams']:
+      return s['reqparams'][var]
 
-	if hasattr(c, 'domain') and var in vars(c.domain):
-		return vars(c.domain)[var]
+  if hasattr(c, 'domain') and var in vars(c.domain):
+    return vars(c.domain)[var]
 %>
 
 
@@ -17,23 +17,23 @@ ${h.form(url(controller='mails', action='doEditDomain'), method='post', name='ed
 <article>
 
 <table class="table_content" width="95%">
-	${parent.all_messages()}
+  ${parent.all_messages()}
         <tr>
                 <td class="table_title"><label for="domain">${_('Domain name:')}</label></td>
-		<td>
+    <td>
                 % if c.mode is 'add':
-		<td>${h.text('domain', value=getFormVar(session, c, 'dc'), class_='text')}</td>
+    <td>${h.text('domain', value=getFormVar(session, c, 'dc'), class_='text')}</td>
                 % else:
                 ${getFormVar(session, c, 'dc')}
                 % endif
-		</td>
+    </td>
         </tr>
 </table>
 <% 
-	if not hasattr(c, 'domain') or c.domain == None:
-		label = _('Add domain')
-	else:
-		label = _('Edit domain')
+  if not hasattr(c, 'domain') or c.domain == None:
+    label = _('Add domain')
+  else:
+    label = _('Edit domain')
 %>
 % if hasattr(c, 'domain') and hasattr(c.domain, 'dc') and not c.domain.dc == None:
 ${h.hidden('dc', value=getFormVar(session, c, 'dc'))}

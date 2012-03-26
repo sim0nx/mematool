@@ -22,9 +22,9 @@ secret = 'koRie$r9k%ohmu&Ayouk)9Q"uoo§souifo4*aex4u#Basheek*a9jooHuoG/heiqua7oP
 key = hashlib.sha256(secret).digest()
 
 def encodeAES(msg):
-	cipher = AES.new(key)
-	return base64.b64encode(cipher.encrypt(pad(msg)))
+  cipher = AES.new(key)
+  return base64.b64encode(cipher.encrypt(pad(msg)))
 
 def decodeAES(cmsg):
-	cipher = AES.new(key)
-	return cipher.decrypt(base64.b64decode(cmsg)).rstrip(PADDING)
+  cipher = AES.new(key)
+  return cipher.decrypt(base64.b64decode(cmsg)).rstrip(PADDING)

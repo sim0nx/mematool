@@ -27,20 +27,20 @@ from mematool.model.meta import Base
 from mematool.lib.base import Session
 
 class Paymentmethod(Base):
-	__tablename__ = 'paymentmethod'
-	__table_args__ = (
-		{'mysql_engine':'InnoDB'}
-		)
+  __tablename__ = 'paymentmethod'
+  __table_args__ = (
+    {'mysql_engine':'InnoDB'}
+    )
 
-	idpaymentmethod = Column(Integer, primary_key=True)
-	dtname = Column(String(255))
+  idpaymentmethod = Column(Integer, primary_key=True)
+  dtname = Column(String(255))
 
-	def __init__(self):
-		pass
+  def __init__(self):
+    pass
 
-	def __repr__(self):
-		return "<Paymentmethod('idpaymentmethod=%d, dtname=%s')>" % (self.idpaymentmethod, self.dtname)
+  def __repr__(self):
+    return "<Paymentmethod('idpaymentmethod=%d, dtname=%s')>" % (self.idpaymentmethod, self.dtname)
 
-	def save(self):
-		Session.commit()
+  def save(self):
+    Session.commit()
 

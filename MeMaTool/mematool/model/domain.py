@@ -21,27 +21,27 @@
 
 
 class Domain(object):
-	str_vars = ['dc']
+  str_vars = ['dc']
 
-	def __repr__(self):
-		return "<Domain('dc=%s')>" % (self.dc)
+  def __repr__(self):
+    return "<Domain('dc=%s')>" % (self.dc)
 
-	def __init__(self):
-		for v in self.str_vars:
-			setattr(self, v, '')
+  def __init__(self):
+    for v in self.str_vars:
+      setattr(self, v, '')
 
-		self.all_vars = []
-		self.all_vars.extend(self.str_vars)
+    self.all_vars = []
+    self.all_vars.extend(self.str_vars)
 
-	def __eq__(self, om):
-		equal = True
+  def __eq__(self, om):
+    equal = True
 
-		for v in self.all_vars:
-			if not getattr(self, v) == getattr(om, v):
-				equal = False
-				break
+    for v in self.all_vars:
+      if not getattr(self, v) == getattr(om, v):
+        equal = False
+        break
 
-		return equal
+    return equal
 
-	def __ne__(self, om):
-		return not self == om
+  def __ne__(self, om):
+    return not self == om

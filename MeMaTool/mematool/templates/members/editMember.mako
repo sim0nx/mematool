@@ -2,22 +2,22 @@
 
 <%!
 def getFormVar(s, c, var):
-	if 'reqparams' in s:
-		if var in s['reqparams']:
-			return s['reqparams'][var]
+  if 'reqparams' in s:
+    if var in s['reqparams']:
+      return s['reqparams'][var]
 
-	if hasattr(c, 'member'):
-		if var in vars(c.member):
-			return vars(c.member)[var]
+  if hasattr(c, 'member'):
+    if var in vars(c.member):
+      return vars(c.member)[var]
 
-	if var is 'gidNumber':
-		return 100
-	elif var is 'loginShell':
-		return '/bin/false'
-	elif var is 'homeDirectory':
-		return '/home/'
+  if var is 'gidNumber':
+    return 100
+  elif var is 'loginShell':
+    return '/bin/false'
+  elif var is 'homeDirectory':
+    return '/home/'
 
-	return ''
+  return ''
 %>
 
 ${h.form(url(controller='members', action='doEditMember'), method='post', name='editMemberForm')}
@@ -26,20 +26,20 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
 <header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
 <article>
 <table class="table_content">
-	${parent.all_messages()}
+  ${parent.all_messages()}
         <tr>
                 <td class="table_title">
                         ${_('Username')}
                 </td>
-		<td>
-			% if c.mode is 'add':
-			${h.text('member_id', value=getFormVar(session, c, 'member_id'), class_='text')}
-			% else:
-			${c.member.uid}
-			% endif
-		</td>
-	</tr>
-	% if c.mode is 'edit':
+    <td>
+      % if c.mode is 'add':
+      ${h.text('member_id', value=getFormVar(session, c, 'member_id'), class_='text')}
+      % else:
+      ${c.member.uid}
+      % endif
+    </td>
+  </tr>
+  % if c.mode is 'edit':
         <tr>
                 <td class="table_title">
                         ${_('User ID')}
@@ -48,7 +48,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${c.member.uidNumber}
                 </td>
         </tr>
-	% endif
+  % endif
         <tr>
                 <td class="table_title">
                         ${_('Additional groups')}
@@ -58,36 +58,36 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${h.checkbox('locked_member', value='1', checked=getFormVar(session, c, 'locked_member'), class_='text')}${_('locked member')}<br>
                 </td>
         </tr>
-	<tr>
+  <tr>
                 <td class="table_title">
                         ${_('Common name')}
                 </td>
                 <td>
-			${h.text('cn', value=getFormVar(session, c, 'cn'), class_='text')}
+      ${h.text('cn', value=getFormVar(session, c, 'cn'), class_='text')}
                 </td>
-	</tr>
-	<tr>
+  </tr>
+  <tr>
                 <td class="table_title">
                         ${_('Surname')}
                 </td>
                 <td>
-			${h.text('sn', value=getFormVar(session, c, 'sn'), class_='text')}
+      ${h.text('sn', value=getFormVar(session, c, 'sn'), class_='text')}
                 </td>
         </tr>
-	<tr>
+  <tr>
                 <td class="table_title">
                         ${_('Given name')}
                 </td>
                 <td>
-			${h.text('givenName', value=getFormVar(session, c, 'givenName'), class_='text')}
+      ${h.text('givenName', value=getFormVar(session, c, 'givenName'), class_='text')}
                 </td>
         </tr>
-	<tr>
+  <tr>
                 <td class="table_title">
                         ${_('Convention signer')}
                 </td>
                 <td>
-			${h.text('conventionSigner', value=getFormVar(session, c, 'conventionSigner'), class_='text')}
+      ${h.text('conventionSigner', value=getFormVar(session, c, 'conventionSigner'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -95,7 +95,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Birth Date')} (YYYY-MM-DD)
                 </td>
                 <td>
-			${h.text('birthDate', value=getFormVar(session, c, 'birthDate'), class_='text')}
+      ${h.text('birthDate', value=getFormVar(session, c, 'birthDate'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -103,7 +103,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Address')}
                 </td>
                 <td>
-			${h.textarea('homePostalAddress', content=getFormVar(session, c, 'homePostalAddress'), rows='10', cols='60', class_='text')}
+      ${h.textarea('homePostalAddress', content=getFormVar(session, c, 'homePostalAddress'), rows='10', cols='60', class_='text')}
                 </td>
         </tr>
         <tr>
@@ -111,7 +111,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Phone')} (+xxx.yyyyyyyyy)
                 </td>
                 <td>
-			${h.text('homePhone', value=getFormVar(session, c, 'homePhone'), class_='text')}
+      ${h.text('homePhone', value=getFormVar(session, c, 'homePhone'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -119,7 +119,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Mobile')} (+xxx.yyyyyyyyy)
                 </td>
                 <td>
-			${h.text('mobile', value=getFormVar(session, c, 'mobile'), class_='text')}
+      ${h.text('mobile', value=getFormVar(session, c, 'mobile'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -127,7 +127,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('E-Mail')}
                 </td>
                 <td>
-			${h.text('mail', value=getFormVar(session, c, 'mail'), class_='text')}
+      ${h.text('mail', value=getFormVar(session, c, 'mail'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -135,7 +135,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('XMPP/Jabber/GTalk ID')}
                 </td>
                 <td>
-			${h.text('xmppID', value=getFormVar(session, c, 'xmppID'), class_='text')}
+      ${h.text('xmppID', value=getFormVar(session, c, 'xmppID'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -143,7 +143,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Login Shell')}
                 </td>
                 <td>
-			${h.text('loginShell', value=getFormVar(session, c, 'loginShell'), class_='text')}
+      ${h.text('loginShell', value=getFormVar(session, c, 'loginShell'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -151,7 +151,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Member since')} (YYYY-MM-DD)
                 </td>
                 <td>
-			${h.text('arrivalDate', value=getFormVar(session, c, 'arrivalDate'), class_='text')}
+      ${h.text('arrivalDate', value=getFormVar(session, c, 'arrivalDate'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -159,7 +159,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Membership canceled')} (YYYY-MM-DD)
                 </td>
                 <td>
-			${h.text('leavingDate', value=getFormVar(session, c, 'leavingDate'), class_='text')}
+      ${h.text('leavingDate', value=getFormVar(session, c, 'leavingDate'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -167,7 +167,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('PGP Key')}
                 </td>
                 <td>
-			${h.text('pgpKey', value=getFormVar(session, c, 'pgpKey'), class_='text')}
+      ${h.text('pgpKey', value=getFormVar(session, c, 'pgpKey'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -175,7 +175,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('iButton UID')}
                 </td>
                 <td>
-			${h.text('iButtonUID', value=getFormVar(session, c, 'iButtonUID'), class_='text')}
+      ${h.text('iButtonUID', value=getFormVar(session, c, 'iButtonUID'), class_='text')}
                 </td>
         </tr>
         <tr>
@@ -183,7 +183,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('SSH Public Key')}
                 </td>
                 <td>
-			${h.textarea('sshPublicKey', content=getFormVar(session, c, 'sshPublicKey'), rows='10', cols='60', class_='text')}
+      ${h.textarea('sshPublicKey', content=getFormVar(session, c, 'sshPublicKey'), rows='10', cols='60', class_='text')}
                 </td>
         </tr>
         <tr>
@@ -191,7 +191,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Password')} (min 8)
                 </td>
                 <td>
-			${h.password('userPassword', value='', class_='text')}
+      ${h.password('userPassword', value='', class_='text')}
                 </td>
         </tr>
         <tr>
@@ -199,7 +199,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Repeat Password')} (min 8)
                 </td>
                 <td>
-			${h.password('userPassword2', value='', class_='text')}
+      ${h.password('userPassword2', value='', class_='text')}
                 </td>
         </tr>
 </table>
@@ -218,6 +218,6 @@ ${h.end_form()}
 
 <%
 if 'reqparams' in session:
-	del session['reqparams']
-	session.save()
+  del session['reqparams']
+  session.save()
 %>

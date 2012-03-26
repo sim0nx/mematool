@@ -25,23 +25,23 @@ from mematool.model.meta import Base
 
 
 class TmpMember(Base):
-	__tablename__ = 'tmpMember'
-	__table_args__ = (
-		{'mysql_engine':'InnoDB'}
-		)
+  __tablename__ = 'tmpMember'
+  __table_args__ = (
+    {'mysql_engine':'InnoDB'}
+    )
 
-	id			= Column(Integer, primary_key=True)
-	gn			= Column(Unicode(60))
-	sn 			= Column(Unicode(60))
-	birthDate		= Column(Unicode(10))
-	homePostalAddress	= Column(Unicode(255))
-	phone			= Column(Unicode(30))
-	mobile			= Column(Unicode(30))
-	mail			= Column(Unicode(255))
-	xmppID			= Column(Unicode(255))
+  id      = Column(Integer, primary_key=True)
+  gn      = Column(Unicode(60))
+  sn      = Column(Unicode(60))
+  birthDate   = Column(Unicode(10))
+  homePostalAddress = Column(Unicode(255))
+  phone     = Column(Unicode(30))
+  mobile      = Column(Unicode(30))
+  mail      = Column(Unicode(255))
+  xmppID      = Column(Unicode(255))
 
-	def __init__(self, uidNumber):
-		self.id = uidNumber
+  def __init__(self, uidNumber):
+    self.id = uidNumber
 
-	def __str__(self):
-		return "<TmpMember('id=%d, gn=%s', sn=%s, birthDate=%s, homePostalAddress=%s, phone=%s, mobile=%s, mail=%s, xmppID=%s)>" % (self.id, self.gn, self.sn, self.birthDate, self.homePostalAddress, self.phone, self.mobile, self.mail, self.xmppID)
+  def __str__(self):
+    return "<TmpMember('id=%d, gn=%s', sn=%s, birthDate=%s, homePostalAddress=%s, phone=%s, mobile=%s, mail=%s, xmppID=%s)>" % (self.id, self.gn, self.sn, self.birthDate, self.homePostalAddress, self.phone, self.mobile, self.mail, self.xmppID)

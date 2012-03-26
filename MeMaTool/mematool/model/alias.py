@@ -21,47 +21,47 @@
 
 
 class Alias(object):
-	str_vars = ['dn_mail']
-	list_vars = ['mail', 'maildrop']
+  str_vars = ['dn_mail']
+  list_vars = ['mail', 'maildrop']
 
-	def __repr__(self):
-		return "<Alias('dn_mail=%s')>" % (self.dn_mail)
+  def __repr__(self):
+    return "<Alias('dn_mail=%s')>" % (self.dn_mail)
 
-	def __init__(self):
-		for v in self.str_vars:
-			setattr(self, v, '')
-		for v in self.list_vars:
-			setattr(self, v, [])
+  def __init__(self):
+    for v in self.str_vars:
+      setattr(self, v, '')
+    for v in self.list_vars:
+      setattr(self, v, [])
 
-		self.all_vars = []
-		self.all_vars.extend(self.str_vars)
-		self.all_vars.extend(self.list_vars)
+    self.all_vars = []
+    self.all_vars.extend(self.str_vars)
+    self.all_vars.extend(self.list_vars)
 
-	def __eq__(self, om):
-		equal = True
+  def __eq__(self, om):
+    equal = True
 
-		if om is None:
-			return False
+    if om is None:
+      return False
 
-		for v in self.all_vars:
-			if not getattr(self, v) == getattr(om, v):
-				equal = False
-				break
+    for v in self.all_vars:
+      if not getattr(self, v) == getattr(om, v):
+        equal = False
+        break
 
-		return equal
+    return equal
 
-	def __ne__(self, om):
-		return not self == om
+  def __ne__(self, om):
+    return not self == om
 
-	@property
-	def domain(self):
-		if not self.dn_mail == '':
-			return self.dn_mail.split('@')[1]
+  @property
+  def domain(self):
+    if not self.dn_mail == '':
+      return self.dn_mail.split('@')[1]
 
-		return None
+    return None
 
-	def getDN(self, basedn):
-		if not self.dn_mail == '':
-			return 'mail=' + self.dn_mail + ',dc=' + self.domain + ',' + basedn
+  def getDN(self, basedn):
+    if not self.dn_mail == '':
+      return 'mail=' + self.dn_mail + ',dc=' + self.domain + ',' + basedn
 
-		raise Exception('Uninitialized object')
+    raise Exception('Uninitialized object')

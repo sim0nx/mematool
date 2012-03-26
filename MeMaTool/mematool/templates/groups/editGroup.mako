@@ -2,12 +2,12 @@
 
 <%!
 def getFormVar(s, c, var):
-	if 'reqparams' in s:
-		if var in s['reqparams']:
-			return s['reqparams'][var]
+  if 'reqparams' in s:
+    if var in s['reqparams']:
+      return s['reqparams'][var]
 
-	if var in vars(c.group):
-		return vars(c.group)[var]
+  if var in vars(c.group):
+    return vars(c.group)[var]
 %>
 
 
@@ -17,31 +17,31 @@ ${h.form(url(controller='groups', action='doEditGroup'), method='post', name='ed
 <article>
 
 <table class="table_content" width="95%">
-	${parent.all_messages()}
+  ${parent.all_messages()}
         <tr>
                 <td class="table_title"><label for="gid">${_('Group name:')}</label></td>
-		<td>${h.text('gid', value=getFormVar(session, c, 'gid'), class_='text')}</td>
+    <td>${h.text('gid', value=getFormVar(session, c, 'gid'), class_='text')}</td>
         </tr>
-	% if hasattr(c.group, 'gidNumber') and not c.group.gidNumber == None:
-	<tr>
-		<td class="table_title">
-			${_('Group members')}
-		</td>
-		<td>
-			${h.textarea('users', content=getFormVar(session, c, 'users'), rows='10', cols='60', class_='text')}
-		</td>
-	</tr>
-	% endif
-	<tr>
-		<td class="table_title"/>
-		<td style="text-align:left;">
-		<% 
-			if not hasattr(c.group, 'gidNumber') or c.group.gidNumber == None:
-				label = _('Add group')
-			else:
-				label = _('Edit group')
-		%>
-		${h.submit('send', label, class_='text')}</td>
-	</tr>
+  % if hasattr(c.group, 'gidNumber') and not c.group.gidNumber == None:
+  <tr>
+    <td class="table_title">
+      ${_('Group members')}
+    </td>
+    <td>
+      ${h.textarea('users', content=getFormVar(session, c, 'users'), rows='10', cols='60', class_='text')}
+    </td>
+  </tr>
+  % endif
+  <tr>
+    <td class="table_title"/>
+    <td style="text-align:left;">
+    <% 
+      if not hasattr(c.group, 'gidNumber') or c.group.gidNumber == None:
+        label = _('Add group')
+      else:
+        label = _('Edit group')
+    %>
+    ${h.submit('send', label, class_='text')}</td>
+  </tr>
 </table>
 ${h.end_form()}

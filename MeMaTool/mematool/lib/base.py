@@ -14,153 +14,153 @@ import re
 
 
 class BaseController(WSGIController):
-	def __init__(self):
-		self.identity = None
-		self.log = logging.getLogger(__name__)
+  def __init__(self):
+    self.identity = None
+    self.log = logging.getLogger(__name__)
 
-		# seems to be necessary, else the connection is kept around giving unwanted results
-		if 'ldapcon' in config['mematool']:
-			del(config['mematool']['ldapcon'])
+    # seems to be necessary, else the connection is kept around giving unwanted results
+    if 'ldapcon' in config['mematool']:
+      del(config['mematool']['ldapcon'])
 
-		# get the list of admins from the configuration file
-		# replace whitespace and split on comma
-		self.admins = re.sub(r' ', '', config.get('mematool.admins')).split(',')
-		self.financeadmins = re.sub(r' ', '', config.get('mematool.financeadmins')).split(',')
+    # get the list of admins from the configuration file
+    # replace whitespace and split on comma
+    self.admins = re.sub(r' ', '', config.get('mematool.admins')).split(',')
+    self.financeadmins = re.sub(r' ', '', config.get('mematool.financeadmins')).split(',')
 
-	def __call__(self, environ, start_response):
-		"""Invoke the Controller"""
-		# WSGIController.__call__ dispatches to the Controller method
-		# the request is routed to. This routing information is
-		# available in environ['pylons.routes_dict']
-		try:
-			return WSGIController.__call__(self, environ, start_response)
-		finally:
-			Session.remove()
-
-
-
-	def __before__(self):
-		self.identity = session.get("identity")
-
-		if self.identity:
-			request.environ["REMOTE_USER"] = self.identity
-
-			# blind call ... we don't care about the return value
-			# but only that the call sets a session variable
-			# @TODO silly hack... rework
-			self.isFinanceAdmin()
-			self.isAdmin()
-		else:
-			if self._require_auth():
-				referer = request.environ.get('PATH_INFO')
-				session["after_login"] = referer
-				self.log.debug("setting session['after_login'] to %r", referer)
-				session.save()
-				redirect(url(controller='auth', action='login'))
+  def __call__(self, environ, start_response):
+    """Invoke the Controller"""
+    # WSGIController.__call__ dispatches to the Controller method
+    # the request is routed to. This routing information is
+    # available in environ['pylons.routes_dict']
+    try:
+      return WSGIController.__call__(self, environ, start_response)
+    finally:
+      Session.remove()
 
 
-	def _require_auth(self):
-		return True
+
+  def __before__(self):
+    self.identity = session.get("identity")
+
+    if self.identity:
+      request.environ["REMOTE_USER"] = self.identity
+
+      # blind call ... we don't care about the return value
+      # but only that the call sets a session variable
+      # @TODO silly hack... rework
+      self.isFinanceAdmin()
+      self.isAdmin()
+    else:
+      if self._require_auth():
+        referer = request.environ.get('PATH_INFO')
+        session["after_login"] = referer
+        self.log.debug("setting session['after_login'] to %r", referer)
+        session.save()
+        redirect(url(controller='auth', action='login'))
 
 
-	def _isParamSet(self, param):
-		if param in request.params and request.params[param] != '':
-			return True
-
-		return False
+  def _require_auth(self):
+    return True
 
 
-	def _isParamStr(self, param, min_len=0, max_len=255, regex=None):
-		if self._isParamSet(param) and len(request.params[param]) > min_len  and len(request.params[param]) <= max_len:
-			if regex != None:
-				if re.match(regex, request.params[param], re.IGNORECASE):
-					return True
-			else:
-				return True
+  def _isParamSet(self, param):
+    if param in request.params and request.params[param] != '':
+      return True
 
-		return False
+    return False
 
 
-	def _isParamInt(self, param, min_val=0, min_len=0, max_len=4):
-		if self._isParamStr(param, min_len, max_len) and IsInt(request.params[param]) and int(request.params[param]) >= min_val:
-			return True
+  def _isParamStr(self, param, min_len=0, max_len=255, regex=None):
+    if self._isParamSet(param) and len(request.params[param]) > min_len  and len(request.params[param]) <= max_len:
+      if regex != None:
+        if re.match(regex, request.params[param], re.IGNORECASE):
+          return True
+      else:
+        return True
 
-		return False
-
-
-	def _isParamFloat(self, param, min_val=0, min_len=0, max_len=4):
-		if self._isParamStr(param, min_len, max_len) and IsFloat(request.params[param]) and float(request.params[param]) >= min_val:
-			return True
-
-		return False
+    return False
 
 
-	def _forbidden(self):
-		redirect(url(controller='error', action='forbidden'))
+  def _isParamInt(self, param, min_val=0, min_len=0, max_len=4):
+    if self._isParamStr(param, min_len, max_len) and IsInt(request.params[param]) and int(request.params[param]) >= min_val:
+      return True
+
+    return False
 
 
-	@staticmethod
-	def needAdmin(f):
-		def new_f(self):
-			if self.isAdmin():
-				return f(self)
+  def _isParamFloat(self, param, min_val=0, min_len=0, max_len=4):
+    if self._isParamStr(param, min_len, max_len) and IsFloat(request.params[param]) and float(request.params[param]) >= min_val:
+      return True
 
-			self._forbidden()
-
-		return new_f
+    return False
 
 
-	def isAdmin(self):
-		if not 'identity' in session:
-			return False
-
-		if not 'isAdmin' in session:
-			session['isAdmin'] = False
-			if 'groups' in session:
-				for ag in self.admins:
-					if ag in session['groups']:
-						session['isAdmin'] = True
-						break
-
-			session.save()
-
-		return session['isAdmin']
-
-	def isFinanceAdmin(self):
-		if not 'identity' in session:
-			return False
-
-		if not 'isFinanceAdmin' in session:
-			if session['identity'] in self.financeadmins:
-				session['isFinanceAdmin'] = True
-			else:
-				session['isFinanceAdmin'] = False
-				
-			session.save()
-
-		return session['isFinanceAdmin']
+  def _forbidden(self):
+    redirect(url(controller='error', action='forbidden'))
 
 
-	@staticmethod
-	def needFinanceAdmin(f):
-		def new_f(self):
-			if session['identity'] in self.financeadmins:
-				return f(self)
+  @staticmethod
+  def needAdmin(f):
+    def new_f(self):
+      if self.isAdmin():
+        return f(self)
 
-			self._forbidden()
+      self._forbidden()
 
-		return new_f
+    return new_f
 
-	'''
-	@param m Member object
-	@param p parameter string
-	'''
-	def prepareVolatileParameter(self, m, p):
-		'''check if a parameter has been removed or changed'''
-		if p in request.params:
-			if request.params[p] == '' and p in vars(m):
-				setattr(m, p, 'removed')
-			else:
-				setattr(m, p, request.params[p])
-		elif p in vars(m) and request.params['mode'] == 'edit':
-			setattr(m, p, 'removed')
+
+  def isAdmin(self):
+    if not 'identity' in session:
+      return False
+
+    if not 'isAdmin' in session:
+      session['isAdmin'] = False
+      if 'groups' in session:
+        for ag in self.admins:
+          if ag in session['groups']:
+            session['isAdmin'] = True
+            break
+
+      session.save()
+
+    return session['isAdmin']
+
+  def isFinanceAdmin(self):
+    if not 'identity' in session:
+      return False
+
+    if not 'isFinanceAdmin' in session:
+      if session['identity'] in self.financeadmins:
+        session['isFinanceAdmin'] = True
+      else:
+        session['isFinanceAdmin'] = False
+        
+      session.save()
+
+    return session['isFinanceAdmin']
+
+
+  @staticmethod
+  def needFinanceAdmin(f):
+    def new_f(self):
+      if session['identity'] in self.financeadmins:
+        return f(self)
+
+      self._forbidden()
+
+    return new_f
+
+  '''
+  @param m Member object
+  @param p parameter string
+  '''
+  def prepareVolatileParameter(self, m, p):
+    '''check if a parameter has been removed or changed'''
+    if p in request.params:
+      if request.params[p] == '' and p in vars(m):
+        setattr(m, p, 'removed')
+      else:
+        setattr(m, p, request.params[p])
+    elif p in vars(m) and request.params['mode'] == 'edit':
+      setattr(m, p, 'removed')

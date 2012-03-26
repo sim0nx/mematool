@@ -28,20 +28,20 @@ from mematool.model.paymentmethod import Paymentmethod
 from mematool.lib.base import Session
 
 class Payment(Base):
-	__tablename__ = 'payment'
-	__table_args__ = (
-		{'mysql_engine':'InnoDB'}
-		)
+  __tablename__ = 'payment'
+  __table_args__ = (
+    {'mysql_engine':'InnoDB'}
+    )
 
-	id = Column(Integer, primary_key=True)
-	uid = Column(String(255))
-	date = Column(Date, nullable=False)
-	verified = Column(Boolean)
-	status = Column(Integer(1))
+  id = Column(Integer, primary_key=True)
+  uid = Column(String(255))
+  date = Column(Date, nullable=False)
+  verified = Column(Boolean)
+  status = Column(Integer(1))
 
-	
-	def __init__(self):
-		pass	
+  
+  def __init__(self):
+    pass  
 
-	def __repr__(self):
-		return "<Payment('id=%d, uid=%s', date=%s, verified=%d, status%s)>" % (self.id, self.uid, self.date, self.verified, self.status)
+  def __repr__(self):
+    return "<Payment('id=%d, uid=%s', date=%s, verified=%d, status%s)>" % (self.id, self.uid, self.date, self.verified, self.status)
