@@ -241,7 +241,7 @@ class MembersController(BaseController):
 			member.xmppID = request.params['xmppID']
 
 
-			if 'userPassword' in request.params and request.params['userPassword'] != '':
+			if 'userPassword' in request.params and 'userPassword2' in request.params and request.params['userPassword'] != '':
 				member.setPassword(request.params['userPassword'])
 
 			if 'full_member' in request.params:
