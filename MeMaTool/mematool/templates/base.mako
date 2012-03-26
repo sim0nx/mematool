@@ -4,13 +4,11 @@
 <html lang="en-US">
 <head>
   <meta charset="UTF-8">
-  
   <!-- Stylesheets !-->
   <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="/css/app.css" type="text/css" media="screen, projection"> 
+  <link rel="stylesheet" href="/css/app.css" type="text/css" media="screen, projection"> 
   <link rel="stylesheet" href="/css/ui.css" type="text/css" media="screen, projection">
   <link rel="stylesheet" href="/css/ie.css" type="text/css" media="screen, projection">
-  
   <!-- Website title !-->
   <title>syn2cat MeMaTool</title>
 </head>
@@ -56,7 +54,6 @@
     <!-- main content !-->
     <section id="main" class="span-24 prepend-top">
       
-
       <!-- sidebar !-->
       % if hasattr(c, 'actions'):
       <aside id="sidebar" class="span-4">
@@ -66,27 +63,27 @@
             % if len(c.actions) > 0:
               % for k in c.actions:
                 % if len(k) == 4:
-                  <li>${h.link_to(k[0], url(controller=k[1], action=k[2], member_id=k[3]))}</li>
+            <li>${h.link_to(k[0], url(controller=k[1], action=k[2], member_id=k[3]))}</li>
                 % else:
-                  <li>${h.link_to(k[0], url(controller=k[1], action=k[2]))}</li>
+            <li>${h.link_to(k[0], url(controller=k[1], action=k[2]))}</li>
                 % endif
               % endfor
             % else:
-              <li>-</li>
+            <li>-</li>
             % endif
           </ul>
         </nav>
-        
+          
       </aside>
       % endif
       <!-- sidebar end !-->
-      
+        
       <!-- content !-->
       ${self.header()}
       ${next.body()}
       ${self.footer()}
       <!-- content end !-->
-      
+
     </section>
     <!-- main content end !-->
     
@@ -100,23 +97,23 @@
   <script type="text/javascript" src="/mematool/javascript/html5.js"></script>
   <![endif]-->
   <script type="text/javascript" src="/javascript/jquery.js"></script>
-        <script type="text/javascript" src="/javascript/ui.jquery.js"></script>
-        <script type="text/javascript" src="/javascript/mematool.js"></script>
-        <script type="text/javascript" src="/javascript/jquery.qtip.js"></script>
+  <script type="text/javascript" src="/javascript/ui.jquery.js"></script>
+  <script type="text/javascript" src="/javascript/mematool.js"></script>
+  <script type="text/javascript" src="/javascript/jquery.qtip.js"></script>
 </body>
 </html>
 
 
 
 <%def name="css_link(path, media='')">
-    % if path not in self.seen_css:
-        <link rel="stylesheet" type="text/css" href="${path|h}" media="${media}"></link>
-    % endif
-    <% self.seen_css.add(path) %>
+% if path not in self.seen_css:
+<link rel="stylesheet" type="text/css" href="${path|h}" media="${media}"></link>
+% endif
+<% self.seen_css.add(path) %>
 </%def>
 
 <%def name="css()">
-  ${css_link('/css/main.css', 'screen')}
+${css_link('/css/main.css', 'screen')}
 </%def>
 
 <%def name="heading()"><h1>${hasattr(c, 'heading') and c.heading or 'No Title'}</h1></%def>
@@ -126,18 +123,18 @@
 <%def name="footer()"><p><a href="#top">Top ^</a></p></%def>
 
 <%def name="flash()">
-    % if session.has_key('flash'):
-      % if session.has_key('flash_class'):
-        <% flash_class = session.get('flash_class') %>
-      % else:
-        <% flash_class = 'info' %>
-      % endif
-    <div id="flash" class="${flash_class}"><p>${session.get('flash')}</p></div>
+% if session.has_key('flash'):
+  % if session.has_key('flash_class'):
+    <% flash_class = session.get('flash_class') %>
+  % else:
+    <% flash_class = 'info' %>
+  % endif
+<div id="flash" class="${flash_class}"><p>${session.get('flash')}</p></div>
     <%
-        del session['flash']
-        session.save()
+      del session['flash']
+      session.save()
     %>
-    % endif
+% endif
 </%def>
 
 <%def name="error_messages()">
@@ -169,8 +166,4 @@ ${self.error_messages()}
 if session.has_key('reqparams'):
   del session['reqparams']
   session.save()
-%>
-
-<% 
-  # We should be able to dynmically get all available controllers and list them (where?) 
 %>

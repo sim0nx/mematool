@@ -27,10 +27,10 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
 <article>
 <table class="table_content">
   ${parent.all_messages()}
-        <tr>
-                <td class="table_title">
-                        ${_('Username')}
-                </td>
+  <tr>
+    <td class="table_title">
+      ${_('Username')}
+    </td>
     <td>
       % if c.mode is 'add':
       ${h.text('member_id', value=getFormVar(session, c, 'member_id'), class_='text')}
