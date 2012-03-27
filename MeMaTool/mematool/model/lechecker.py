@@ -56,8 +56,8 @@ class TypeChecker(object):
     return False
 
   @staticmethod
-  def isParamStr(p, min_len=0, max_len=255, regex=None):
-    if len(p) > min_len  and len(p) <= max_len:
+  def isParamStr(p, min_len=0, max_len=999999, regex=None):
+    if len(p) >= min_len  and len(p) <= max_len:
       if regex != None:
         if re.match(regex, p, re.IGNORECASE):
           return True
@@ -83,46 +83,36 @@ class TypeChecker(object):
 
 class ParamChecker(object):
   @staticmethod
-  def checkEmail(fn, param=True):
-    error_msg = _('Invalid e-mail address')
-
+  def _baseCheckString(fn, error_msg, param=True, **kwargs):
     if param and TypeChecker.isParamSet(fn):
       fn = request.params[fn]
     else:
       raise InvalidParameterFormat(error_msg)
 
-    if not TypeChecker.isParamStr(fn, regex=regex.email):
+    if not TypeChecker.isParamStr(fn, **kwargs):
       raise InvalidParameterFormat(error_msg)
 
     return True
+
+  @staticmethod
+  def checkEmail(fn, param=True):
+    return ParamChecker._baseCheckString(fn, _('Invalid e-mail address'),\
+      param=param, regex=regex.email)
 
   @staticmethod
   def checkDomain(fn, param=True):
-    error_msg = _('Invalid domain')
+    return ParamChecker._baseCheckString(fn, _('Invalid domain'), param=param,\
+      max_len=64, regex=regex.domain)
 
-    if param and TypeChecker.isParamSet(fn):
-      fn = request.params[fn]
-    else:
-      raise InvalidParameterFormat(error_msg)
-
-    if not TypeChecker.isParamStr(fn, max_len=64, regex=regex.domain):
-      raise InvalidParameterFormat(error_msg)
-
-    return True
+  @staticmethod
+  def checkUsername(fn, param=True):
+    return ParamChecker._baseCheckString(fn, _('Invalid username'), param=param,\
+      max_len=64, regex=regex.username)
 
   @staticmethod
   def checkString(fn, param=True, min_len=0, max_len=255, regex=None):
-    error_msg = _('Invalid value')
-
-    if param and TypeChecker.isParamSet(fn):
-      fn = request.params[fn]
-    else:
-      raise InvalidParameterFormat(error_msg)
-
-    if not TypeChecker.isParamStr(fn, min_len=min_len, max_len=max_len, regex=regex):
-      raise InvalidParameterFormat(error_msg)
-
-    return True
+    return ParamChecker._baseCheckString(fn, _('Invalid value'), param=param,\
+      min_len=min_len, max_len=max_len, regex=regex)
 
   @staticmethod
   def checkMode(fn, param=True, values=[]):
@@ -146,29 +136,36 @@ class ParamChecker(object):
 
   @staticmethod
   def checkPhone(fn, param=True):
-    error_msg = _('Invalid phone number')
-
-    if param and TypeChecker.isParamSet(fn):
-      fn = request.params[fn]
-    else:
-      raise InvalidParameterFormat(error_msg)
-
-    if not TypeChecker.isParamStr(fn, regex=regex.phone):
-      raise InvalidParameterFormat(error_msg)
-
-    return True
+    return ParamChecker._baseCheckString(fn, _('Invalid phone number'),\
+      param=param, regex=regex.phone)
 
   @staticmethod
   def checkDate(fn, param=True):
-    error_msg = _('Invalid date')
+    return ParamChecker._baseCheckString(fn, _('Invalid date'),\
+      param=param, regex=regex.date)
 
-    if param and TypeChecker.isParamSet(fn):
-      fn = request.params[fn]
+  @staticmethod
+  def checkPGP(fn, param=True):
+    return ParamChecker._baseCheckString(fn, _('Invalid PGP key'),\
+      param=param, regex=regex.pgpKey)
+
+  @staticmethod
+  def checkiButtonUID(fn, param=True):
+    return ParamChecker._baseCheckString(fn, _('Invalid iButton UID'),\
+      param=param, regex=regex.iButtonUID)
+
+  @staticmethod
+  def checkPassword(fn1, fn2, param=True, min_len=8, max_len=999, regex=None):
+    ParamChecker._baseCheckString(fn1, _('Invalid password'), param=param,\
+      min_len=min_len, max_len=max_len, regex=regex)
+
+    if param and TypeChecker.isParamSet(fn2):
+      fn1 = request.params[fn1]
+      fn2 = request.params[fn2]
     else:
-      raise InvalidParameterFormat(error_msg)
+      raise InvalidParameterFormat(_('Second password not valid'))
 
-    if not TypeChecker.isParamStr(fn, regex=regex.date):
-      raise InvalidParameterFormat(error_msg)
+    if not fn1 == fn2:
+      raise InvalidParameterFormat(_('Passwords do not match'))
 
     return True
-

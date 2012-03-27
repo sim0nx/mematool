@@ -129,7 +129,9 @@ class MembersController(BaseController):
           formok = False
           errors.append(_('Invalid given name'))
 
-        if not 'birthDate' in request.params or not re.match(regex.date, request.params['birthDate'], re.IGNORECASE):
+        try:
+          ParamChecker.checkDate('birthDate')
+        except InvalidParameterFormat as ipf:
           formok = False
           errors.append(_('Invalid birth date'))
 
@@ -199,33 +201,61 @@ class MembersController(BaseController):
         except:
           pass
 
-        if 'pgpKey' in request.params and request.params['pgpKey'] != '' and not re.match(regex.pgpKey, request.params['pgpKey'], re.IGNORECASE):
-          formok = False
-          errors.append(_('Invalid PGP key'))
+        try:
+          '''optional'''
+          ParamChecker.checkString('pgpKey')
 
-        if 'iButtonUID' in request.params and request.params['iButtonUID'] != '' and not re.match(regex.iButtonUID, request.params['iButtonUID'], re.IGNORECASE):
-          formok = False
-          errors.append(_('Invalid iButton UID'))
-
-        if 'conventionSigner' in request.params and request.params['conventionSigner'] != '' and not re.match(regex.username, request.params['conventionSigner']):
-          formok = False
-          errors.append(_('Invalid convention signer'))
-
-        if 'xmppID' in request.params and request.params['xmppID'] != '' and not re.match(regex.email, request.params['xmppID'], re.IGNORECASE):
-          formok = False
-          errors.append(_('Invalid XMPP/Jabber/GTalk ID'))
-
-        if 'userPassword' in request.params and 'userPassword2' in request.params:
-          if request.params['userPassword'] != request.params['userPassword2']:
+          try:
+            ParamChecker.checkPGP('pgpKey')
+          except InvalidParameterFormat as ipf:
             formok = False
-            errors.append(_('Passwords don\'t match'))
-          elif len(request.params['userPassword']) > 0 and len(request.params['userPassword']) <= 6:
-            formok = False
-            errors.append(_('Password too short'))
+            errors.append(ipf.message)
+        except:
+          pass
 
-          if request.params['mode'] == 'add' and request.params['userPassword'] == '':
+        try:
+          '''optional'''
+          ParamChecker.checkString('iButtonUID')
+
+          try:
+            ParamChecker.checkiButtonUID('iButtonUID')
+          except InvalidParameterFormat as ipf:
             formok = False
-            errors.append(_('No password set'))
+            errors.append(ipf.message)
+        except:
+          pass
+
+        try:
+          '''optional'''
+          ParamChecker.checkString('conventionSigner')
+
+          try:
+            ParamChecker.checkUsername('conventionSigner')
+          except InvalidParameterFormat as ipf:
+            formok = False
+            errors.append(_('Invalid convention signer'))
+        except:
+          pass
+
+        try:
+          '''optional'''
+          ParamChecker.checkString('xmppID')
+
+          try:
+            ParamChecker.checkEmail('xmppID')
+          except InvalidParameterFormat as ipf:
+            formok = False
+            errors.append(_('Invalid XMPP/Jabber/GTalk ID'))
+        except:
+          pass
+
+        if (request.params['mode'] == 'add') or\
+          ('userPassword' in request.params and len(request.params['userPassword']) > 0):
+          try:
+            ParamChecker.checkPassword('userPassword', 'userPassword2')
+          except InvalidParameterFormat as ipf:
+            formok = False
+            errors.append(ipf.message)
 
         if not formok:
           session['errors'] = errors
