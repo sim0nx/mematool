@@ -29,7 +29,12 @@ from mematool.model import TmpMember
 
 import hashlib
 from binascii import b2a_base64, a2b_base64
+from mematool.lib.syn2cat import regex
+from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 import os
+
+import gettext
+_ = gettext.gettext
 
 
 class Member():
@@ -54,7 +59,7 @@ class Member():
     'loginShell',\
     'hDirectory',\
     'birthDate',\
-    'hPostalAddress',\
+    'homePostalAddress',\
     'arrivalDate',\
     'leavingDate']
   list_vars = ['groups']
@@ -144,3 +149,114 @@ class Member():
     #@TODO put in config file
     serverSambaSID = 'S-1-1-1'
     self.sambaSID = serverSambaSID + '-' + str( (int(self.uidNumber) * 2) + 1000 )
+
+
+  ####################
+  # checker interface
+  def check(self):
+    errors = []
+    checkOK = True
+
+    try:
+      ParamChecker.checkString(self.sn, min_len=0, max_len=20, param=False)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid surname'))
+
+    try:
+      ParamChecker.checkString(self.givenName, min_len=0, max_len=20, param=False)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid given name'))
+
+    try:
+      ParamChecker.checkDate(self.birthDate, param=False)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid birth date'))
+
+    try:
+      ParamChecker.checkString(self.homePostalAddress, min_len=0, max_len=255, param=False)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid address'))
+
+    '''optional'''
+    try:
+      ParamChecker.checkPhone(self.homePhone, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(ipf.message)
+
+    try:
+      ParamChecker.checkPhone(self.mobile, param=False)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid mobile number'))
+
+    try:
+      ParamChecker.checkEmail(self.mail, param=False)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(ipf.message)
+
+    try:
+      ParamChecker.checkString(self.loginShell, min_len=0, max_len=20, regex=regex.loginShell, param=False)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid login shell'))
+
+    try:
+      ParamChecker.checkDate(self.arrivalDate, param=False)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid "member since" date'))
+
+    '''optional'''
+    try:
+      ParamChecker.checkDate(self.leavingDate, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid "membership canceled" date'))
+
+    '''optional'''
+    try:
+      ParamChecker.checkString(self.sshPublicKey, min_len=0, max_len=1200, regex=regex.sshKey, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid SSH key'))
+
+    '''optional'''
+    try:
+      ParamChecker.checkPGP(self.pgpKey, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(ipf.message)
+
+    '''optional'''
+    try:
+      ParamChecker.checkiButtonUID(self.iButtonUID, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(ipf.message)
+
+    '''optional'''
+    try:
+      ParamChecker.checkUsername(self.conventionSigner, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid convention signer'))
+
+    '''optional'''
+    try:
+      ParamChecker.checkEmail(self.xmppID, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid XMPP/Jabber/GTalk ID'))
+
+
+    if checkOK:
+      return checkOK
+
+    raise InvalidParameterFormat(errors)
+  ####################

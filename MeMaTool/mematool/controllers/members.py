@@ -117,137 +117,16 @@ class MembersController(BaseController):
           formok = False
           errors.append(ipf.message)
 
+        m = Member()
+
+        for v in m.str_vars:
+          setattr(m, v, request.params.get(v, ''))
+
         try:
-          ParamChecker.checkString('sn', min_len=0, max_len=20)
+          m.check()
         except InvalidParameterFormat as ipf:
           formok = False
-          errors.append(_('Invalid surname'))
-
-        try:
-          ParamChecker.checkString('givenName', min_len=0, max_len=20)
-        except InvalidParameterFormat as ipf:
-          formok = False
-          errors.append(_('Invalid given name'))
-
-        try:
-          ParamChecker.checkDate('birthDate')
-        except InvalidParameterFormat as ipf:
-          formok = False
-          errors.append(_('Invalid birth date'))
-
-        try:
-          ParamChecker.checkString('homePostalAddress', min_len=0, max_len=255)
-        except InvalidParameterFormat as ipf:
-          formok = False
-          errors.append(_('Invalid address'))
-
-        try:
-          '''optional'''
-          ParamChecker.checkString('homePhone')
-
-          try:
-            ParamChecker.checkPhone('homePhone')
-          except InvalidParameterFormat as ipf:
-            formok = False
-            errors.append(ipf.message)
-        except:
-          pass 
-
-        try:
-          ParamChecker.checkPhone('mobile')
-        except InvalidParameterFormat as ipf:
-          formok = False
-          errors.append(_('Invalid mobile number'))
-
-        try:
-          ParamChecker.checkEmail('mail')
-        except InvalidParameterFormat as ipf:
-          formok = False
-          errors.append(ipf.message)
-
-        try:
-          ParamChecker.checkString('loginShell', min_len=0, max_len=20, regex=regex.loginShell)
-        except InvalidParameterFormat as ipf:
-          formok = False
-          errors.append(_('Invalid login shell'))
-
-        try:
-          ParamChecker.checkDate('arrivalDate')
-        except InvalidParameterFormat as ipf:
-          formok = False
-          errors.append(_('Invalid "member since" date'))
-
-        try:
-          '''optional'''
-          ParamChecker.checkString('leavingDate')
-
-          try:
-            ParamChecker.checkDate('leavingDate')
-          except InvalidParameterFormat as ipf:
-            formok = False
-            errors.append(_('Invalid "membership canceled" date'))
-        except:
-          pass 
-
-        try:
-          '''optional'''
-          ParamChecker.checkString('sshPublicKey')
-
-          try:
-            ParamChecker.checkString('sshPublicKey', min_len=0, max_len=1200, regex=regex.sshKey)
-          except InvalidParameterFormat as ipf:
-            formok = False
-            errors.append(_('Invalid SSH key'))
-        except:
-          pass
-
-        try:
-          '''optional'''
-          ParamChecker.checkString('pgpKey')
-
-          try:
-            ParamChecker.checkPGP('pgpKey')
-          except InvalidParameterFormat as ipf:
-            formok = False
-            errors.append(ipf.message)
-        except:
-          pass
-
-        try:
-          '''optional'''
-          ParamChecker.checkString('iButtonUID')
-
-          try:
-            ParamChecker.checkiButtonUID('iButtonUID')
-          except InvalidParameterFormat as ipf:
-            formok = False
-            errors.append(ipf.message)
-        except:
-          pass
-
-        try:
-          '''optional'''
-          ParamChecker.checkString('conventionSigner')
-
-          try:
-            ParamChecker.checkUsername('conventionSigner')
-          except InvalidParameterFormat as ipf:
-            formok = False
-            errors.append(_('Invalid convention signer'))
-        except:
-          pass
-
-        try:
-          '''optional'''
-          ParamChecker.checkString('xmppID')
-
-          try:
-            ParamChecker.checkEmail('xmppID')
-          except InvalidParameterFormat as ipf:
-            formok = False
-            errors.append(_('Invalid XMPP/Jabber/GTalk ID'))
-        except:
-          pass
+          errors += ipf.message
 
         if (request.params['mode'] == 'add') or\
           ('userPassword' in request.params and len(request.params['userPassword']) > 0):
@@ -289,28 +168,15 @@ class MembersController(BaseController):
         member = Member()
         member.uid = request.params['member_id']
 
+      for v in member.str_vars:
+        if v in request.params:
+          setattr(member, v, request.params.get(v).lstrip(' ').rstrip(' '))
+
       # @TODO review: for now we don't allow custom GIDs
       #member.gidNumber = request.params['gidNumber']
       member.gidNumber = '100'
-      member.cn = request.params['givenName'].lstrip(' ').rstrip(' ') + ' ' + request.params['sn'].lstrip(' ').rstrip(' ')
-      member.sn = request.params['sn'].lstrip(' ').rstrip(' ')
-      member.givenName = request.params['givenName'].lstrip(' ').rstrip(' ')
-      member.birthDate = request.params['birthDate']
-      member.homePostalAddress = request.params['homePostalAddress']
-      member.homePhone = request.params['homePhone']
-      member.mobile = request.params['mobile']
-      member.mail = request.params['mail']
-      member.loginShell = request.params['loginShell']
+      member.cn = member.givenName + ' ' + member.sn
       member.homeDirectory = '/home/' + request.params['member_id']
-      member.arrivalDate = request.params['arrivalDate']
-      member.leavingDate = request.params['leavingDate']
-
-      member.sshPublicKey = request.params['sshPublicKey']
-      member.pgpKey = request.params['pgpKey']
-      member.iButtonUID = request.params['iButtonUID']
-      member.conventionSigner = request.params['conventionSigner']
-      member.xmppID = request.params['xmppID']
-
 
       if 'userPassword' in request.params and 'userPassword2' in request.params and request.params['userPassword'] != '' and request.params['userPassword'] == request.params['userPassword2']:
         member.setPassword(request.params['userPassword'])
@@ -441,7 +307,7 @@ class MembersController(BaseController):
       redirect(url(controller='members', action='showAllMembers'))
 
     try:
-      member = Member(request.params['member_id'])
+      member = self.lmf.getUser(request.params['member_id'])
 
       if member.validate:
         tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()

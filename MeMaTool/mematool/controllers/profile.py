@@ -30,10 +30,11 @@ from mematool.model import Member, TmpMember
 
 log = logging.getLogger(__name__)
 
-from mematool.model.ldapModelFactory import LdapModelFactory
 import re
 from mematool.lib.syn2cat import regex
 from mematool.lib.syn2cat.crypto import encodeAES
+from mematool.model.ldapModelFactory import LdapModelFactory
+from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
 from webob.exc import HTTPUnauthorized
 
@@ -114,45 +115,24 @@ class ProfileController(BaseController):
       formok = True
       errors = []
 
-      if not self._isParamStr('sn', max_len=20):
-        formok = False
-        errors.append(_('Invalid surname'))
+      m = self.lmf.getUser(session['identity'])
 
-      if not self._isParamStr('givenName', max_len=20):
-        formok = False
-        errors.append(_('Invalid given name'))
+      for v in m.str_vars:
+        if v in request.params:
+          setattr(m, v, request.params.get(v, ''))
 
-      if not self._isParamStr('birthDate', max_len=10, regex=regex.date):
+      try:
+        m.check()
+      except InvalidParameterFormat as ipf:
         formok = False
-        errors.append(_('Invalid birth date'))
+        errors += ipf.message
 
-      if not self._isParamStr('homePostalAddress', max_len=255):
-        formok = False
-        errors.append(_('Invalid address'))
-
-      if self._isParamSet('homePhone') and not self._isParamStr('homePhone', max_len=30, regex=regex.phone):
-        formok = False
-        errors.append(_('Invalid phone number'))
-
-      if not 'mobile' in request.params or not re.match(regex.phone, request.params['mobile'], re.IGNORECASE):
-        formok = False
-        errors.append(_('Invalid mobile number'))
-
-      if not 'mail' in request.params or not re.match(regex.email, request.params['mail'], re.IGNORECASE):
-        formok = False
-        errors.append(_('Invalid e-mail address'))
-
-      if self._isParamSet('xmppID') and not self._isParamStr('xmppID', max_len=40, regex=regex.email):
-        formok = False
-        errors.append(_('Invalid XMPP/Jabber/GTalk ID'))
-
-      if self._isParamStr('userPassword') and self._isParamStr('userPassword2'):
-        if request.params['userPassword'] != request.params['userPassword2']:
+      if 'userPassword' in request.params and len(request.params['userPassword']) > 0:
+        try:
+          ParamChecker.checkPassword('userPassword', 'userPassword2')
+        except InvalidParameterFormat as ipf:
           formok = False
-          errors.append(_('Passwords don\'t match'))
-        elif len(request.params['userPassword']) < 8:
-          formok = False
-          errors.append(_('Password too short'))
+          errors.append(ipf.message)
 
       if not formok:
         session['errors'] = errors
@@ -160,15 +140,11 @@ class ProfileController(BaseController):
 
         # @TODO request.params may contain multiple values per key... test & fix
         for k in request.params.iterkeys():
-          if (k == 'full_member' or k == 'locked_member')  and request.params[k] == 'on':
-            session['reqparams'][k] = 'checked'
-          else:
-            session['reqparams'][k] = request.params[k]
-        
+          session['reqparams'][k] = request.params[k]
+
         session.save()
 
         redirect(url(controller='profile', action='edit'))
-
 
       return f(self)
     return new_f
@@ -188,7 +164,7 @@ class ProfileController(BaseController):
         request.params['givenName'] != m.givenName or\
         request.params['birthDate'] != m.birthDate or\
         request.params['homePostalAddress'] != m.homePostalAddress or\
-        ('homePhone' in request.params and m.homePhone != '' and request.params['homePhone'] != m.homePhone) or\
+        ('homePhone' in request.params and len(request.params['homePhone']) > 0 and request.params['homePhone'] != m.homePhone) or\
         request.params['mobile'] != m.mobile or\
         request.params['mail'] != m.mail or\
         request.params['xmppID'] != m.xmppID:

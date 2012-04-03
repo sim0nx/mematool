@@ -49,11 +49,15 @@ class TypeChecker(object):
     return True
 
   @staticmethod
-  def isParamSet(p):
-    if p in request.params and request.params[p] != '':
+  def isSet(p):
+    if p and not p == '':
       return True
 
     return False
+
+  @staticmethod
+  def isParamSet(p):
+    return TypeChecker.isSet(request.params.get(p, ''))
 
   @staticmethod
   def isParamStr(p, min_len=0, max_len=999999, regex=None):
@@ -83,39 +87,56 @@ class TypeChecker(object):
 
 class ParamChecker(object):
   @staticmethod
-  def _baseCheckString(fn, error_msg, param=True, **kwargs):
-    if param and TypeChecker.isParamSet(fn):
-      fn = request.params[fn]
-    else:
-      raise InvalidParameterFormat(error_msg)
+  def _baseCheckString(fn, error_msg, param=True, optional=False, **kwargs):
+    if param:
+      '''if request param'''
+      if TypeChecker.isParamSet(fn):
+        '''if request param is set'''
+        fn = request.params[fn]
+      else:
+        '''param not set'''
+        if not optional:
+          '''if not optional raise exception'''
+          raise InvalidParameterFormat(error_msg)
 
-    if not TypeChecker.isParamStr(fn, **kwargs):
-      raise InvalidParameterFormat(error_msg)
+    if TypeChecker.isSet(fn):
+      '''if variable is set'''
+      if TypeChecker.isParamStr(fn, **kwargs):
+        '''if variable matches syntax check'''
+        return True
+      else:
+        '''if set and does not match syntax check'''
+        raise InvalidParameterFormat(error_msg)
 
-    return True
+    if optional:
+      '''if optional just return false'''
+      return False
+    
+    '''in any other case raise exception'''
+    raise InvalidParameterFormat(error_msg)
 
   @staticmethod
-  def checkEmail(fn, param=True):
+  def checkEmail(fn, param=True, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid e-mail address'),\
-      param=param, regex=regex.email)
+      param=param, optional=optional, regex=regex.email)
 
   @staticmethod
-  def checkDomain(fn, param=True):
+  def checkDomain(fn, param=True, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid domain'), param=param,\
-      max_len=64, regex=regex.domain)
+      max_len=64, optional=optional, regex=regex.domain)
 
   @staticmethod
-  def checkUsername(fn, param=True):
+  def checkUsername(fn, param=True, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid username'), param=param,\
-      max_len=64, regex=regex.username)
+      max_len=64, optional=optional, regex=regex.username)
 
   @staticmethod
-  def checkString(fn, param=True, min_len=0, max_len=255, regex=None):
+  def checkString(fn, param=True, min_len=0, max_len=255, regex=None, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid value'), param=param,\
-      min_len=min_len, max_len=max_len, regex=regex)
+      min_len=min_len, max_len=max_len, regex=regex, optional=optional)
 
   @staticmethod
-  def checkMode(fn, param=True, values=[]):
+  def checkMode(fn, param=True, values=[], optional=False):
     error_msg = _('Invalid mode')
 
     if param and TypeChecker.isParamSet(fn):
@@ -135,29 +156,29 @@ class ParamChecker(object):
     return True
 
   @staticmethod
-  def checkPhone(fn, param=True):
+  def checkPhone(fn, param=True, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid phone number'),\
-      param=param, regex=regex.phone)
+      param=param, optional=optional, regex=regex.phone)
 
   @staticmethod
-  def checkDate(fn, param=True):
+  def checkDate(fn, param=True, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid date'),\
-      param=param, regex=regex.date)
+      param=param, optional=optional, regex=regex.date)
 
   @staticmethod
-  def checkPGP(fn, param=True):
+  def checkPGP(fn, param=True, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid PGP key'),\
-      param=param, regex=regex.pgpKey)
+      param=param, optional=optional, regex=regex.pgpKey)
 
   @staticmethod
-  def checkiButtonUID(fn, param=True):
+  def checkiButtonUID(fn, param=True, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid iButton UID'),\
-      param=param, regex=regex.iButtonUID)
+      param=param, optional=optional, regex=regex.iButtonUID)
 
   @staticmethod
-  def checkPassword(fn1, fn2, param=True, min_len=8, max_len=999, regex=None):
+  def checkPassword(fn1, fn2, param=True, min_len=8, max_len=999, regex=None, optional=False):
     ParamChecker._baseCheckString(fn1, _('Invalid password'), param=param,\
-      min_len=min_len, max_len=max_len, regex=regex)
+      min_len=min_len, max_len=max_len, regex=regex, optional=optional)
 
     if param and TypeChecker.isParamSet(fn2):
       fn1 = request.params[fn1]
