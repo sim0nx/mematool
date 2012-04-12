@@ -190,7 +190,8 @@ class LdapModelFactory(BaseModelFactory):
     if hasattr(member, attribute):
       a = getattr(member, attribute)
 
-    if a and not a is None and a != '':
+    if isinstance(a, bool) or (a and not a is None and a != ''):
+      ''' be careful with bool attributes '''
       if isinstance(a, bool):
         a = str(a).upper()
       else:
