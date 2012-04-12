@@ -49,6 +49,13 @@ class TypeChecker(object):
     return True
 
   @staticmethod
+  def isBool(string):
+    if isInt(string) and string == '0' or string == '1':
+      return True
+
+    return False
+
+  @staticmethod
   def isSet(p):
     if p and not p == '':
       return True
@@ -80,6 +87,13 @@ class TypeChecker(object):
   @staticmethod
   def isParamFloat(p, min_val=0, min_len=0, max_len=4):
     if TypeChecker.isParamStr(p, min_len, max_len) and TypeChecker.isFloat(p) and float(p) >= min_val:
+      return True
+
+    return False
+
+  @staticmethod
+  def isParamBool(p):
+    if TypeChecker.isParamStr(p, 1, 1) and TypeChecker.isBool(p):
       return True
 
     return False
