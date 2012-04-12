@@ -101,7 +101,7 @@ class TypeChecker(object):
 
 class ParamChecker(object):
   @staticmethod
-  def _baseCheckString(fn, error_msg, param=True, optional=False, **kwargs):
+  def _baseCheck(fn, error_msg, check, param=True, optional=False, **kwargs):
     if param:
       '''if request param'''
       if TypeChecker.isParamSet(fn):
@@ -115,7 +115,7 @@ class ParamChecker(object):
 
     if TypeChecker.isSet(fn):
       '''if variable is set'''
-      if TypeChecker.isParamStr(fn, **kwargs):
+      if check(fn, **kwargs):
         '''if variable matches syntax check'''
         return True
       else:
@@ -128,6 +128,14 @@ class ParamChecker(object):
     
     '''in any other case raise exception'''
     raise InvalidParameterFormat(error_msg)
+
+  @staticmethod
+  def _baseCheckString(fn, error_msg, param=True, optional=False, **kwargs):
+    return ParamChecker._baseCheck(fn, error_msg, TypeChecker.isParamStr, param, optional, **kwargs)
+
+  @staticmethod
+  def _baseCheckBool(fn, error_msg, param=True, optional=False, **kwargs):
+    return ParamChecker._baseCheck(fn, error_msg, TypeChecker.isParamBool, param, optional, **kwargs)
 
   @staticmethod
   def checkEmail(fn, param=True, optional=False):
@@ -204,3 +212,10 @@ class ParamChecker(object):
       raise InvalidParameterFormat(_('Passwords do not match'))
 
     return True
+
+  @staticmethod
+  def checkBool(fn, param=True, optional=False):
+    return ParamChecker._baseCheckBool(fn, _('Invalid Boolean value'),\
+      param=param, optional=optional)
+
+

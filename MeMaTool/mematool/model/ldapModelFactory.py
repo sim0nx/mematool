@@ -83,6 +83,12 @@ class LdapModelFactory(BaseModelFactory):
 
         if k == 'sambaSID' and v == '':
           v = None
+        elif k == 'spaceKey' or k == 'npoMember':
+          if v.lower() == 'true':
+            v = True
+          else:
+            v = False
+
         setattr(m, k, v)
 
     m.groups = self.getUserGroupList(uid)
@@ -185,7 +191,10 @@ class LdapModelFactory(BaseModelFactory):
       a = getattr(member, attribute)
 
     if a and not a is None and a != '':
-      a = str(a.encode(encoding, 'ignore'))
+      if isinstance(a, bool):
+        a = str(a).upper()
+      else:
+        a = str(a.encode(encoding, 'ignore'))
 
       if oldmember and hasattr(oldmember, attribute) and not getattr(oldmember, attribute) is None and not getattr(oldmember, attribute) == '':
         if not a == getattr(oldmember, attribute):
@@ -223,6 +232,8 @@ class LdapModelFactory(BaseModelFactory):
     mod_attrs.append(self.prepareVolatileAttribute(member, om, 'iButtonUID'))
     mod_attrs.append(self.prepareVolatileAttribute(member, om, 'conventionSigner'))
     mod_attrs.append(self.prepareVolatileAttribute(member, om, 'xmppID'))
+    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'spaceKey'))
+    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'npoMember'))
 
     if member.userPassword and member.userPassword != '':
       mod_attrs.append((ldap.MOD_REPLACE, 'userPassword', str(member.userPassword)))

@@ -191,6 +191,16 @@ class MembersController(BaseController):
       else:
         member.lockedMember = False
 
+      if 'spaceKey' in request.params:
+        member.spaceKey = True
+      else:
+        member.spaceKey = False
+
+      if 'npoMember' in request.params:
+        member.npoMember = True
+      else:
+        member.npoMember = False
+
       if request.params['mode'] == 'edit':
         self.lmf.saveMember(member)
       else:

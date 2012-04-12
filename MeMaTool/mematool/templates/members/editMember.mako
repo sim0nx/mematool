@@ -180,6 +180,22 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
         </tr>
         <tr>
                 <td class="table_title">
+                        ${_('Has space key')}
+                </td>
+                <td>
+      ${h.checkbox('spaceKey', value='1', checked=getFormVar(session, c, 'spaceKey'), class_='text')}
+                </td>
+        </tr>
+        <tr>
+                <td class="table_title">
+                        ${_('Is NPO member')}
+                </td>
+                <td>
+      ${h.checkbox('npoMember', value='1', checked=getFormVar(session, c, 'npoMember'), class_='text')}
+                </td>
+        </tr>
+        <tr>
+                <td class="table_title">
                         ${_('SSH Public Key')}
                 </td>
                 <td>

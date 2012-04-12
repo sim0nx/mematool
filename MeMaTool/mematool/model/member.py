@@ -64,7 +64,9 @@ class Member():
     'leavingDate']
   list_vars = ['groups']
   bool_vars = ['fullMember',\
-    'lockedMember']
+    'lockedMember',\
+    'spaceKey',\
+    'npoMember']
 
   '''
   uid = ''   # uid
@@ -143,7 +145,6 @@ class Member():
     h.update(salt)
     self.userPassword = '{SSHA}' + b2a_base64(h.digest() + salt)[:-1]
     self.sambaNTPassword = hashlib.new('md4', password.encode('utf-16le')).hexdigest().upper()
-
 
   def generateUserSID(self):
     #@TODO put in config file
@@ -253,6 +254,20 @@ class Member():
     except InvalidParameterFormat as ipf:
       checkOK = False
       errors.append(_('Invalid XMPP/Jabber/GTalk ID'))
+
+    '''optional'''
+    try:
+      ParamChecker.checkBool(self.spaceKey, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid Space-Key value'))
+
+    '''optional'''
+    try:
+      ParamChecker.checkBool(self.npoMember, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid NPO-Member value'))
 
 
     if checkOK:
