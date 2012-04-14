@@ -61,7 +61,8 @@ class Member():
     'birthDate',\
     'homePostalAddress',\
     'arrivalDate',\
-    'leavingDate']
+    'leavingDate',\
+    'nationality']
   list_vars = ['groups']
   bool_vars = ['fullMember',\
     'lockedMember',\
@@ -269,6 +270,12 @@ class Member():
       checkOK = False
       errors.append(_('Invalid NPO-Member value'))
 
+    '''optional'''
+    try:
+      ParamChecker.checkCountryCode(self.npoMember, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(ipf.message)
 
     if checkOK:
       return checkOK
