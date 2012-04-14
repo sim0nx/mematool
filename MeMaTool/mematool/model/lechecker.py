@@ -20,7 +20,7 @@
 
 from pylons import request
 import re
-from mematool.lib.syn2cat import regex
+from mematool.lib.syn2cat import regex, countrycodes
 import gettext
 _ = gettext.gettext
 
@@ -212,6 +212,21 @@ class ParamChecker(object):
       raise InvalidParameterFormat(_('Passwords do not match'))
 
     return True
+
+  @staticmethod
+  def checkCountryCode(fn, param=True, optional=False):
+    error_msg = _('Invalid country code')
+
+    ParamChecker._baseCheckString(fn, error_msg, param=param,\
+      min_len=2, max_len=2, optional=optional)
+
+    if fn in countrycodes.cc:
+      return True
+
+    if optional:
+      return False
+
+    raise InvalidParameterFormat(error_msg)
 
   @staticmethod
   def checkBool(fn, param=True, optional=False):
