@@ -63,7 +63,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                         ${_('Common name')}
                 </td>
                 <td>
-      ${h.text('cn', value=getFormVar(session, c, 'cn'), class_='text')}
+      ${getFormVar(session, c, 'cn')}
                 </td>
   </tr>
   <tr>
