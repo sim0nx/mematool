@@ -43,6 +43,7 @@ mematool/model/baseModelFactory.py
 mematool/model/domain.py
 mematool/model/group.py
 mematool/model/ldapModelFactory.py
+mematool/model/lechecker.py
 mematool/model/member.py
 mematool/model/meta.py
 mematool/model/payment.py

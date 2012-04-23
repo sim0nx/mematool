@@ -81,7 +81,15 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
                 <td>
       ${h.text('givenName', value=getFormVar(session, c, 'givenName'), class_='text')}
                 </td>
-        </tr>
+  </tr>
+  <tr>
+                <td class="table_title">
+                        ${_('Nationality')}
+                </td>
+                <td>
+      ${h.text('nationality', value=getFormVar(session, c, 'nationality'), class_='text')}
+                </td>
+  </tr>
   <tr>
                 <td class="table_title">
                         ${_('Convention signer')}

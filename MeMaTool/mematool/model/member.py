@@ -277,6 +277,13 @@ class Member():
       checkOK = False
       errors.append(ipf.message)
 
+    '''optional'''
+    try:
+      ParamChecker.checkString(self.nationality, min_len=2, max_len=2, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid nationality'))
+
     if checkOK:
       return checkOK
 

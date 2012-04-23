@@ -235,6 +235,7 @@ class LdapModelFactory(BaseModelFactory):
     mod_attrs.append(self.prepareVolatileAttribute(member, om, 'xmppID'))
     mod_attrs.append(self.prepareVolatileAttribute(member, om, 'spaceKey'))
     mod_attrs.append(self.prepareVolatileAttribute(member, om, 'npoMember'))
+    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'nationality'))
 
     if member.userPassword and member.userPassword != '':
       mod_attrs.append((ldap.MOD_REPLACE, 'userPassword', str(member.userPassword)))
@@ -281,6 +282,9 @@ class LdapModelFactory(BaseModelFactory):
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'iButtonUID'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'conventionSigner'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'xmppID'))
+    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'spaceKey'))
+    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'npoMember'))
+    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'nationality'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'userPassword'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'uidNumber'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sambaSID'))
