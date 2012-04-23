@@ -220,7 +220,7 @@ class ParamChecker(object):
     ParamChecker._baseCheckString(fn, error_msg, param=param,\
       min_len=2, max_len=2, optional=optional)
 
-    if fn in countrycodes.cc:
+    if fn.lower() in countrycodes.cc:
       return True
 
     if optional:
