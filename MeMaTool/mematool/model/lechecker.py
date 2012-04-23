@@ -222,6 +222,8 @@ class ParamChecker(object):
 
     if fn.lower() in countrycodes.cc:
       return True
+    elif fn != '':
+      raise InvalidParameterFormat(error_msg)
 
     if optional:
       return False
