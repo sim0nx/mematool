@@ -201,6 +201,8 @@ class MembersController(BaseController):
       else:
         member.npoMember = False
 
+      member.nationality = member.nationality.upper()
+
       if request.params['mode'] == 'edit':
         self.lmf.saveMember(member)
       else:
@@ -209,7 +211,7 @@ class MembersController(BaseController):
       session['flash'] = _('Member details successfully edited')
       session.save()
 
-      redirect(url(controller='members', action='showAllMembers'))
+      redirect(url(controller='members', action='editMember', member_id=request.params['member_id']))
 
     except LookupError:
       print 'No such user !'
