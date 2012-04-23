@@ -4,6 +4,7 @@
   <header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
     <article>
       <li><a href="${url(controller='members', action='exportList')}">Export as CSV<img src="/images/icons/pencil.png"></a></li>
+      <li><a href="${url(controller='members', action='exportList', listType='RCSL')}">Export as RCSL CSV<img src="/images/icons/pencil.png"></a></li>
       <li><table class="table_content"> 
         ${parent.flash()}
               <tr> 

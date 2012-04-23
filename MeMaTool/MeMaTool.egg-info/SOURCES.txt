@@ -31,6 +31,7 @@ mematool/lib/app_globals.py
 mematool/lib/base.py
 mematool/lib/helpers.py
 mematool/lib/syn2cat/__init__.py
+mematool/lib/syn2cat/countrycodes.py
 mematool/lib/syn2cat/crypto.py
 mematool/lib/syn2cat/ldapConnector.py
 mematool/lib/syn2cat/regex.py

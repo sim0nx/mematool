@@ -84,7 +84,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
   </tr>
   <tr>
                 <td class="table_title">
-                        ${_('Nationality')}
+                        ${_('Nationality (2 char iso-code)')}
                 </td>
                 <td>
       ${h.text('nationality', value=getFormVar(session, c, 'nationality'), class_='text')}

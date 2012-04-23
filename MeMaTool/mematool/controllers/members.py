@@ -266,9 +266,12 @@ class MembersController(BaseController):
         if not m.lockedMember:
           c.members.append(m)
 
-      response.content_type = 'text/plain'
-
-      return render('/members/exportCSV.mako')
+      if 'listType' in request.params and request.params['listType'] == 'RCSL':
+        response.content_type = 'text/plain'
+        return render('/members/exportRCSLCSV.mako')
+      else:
+        response.content_type = 'text/plain'
+        return render('/members/exportCSV.mako')
 
     except LookupError as e:
       print 'Lookup error!'
