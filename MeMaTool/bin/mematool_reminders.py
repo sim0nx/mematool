@@ -52,6 +52,16 @@ As always....payment troubles are ok and we are understanding....just let us
 know.
 
 
+Payment information:
+- 1 year fee = 114euro
+- Bank account:
+    Holder:    syn2cat a.s.b.l.
+    Bank:      BCEE
+    IBAN:      LU93 0019 3255 6612 9000
+    BIC/SWIFT: BCEELULL
+
+
+
 cheerz.... see you and thanks for your continuing support
 
 
