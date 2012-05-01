@@ -62,7 +62,7 @@ cheerz.... see you and thanks for your continuing support
 
   msg = MIMEText(body)
 
-  from_ = 'syn2cat treasuerer <' + id_generator(8) + '@hackerspace.lu>'
+  from_ = 'syn2cat treasurer <' + id_generator(8) + '@hackerspace.lu>'
   to_ = mail
   msg['Subject'] = 'syn2cat membership fee'
   msg['From'] = from_
