@@ -34,7 +34,9 @@ def sendReminder(mail):
 
 
 This is a reminder for paying your syn2cat membership fee.
-You can see the status of your received payments in mematool[0] or contact me[1]
+If you are sure you have already paid, please ignore this mail...
+bank<->mematool synchronization is a manual task.
+BTW, you can see the status of your received payments in mematool[0] or contact me[1]
 if you wish.
 
 Please consider setting up a standing order or paying at least on a 6month 
