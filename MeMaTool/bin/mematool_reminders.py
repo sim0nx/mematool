@@ -24,11 +24,11 @@ from datetime import date, datetime
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
-	return ''.join(random.choice(chars) for x in range(size))
+  return ''.join(random.choice(chars) for x in range(size))
 
 
 def sendReminder(mail):
-	body = '''Hi,
+  body = '''Hi,
 
 --- Automatic mail ... do not reply to this mail directly ! ---
 
@@ -58,47 +58,69 @@ cheerz.... see you and thanks for your continuing support
 [1]:  treasurer-payments@hackerspace.lu'''
 
 
-	msg = MIMEText(body)
+  msg = MIMEText(body)
 
-	from_ = 'syn2cat treasuerer <' + id_generator(8) + '@hackerspace.lu>'
-	to_ = mail
-	msg['Subject'] = 'syn2cat membership fee'
-	msg['From'] = from_
-	msg['To'] = to_
+  from_ = 'syn2cat treasuerer <' + id_generator(8) + '@hackerspace.lu>'
+  to_ = mail
+  msg['Subject'] = 'syn2cat membership fee'
+  msg['From'] = from_
+  msg['To'] = to_
 
-	s = smtplib.SMTP('localhost')
-	s.sendmail(from_, [to_], msg.as_string())
-	s.quit()
+  s = smtplib.SMTP('localhost')
+  s.sendmail(from_, [to_], msg.as_string())
+  s.quit()
 
 
+def printOutstanding(member, date):
+  d = date
+  today = datetime.now().date()
+
+  print member
+  print d.year, today.year
+  print d.month, today.month
+  print today.day
+  print
 
 def getOutstanding(lmf):
-	activeMembers = lmf.getActiveMemberList()
+  activeMembers = lmf.getActiveMemberList()
+  members = {}
 
-	members = []
+  for uid in activeMembers:
+    last_payment = None
 
-	for uid in activeMembers:
-		last_payment = None
-
-		try:
-			last_payment = Session.query(Payment).filter(and_(Payment.uid == uid, Payment.verified == 1)).order_by(Payment.date.desc()).limit(1)[0]
-		except:
-			''' Don't care if there is no payment '''
-			pass
+    try:
+      last_payment = Session.query(Payment).filter(and_(Payment.uid == uid, Payment.verified == 1)).order_by(Payment.date.desc()).limit(1)[0]
+    except:
+      ''' Don't care if there is no payment '''
+      pass
 
 
-		m = lmf.getUser(uid)
+    m = lmf.getUser(uid)
 
-		if last_payment:
-			d = last_payment.date
-			today = datetime.now().date()
+    if last_payment:
+      d = last_payment.date
+      today = datetime.now().date()
 
-			if d.year > today.year or (d.year == today.year and d.month > today.month):
-				pass
-			else:
-				members.append(m.mail)
+      if d.year > today.year or (d.year == today.year and d.month >= today.month):
+        pass
+      elif d.year == today.year:
+        if today.month - d.month == 1:
+          if today.day == 28:
+            members[m.uid] = [d, m.mail]
+          else:
+            pass
+        else:
+          if today.day % 7 == 0:
+            members[m.uid] = [d, m.mail]
+          else:
+            pass
+      else:
+        if today.day % 7 == 0:
+          members[m.uid] = [d, m.mail]
+        else:
+          pass
 
-	return members
+  return members
 
 
 config_global = ConfigParser.RawConfigParser()
@@ -119,5 +141,6 @@ Session = sessionmaker(bind=db)()
 lmf = LdapModelFactory(cnf)
 members = getOutstanding(lmf)
 
-for m in members:
-	sendReminder(m)
+for k, v in members.items():
+  printOutstanding(k, v[0])
+  sendReminder(v[1])
