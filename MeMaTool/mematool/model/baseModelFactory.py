@@ -71,15 +71,15 @@ class BaseModelFactory(object):
   def getUidNumberFromUid(self, uid):
     pass
 
-  def saveMember(self, member):
+  def saveMember(self, member, is_admin=True):
     '''Add or update a member object in LDAP'''
     if member.uidNumber and member.uidNumber > 0:
       '''Existing member -> update'''
-      self._updateMember(member)
+      self._updateMember(member, is_admin)
     else:
       self._addMember(member)
 
-  def _updateMember(self, member):
+  def _updateMember(self, member, is_admin=True):
     pass
 
   def _addMember(self, member):

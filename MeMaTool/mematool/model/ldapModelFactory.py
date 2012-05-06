@@ -35,6 +35,7 @@ log = logging.getLogger(__name__)
 
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
 import ldap
+import re
 
 import gettext
 _ = gettext.gettext
@@ -211,31 +212,33 @@ class LdapModelFactory(BaseModelFactory):
 
     return retVal
 
-  def _updateMember(self, member):
+  def _updateMember(self, member, is_admin=True):
     mod_attrs = []
     om = self.getUser(member.uid)
 
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'cn'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'sn'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'givenName'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homePostalAddress'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homePhone'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'mobile'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'mail'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'gidNumber'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'loginShell'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homeDirectory'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'birthDate'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'arrivalDate'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'leavingDate'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'sshPublicKey'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'pgpKey'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'iButtonUID'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'conventionSigner'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'xmppID'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'spaceKey'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'npoMember'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'nationality'))
+    if is_admin:
+      print is_admin
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'cn'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'sn'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'givenName'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homePostalAddress'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homePhone'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'mobile'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'mail'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'gidNumber'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'loginShell'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homeDirectory'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'birthDate'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'arrivalDate'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'leavingDate'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'sshPublicKey'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'pgpKey'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'iButtonUID'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'conventionSigner'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'xmppID'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'spaceKey'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'npoMember'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'nationality'))
 
     if member.userPassword and member.userPassword != '':
       mod_attrs.append((ldap.MOD_REPLACE, 'userPassword', str(member.userPassword)))
@@ -249,7 +252,6 @@ class LdapModelFactory(BaseModelFactory):
 
     self.changeUserGroup(member.uid, 'syn2cat_full_member', member.fullMember)
     self.changeUserGroup(member.uid, 'syn2cat_locked_member', member.lockedMember)
-
 
     return result
 

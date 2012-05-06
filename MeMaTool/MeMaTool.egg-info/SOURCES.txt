@@ -103,6 +103,7 @@ mematool/templates/mails/listAliases.mako
 mematool/templates/mails/listDomains.mako
 mematool/templates/members/editMember.mako
 mematool/templates/members/exportCSV.mako
+mematool/templates/members/exportRCSLCSV.mako
 mematool/templates/members/view.mako
 mematool/templates/members/viewAll.mako
 mematool/templates/payments/bulkAdd.mako
