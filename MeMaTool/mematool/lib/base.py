@@ -25,6 +25,7 @@ class BaseController(WSGIController):
     # get the list of admins from the configuration file
     # replace whitespace and split on comma
     self.admins = re.sub(r' ', '', config.get('mematool.admins')).split(',')
+    self.superadmins = re.sub(r' ', '', config.get('mematool.superadmins')).split(',')
     self.financeadmins = re.sub(r' ', '', config.get('mematool.financeadmins')).split(',')
 
   def __call__(self, environ, start_response):
@@ -36,8 +37,6 @@ class BaseController(WSGIController):
       return WSGIController.__call__(self, environ, start_response)
     finally:
       Session.remove()
-
-
 
   def __before__(self):
     self.identity = session.get("identity")
@@ -58,7 +57,6 @@ class BaseController(WSGIController):
         session.save()
         redirect(url(controller='auth', action='login'))
 
-
   def _require_auth(self):
     return True
 
@@ -68,7 +66,6 @@ class BaseController(WSGIController):
       return True
 
     return False
-
 
   def _isParamStr(self, param, min_len=0, max_len=255, regex=None):
     if self._isParamSet(param) and len(request.params[param]) > min_len  and len(request.params[param]) <= max_len:
@@ -80,13 +77,11 @@ class BaseController(WSGIController):
 
     return False
 
-
   def _isParamInt(self, param, min_val=0, min_len=0, max_len=4):
     if self._isParamStr(param, min_len, max_len) and IsInt(request.params[param]) and int(request.params[param]) >= min_val:
       return True
 
     return False
-
 
   def _isParamFloat(self, param, min_val=0, min_len=0, max_len=4):
     if self._isParamStr(param, min_len, max_len) and IsFloat(request.params[param]) and float(request.params[param]) >= min_val:
@@ -94,10 +89,18 @@ class BaseController(WSGIController):
 
     return False
 
-
   def _forbidden(self):
     redirect(url(controller='error', action='forbidden'))
 
+  @staticmethod
+  def needSuperAdmin(f):
+    def new_f(self):
+      if self.isSuperAdmin():
+        return f(self)
+
+      self._forbidden()
+
+    return new_f
 
   @staticmethod
   def needAdmin(f):
@@ -109,6 +112,37 @@ class BaseController(WSGIController):
 
     return new_f
 
+  @staticmethod
+  def needGroup(group):
+    def wrap_f(f):
+      def new_f(self, *args):
+        if self.isInGroup(group):
+          return f(self, *args)
+
+        self._forbidden()
+
+      return new_f
+    return wrap_f
+
+  def isInGroup(self, group):
+    if not 'identity' in session or str(group) == '' :
+      return False
+
+    session_string = 'isInGroup' + str(group)
+
+    if not session_string in session or 1==1:
+      session[session_string] = False
+
+      if 'groups' in session:
+        if hasattr(self, group):
+          for ag in getattr(self, group):
+            if ag in session['groups']:
+              session[session_string] = True
+              break
+
+      session.save()
+
+    return session[session_string]
 
   def isAdmin(self):
     if not 'identity' in session:
@@ -139,7 +173,6 @@ class BaseController(WSGIController):
       session.save()
 
     return session['isFinanceAdmin']
-
 
   @staticmethod
   def needFinanceAdmin(f):
