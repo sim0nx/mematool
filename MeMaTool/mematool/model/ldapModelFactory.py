@@ -217,7 +217,6 @@ class LdapModelFactory(BaseModelFactory):
     om = self.getUser(member.uid)
 
     if is_admin:
-      print is_admin
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'cn'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'sn'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'givenName'))
