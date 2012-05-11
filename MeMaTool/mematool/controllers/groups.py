@@ -67,7 +67,7 @@ class GroupsController(BaseController):
 
     return redirect(url(controller='profile', action='index'))
 
-  @BaseController.needAdmin
+  @BaseController.needGroup('superadmins')
   def listGroups(self):
     c.heading = _('Managed groups')
 
@@ -76,7 +76,7 @@ class GroupsController(BaseController):
     return render('/groups/listGroups.mako')
 
 
-  @BaseController.needAdmin
+  @BaseController.needGroup('superadmins')
   def editGroup(self):
     # vary form depending on mode (do that over ajax)
     if not 'gid' in request.params or request.params['gid'] == '':
@@ -147,7 +147,7 @@ class GroupsController(BaseController):
     return new_f
 
 
-  @BaseController.needAdmin
+  @BaseController.needGroup('superadmins')
   @checkEdit
   @restrict('POST')
   def doEditGroup(self, items):
@@ -191,7 +191,7 @@ class GroupsController(BaseController):
 
     redirect(url(controller='groups', action='index'))
 
-  @BaseController.needAdmin
+  @BaseController.needGroup('superadmins')
   def unmanageGroup(self):
     if not self._isParamStr('gid'):
       redirect(url(controller='groups', action='index'))
@@ -209,7 +209,7 @@ class GroupsController(BaseController):
 
     redirect(url(controller='groups', action='index'))
 
-  @BaseController.needAdmin
+  @BaseController.needGroup('superadmins')
   def deleteGroup(self):
     if not self._isParamStr('gid'):
       redirect(url(controller='groups', action='index'))
