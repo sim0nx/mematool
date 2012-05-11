@@ -336,3 +336,25 @@ class MembersController(BaseController):
 
     session.save()
     redirect(url(controller='members', action='showAllMembers'))
+
+  def viewDiff(self):
+    if (not 'member_id' in request.params):
+      redirect(url(controller='members', action='showAllMembers'))
+
+    try:
+      member = self.lmf.getUser(request.params['member_id'])
+
+      if member.validate:
+        c.heading = _('View diff')
+        c.member = member
+
+        tmpmember = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
+        c.tmpmember = tmpmember
+ 
+        return render('/members/viewDiff.mako')
+
+    except LookupError:
+      print 'No such user !'
+
+    return 'ERROR 4x0'
+
