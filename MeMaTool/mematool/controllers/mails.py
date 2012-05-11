@@ -249,13 +249,13 @@ class MailsController(BaseController):
         else:
           alias = request.params['alias']
 
+        domain = alias.split('@')[1]
+
         try:
-          ParamChecker.checkDomain(alias, param=False)
+          ParamChecker.checkDomain(domain, param=False)
         except InvalidParameterFormat as ipf:
           formok = False
           errors.append(ipf.message)
-
-        domain = alias.split('@')[1]
 
         # @TODO improve check
         try:
