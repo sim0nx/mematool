@@ -97,6 +97,7 @@ mematool/templates/unauthorized.mako
 mematool/templates/auth/login.mako
 mematool/templates/groups/editGroup.mako
 mematool/templates/groups/listGroups.mako
+mematool/templates/mails/.editAlias.mako.swp
 mematool/templates/mails/editAlias.mako
 mematool/templates/mails/editDomain.mako
 mematool/templates/mails/listAliases.mako
@@ -106,6 +107,7 @@ mematool/templates/members/exportCSV.mako
 mematool/templates/members/exportRCSLCSV.mako
 mematool/templates/members/view.mako
 mematool/templates/members/viewAll.mako
+mematool/templates/members/viewDiff.mako
 mematool/templates/payments/bulkAdd.mako
 mematool/templates/payments/editPayment.mako
 mematool/templates/payments/listPayments.mako
