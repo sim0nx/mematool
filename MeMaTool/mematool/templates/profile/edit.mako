@@ -24,7 +24,16 @@ def getFormVar(s, c, var):
   <div id="content" class="span-18 push-1 last ">
   <header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
   <article>
-    <table class="table_content" width="95%"> 
+    <table class="table_content" width="95%">
+      % if c.member.validate:
+      <tr>
+        <td colspan="2">
+          <div class="notice">
+            ${_('Your account is currently locked for validation')}
+          </div>
+        </td>
+      </tr>
+      % endif
       ${parent.all_messages()}
             <tr>
                     <td class="table_title">
