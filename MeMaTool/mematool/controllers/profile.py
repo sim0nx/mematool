@@ -38,6 +38,8 @@ from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
 from webob.exc import HTTPUnauthorized
 
+from email.mime.text import MIMEText
+
 import gettext
 _ = gettext.gettext
 
@@ -195,6 +197,8 @@ class ProfileController(BaseController):
 
         session['flash'] = _('Changes saved!')
         session['flash_class'] = 'success'
+
+        self.mailValidationRequired()
       else:
         session['flash'] = _('Nothing to save!')
         session['flash_class'] = 'info'
@@ -210,3 +214,14 @@ class ProfileController(BaseController):
     
     session.save()
     redirect(url(controller='profile', action='index'))
+
+  def mailValidationRequired(self):
+    body = 'Hi,\n'
+    body += 'The following user has updated his profile which requires your approval:\n'
+    body += session['identity'] + '\n'
+    body += 'Please carefully review his changes and approve or reject them as required.\n\n'
+    body += 'regards,\nMeMaTool'
+
+    to = 'office@hackerspace.lu'
+    subject = 'syn2cat mematool - request for validation'
+    self.sendMail(to, subject, body)

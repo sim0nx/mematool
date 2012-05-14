@@ -308,6 +308,8 @@ class MembersController(BaseController):
         self.lmf.saveMember(member)
         Session.delete(tm)
         Session.commit()
+
+        self.postValidationMail(request.params['member_id'], member.mail, validated=True)
       else:
         session['flash'] = _('Nothing to validate!')
 
@@ -326,8 +328,11 @@ class MembersController(BaseController):
 
       if member.validate:
         tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
+        mail = tm.mail
         Session.delete(tm)
         Session.commit()
+
+        self.postValidationMail(request.params['member_id'], mail, validated=False)
       else:
         session['flash'] = _('Nothing to reject!')
 
@@ -336,6 +341,30 @@ class MembersController(BaseController):
 
     session.save()
     redirect(url(controller='members', action='showAllMembers'))
+
+  def postValidationMail(self, member_id, member_mail, validated=True):
+    if validated:
+      validation_string = 'validated'
+    else:
+      validation_string = 'rejected'
+
+    # office e-mail
+    body = 'Hi,\n'
+    body += session['identity'] + ' just ' + validation_string + ' the profile changes of the following member:\n'
+    body += member_id + '\n\n'
+    body += 'regards,\nMeMaTool'
+
+    to = 'office@hackerspace.lu'
+    subject = 'syn2cat mematool - request for validation - ' + validation_string
+    self.sendMail(to, subject, body)
+
+    # user e-mail
+    body = 'Hi,\n'
+    body += 'The office has just ' + validation_string + ' your profile changes.\n'
+    body += 'If you don\'t agree with this decision, please contact them for more information.\n\n'
+    body += 'regards,\nMeMaTool on behalf of the office'
+
+    self.sendMail(member_mail, subject, body)
 
   def viewDiff(self):
     if (not 'member_id' in request.params):
