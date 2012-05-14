@@ -12,6 +12,7 @@ ${h.end_form()}
 <div id="content" class="span-19 push-1 last ">
   <header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
   <article>
+    <%include file="/pendingMemberValidations.mako" />
     <li><table class="table_content"> 
             <tr> 
         <th class="table_title">

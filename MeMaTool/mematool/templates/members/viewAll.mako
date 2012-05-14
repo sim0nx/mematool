@@ -3,6 +3,7 @@
 <div id="content" class="span-19 push-1 last ">
   <header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
   <article>
+    <%include file="/pendingMemberValidations.mako" />
     <li><a href="${url(controller='members', action='exportList')}">Export as CSV<img src="/images/icons/pencil.png"></a></li>
     <li><a href="${url(controller='members', action='exportList', listType='RCSL')}">Export as RCSL CSV<img src="/images/icons/pencil.png"></a></li>
     <li>
