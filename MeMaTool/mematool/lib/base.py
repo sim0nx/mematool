@@ -9,8 +9,12 @@ from pylons import session, request, url, config
 import logging
 
 from mematool.model.meta import Session
+from mematool.model import TmpMember
 from mematool.lib.helpers import *
 import re
+
+import smtplib
+from email.mime.text import MIMEText
 
 
 class BaseController(WSGIController):
@@ -27,6 +31,10 @@ class BaseController(WSGIController):
     self.admins = re.sub(r' ', '', config.get('mematool.admins')).split(',')
     self.superadmins = re.sub(r' ', '', config.get('mematool.superadmins')).split(',')
     self.financeadmins = re.sub(r' ', '', config.get('mematool.financeadmins')).split(',')
+
+    if self.isAdmin():
+      session['pendingMemberValidations'] = self.pendingMemberValidations()
+      session.save()
 
   def __call__(self, environ, start_response):
     """Invoke the Controller"""
@@ -197,3 +205,22 @@ class BaseController(WSGIController):
         setattr(m, p, request.params[p])
     elif p in vars(m) and request.params['mode'] == 'edit':
       setattr(m, p, 'removed')
+
+  def pendingMemberValidations(self):
+    count = Session.query(TmpMember).count()
+
+    if count:
+      return count
+
+    return 0
+
+  def sendMail(self, to_, subject, body, from_='syn2cat mematool <noreply@hackerspace.lu>'):
+    msg = MIMEText(body)
+
+    msg['Subject'] = subject
+    msg['From'] = from_
+    msg['To'] = to_
+
+    s = smtplib.SMTP('localhost')
+    s.sendmail(from_, [to_], msg.as_string())
+    s.quit()
