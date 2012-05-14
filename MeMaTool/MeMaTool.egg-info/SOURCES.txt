@@ -93,11 +93,11 @@ mematool/public/javascript/mematool.js
 mematool/public/javascript/profile.jquery.js
 mematool/public/javascript/ui.jquery.js
 mematool/templates/base.mako
+mematool/templates/pendingMemberValidations.mako
 mematool/templates/unauthorized.mako
 mematool/templates/auth/login.mako
 mematool/templates/groups/editGroup.mako
 mematool/templates/groups/listGroups.mako
-mematool/templates/mails/.editAlias.mako.swp
 mematool/templates/mails/editAlias.mako
 mematool/templates/mails/editDomain.mako
 mematool/templates/mails/listAliases.mako
