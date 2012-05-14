@@ -4,21 +4,27 @@
 <header style="background:#00ADEF; padding:5px; font-weight:bold; color:#fff;">${c.heading}</header>
 <article>
 
-<table class="table_content" width="95%">
-  <tr>
-    <td>
-      Old data
-    </td>
-    <td>
-      New data
-    </td>
-  </tr>
-</table>
+<div class="info">
+${_('The user has submitted the following change request.')}<br>
+${_('On the left is his old data and on the right the updated one.')}
+</div>
+
+<div class="notice">
+${_('Please carefully review the changes and accept only valid data.')}
+</div>
 
 <table class="table_content" width="95%">
   <tr>
     <td>
       <table class="table_content" width="95%">
+        <tr>
+          <td class="table_title">
+            <b>Old data</b>
+          </td>
+          <td>
+            &nbsp;
+          </td>
+        </tr>
         <tr>
           <td class="table_title">
             ${_('Username')}
@@ -102,7 +108,16 @@
       </table>
     </td>
     <td>
+      <div class="notice">
       <table class="table_content" width="95%">
+        <tr>
+          <td class="table_title">
+            <b>New data</b>
+          </td>
+          <td>
+            &nbsp;
+          </td>
+        </tr>
         <tr>
           <td class="table_title">
             ${_('Username')}
@@ -184,6 +199,7 @@
           </td>
         </tr>
       </table>
+</div>
     </td>
   </tr>
 </table>
