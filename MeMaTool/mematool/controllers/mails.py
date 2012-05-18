@@ -245,7 +245,6 @@ class MailsController(BaseController):
             errors.append(ipf.message)
 
           alias = request.params['alias'] + '@' + request.params['domain']
-          request.params['alias'] = alias
         else:
           alias = request.params['alias']
 
