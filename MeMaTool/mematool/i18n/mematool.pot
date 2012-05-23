@@ -1,14 +1,14 @@
 # Translations template for MeMaTool.
-# Copyright (C) 2011 ORGANIZATION
+# Copyright (C) 2012 ORGANIZATION
 # This file is distributed under the same license as the MeMaTool project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: MeMaTool 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-08-29 23:20+0200\n"
+"POT-Creation-Date: 2012-05-24 00:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,253 +17,398 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: mematool/controllers/groups.py:55
+#: mematool/controllers/auth.py:69
+msgid "Login failed!"
+msgstr ""
+
+#: mematool/controllers/groups.py:60
 msgid "Show all groups"
 msgstr ""
 
-#: mematool/controllers/groups.py:56
+#: mematool/controllers/groups.py:61
 msgid "Add Group"
 msgstr ""
 
-#: mematool/controllers/groups.py:57 mematool/templates/base.mako:45
+#: mematool/controllers/groups.py:62 mematool/templates/base.mako:38
 msgid "Members"
 msgstr ""
 
-#: mematool/controllers/groups.py:74
+#: mematool/controllers/groups.py:72
 msgid "Managed groups"
 msgstr ""
 
-#: mematool/controllers/groups.py:119
+#: mematool/controllers/groups.py:122
 msgid "Invalid group ID"
 msgstr ""
 
-#: mematool/controllers/groups.py:154
+#: mematool/controllers/groups.py:127
+msgid "Invalid group names"
+msgstr ""
+
+#: mematool/controllers/groups.py:155
+msgid "Failed to add group!"
+msgstr ""
+
+#: mematool/controllers/groups.py:188
 msgid "Group saved successfully"
 msgstr ""
 
-#: mematool/controllers/members.py:52
+#: mematool/controllers/groups.py:202
+msgid "Group no longer managed"
+msgstr ""
+
+#: mematool/controllers/groups.py:205
+msgid "Failed to remove group from management!"
+msgstr ""
+
+#: mematool/controllers/groups.py:220
+msgid "Group successfully deleted"
+msgstr ""
+
+#: mematool/controllers/groups.py:223
+msgid "Failed to delete group!"
+msgstr ""
+
+#: mematool/controllers/mails.py:61
+msgid "Show all domains"
+msgstr ""
+
+#: mematool/controllers/mails.py:62 mematool/templates/mails/editDomain.mako:33
+msgid "Add domain"
+msgstr ""
+
+#: mematool/controllers/mails.py:63 mematool/templates/mails/editAlias.mako:63
+msgid "Add alias"
+msgstr ""
+
+#: mematool/controllers/mails.py:73
+msgid "Managed domains"
+msgstr ""
+
+#: mematool/controllers/mails.py:139
+msgid "Failed to add domain!"
+msgstr ""
+
+#: mematool/controllers/mails.py:156
+msgid "Domain successfully deleted"
+msgstr ""
+
+#: mematool/controllers/mails.py:159 mematool/controllers/mails.py:162
+msgid "Failed to delete domain!"
+msgstr ""
+
+#: mematool/controllers/mails.py:173
+#, python-format
+msgid "Aliases for domain: %s"
+msgstr ""
+
+#: mematool/controllers/mails.py:265
+msgid "Invalid mail destination!"
+msgstr ""
+
+#: mematool/controllers/mails.py:280
+msgid "All aliases need to be within the same domain!"
+msgstr ""
+
+#: mematool/controllers/mails.py:287
+msgid "Invalid related aliases!"
+msgstr ""
+
+#: mematool/controllers/mails.py:343
+msgid "Alias successfully edited"
+msgstr ""
+
+#: mematool/controllers/mails.py:348
+msgid "Error while editing alias"
+msgstr ""
+
+#: mematool/controllers/mails.py:364
+msgid "Alias successfully deleted"
+msgstr ""
+
+#: mematool/controllers/mails.py:367 mematool/controllers/mails.py:372
+msgid "Failed to delete alias!"
+msgstr ""
+
+#: mematool/controllers/members.py:61
 msgid "Show all members"
 msgstr ""
 
-#: mematool/controllers/members.py:53 mematool/controllers/members.py:74
+#: mematool/controllers/members.py:62 mematool/controllers/members.py:72
 msgid "Add member"
 msgstr ""
 
-#: mematool/controllers/members.py:54
+#: mematool/controllers/members.py:63
 msgid "Active members"
 msgstr ""
 
-#: mematool/controllers/members.py:55
+#: mematool/controllers/members.py:64
 msgid "Former members"
 msgstr ""
 
-#: mematool/controllers/members.py:57
+#: mematool/controllers/members.py:65
 msgid "Groups"
 msgstr ""
 
-#: mematool/controllers/members.py:90
+#: mematool/controllers/members.py:84
 msgid "Edit member"
 msgstr ""
 
-#: mematool/controllers/members.py:120
-msgid "Invalid form data"
-msgstr ""
-
-#: mematool/controllers/members.py:124 mematool/controllers/profile.py:118
-msgid "Invalid surname"
-msgstr ""
-
-#: mematool/controllers/members.py:128 mematool/controllers/profile.py:122
-msgid "Invalid given name"
-msgstr ""
-
-#: mematool/controllers/members.py:132 mematool/controllers/profile.py:126
-msgid "Invalid birth date"
-msgstr ""
-
-#: mematool/controllers/members.py:136 mematool/controllers/profile.py:130
-msgid "Invalid address"
-msgstr ""
-
-#: mematool/controllers/members.py:140 mematool/controllers/profile.py:134
-msgid "Invalid phone number"
-msgstr ""
-
-#: mematool/controllers/members.py:144 mematool/controllers/profile.py:138
-msgid "Invalid mobile number"
-msgstr ""
-
-#: mematool/controllers/members.py:148 mematool/controllers/profile.py:142
-msgid "Invalid e-mail address"
-msgstr ""
-
-#: mematool/controllers/members.py:152
-msgid "Invalid login shell"
-msgstr ""
-
-#: mematool/controllers/members.py:156
-msgid "Invalid \"member since\" date"
-msgstr ""
-
-#: mematool/controllers/members.py:160
-msgid "Invalid \"membership canceled\" date"
-msgstr ""
-
-#: mematool/controllers/members.py:164
-msgid "Invalid SSH key"
-msgstr ""
-
-#: mematool/controllers/members.py:168
-msgid "Invalid PGP key"
-msgstr ""
-
-#: mematool/controllers/members.py:172
-msgid "Invalid convention signer"
-msgstr ""
-
-#: mematool/controllers/members.py:176 mematool/controllers/profile.py:146
-msgid "Invalid XMPP/Jabber/GTalk ID"
-msgstr ""
-
-#: mematool/controllers/members.py:183 mematool/controllers/profile.py:151
-msgid "Passwords don't match"
-msgstr ""
-
-#: mematool/controllers/members.py:186 mematool/controllers/profile.py:154
-msgid "Password too short"
-msgstr ""
-
-#: mematool/controllers/members.py:190
-msgid "No password set"
-msgstr ""
-
-#: mematool/controllers/members.py:261
+#: mematool/controllers/members.py:207
 msgid "Member details successfully edited"
 msgstr ""
 
-#: mematool/controllers/members.py:289
+#: mematool/controllers/members.py:220
 msgid "All members"
 msgstr ""
 
-#: mematool/controllers/members.py:348
+#: mematool/controllers/members.py:310
 msgid "Nothing to validate!"
 msgstr ""
 
-#: mematool/controllers/members.py:351
+#: mematool/controllers/members.py:313
 msgid "Member validation failed!"
 msgstr ""
 
-#: mematool/controllers/members.py:369
+#: mematool/controllers/members.py:333
 msgid "Nothing to reject!"
 msgstr ""
 
-#: mematool/controllers/members.py:372
+#: mematool/controllers/members.py:336
 msgid "Failed to reject validation!"
 msgstr ""
 
-#: mematool/controllers/payments.py:85
-msgid "Payment validation successfully toggled"
+#: mematool/controllers/members.py:373
+msgid "View diff"
+msgstr ""
+
+#: mematool/controllers/payments.py:64
+msgid "All payments"
+msgstr ""
+
+#: mematool/controllers/payments.py:65
+msgid "Outstanding payment"
 msgstr ""
 
 #: mematool/controllers/payments.py:88
+msgid "Payment validation successfully toggled"
+msgstr ""
+
+#: mematool/controllers/payments.py:91
 msgid "Saving payment failed"
 msgstr ""
 
-#: mematool/controllers/payments.py:118
-msgid "Payment duplicated"
+#: mematool/controllers/payments.py:115
+msgid "Add bulk payments"
 msgstr ""
 
-#: mematool/controllers/payments.py:121
-msgid "Duplication failed"
+#: mematool/controllers/payments.py:142
+msgid "Payments added"
 msgstr ""
 
-#: mematool/controllers/payments.py:144
+#: mematool/controllers/payments.py:145
+msgid "Operation failed"
+msgstr ""
+
+#: mematool/controllers/payments.py:163
 msgid "Outstanding payments"
 msgstr ""
 
-#: mematool/controllers/payments.py:187
+#: mematool/controllers/payments.py:208
 #, python-format
-msgid "Payments for user %s"
+msgid "Payments for the year %s, user %s"
 msgstr ""
 
-#: mematool/controllers/payments.py:270
+#: mematool/controllers/payments.py:290
 #, python-format
 msgid "%s payment for user %s"
 msgstr ""
 
-#: mematool/controllers/payments.py:294
-msgid "Invalid amount"
-msgstr ""
-
-#: mematool/controllers/payments.py:298
+#: mematool/controllers/payments.py:311 mematool/model/lechecker.py:186
 msgid "Invalid date"
 msgstr ""
 
-#: mematool/controllers/payments.py:302
-msgid "Malformated reason"
+#: mematool/controllers/payments.py:318
+msgid "Invalid payment status"
 msgstr ""
 
-#: mematool/controllers/payments.py:306
-msgid "Invalid payment method"
+#: mematool/controllers/payments.py:333
+msgid "That month is already on records!"
 msgstr ""
 
-#: mematool/controllers/payments.py:357
+#: mematool/controllers/payments.py:368
+msgid "Invalid record"
+msgstr ""
+
+#: mematool/controllers/payments.py:382
 msgid "Invalid member"
 msgstr ""
 
-#: mematool/controllers/payments.py:370
+#: mematool/controllers/payments.py:395
 msgid "Payment saved successfully."
+msgstr ""
+
+#: mematool/controllers/profile.py:60 mematool/templates/base.mako:40
+msgid "Payments"
 msgstr ""
 
 #: mematool/controllers/profile.py:66
 msgid "Edit profile"
 msgstr ""
 
-#: mematool/controllers/profile.py:98 mematool/templates/base.mako:47
-msgid "Payments"
-msgstr ""
-
-#: mematool/controllers/profile.py:219
+#: mematool/controllers/profile.py:187
 msgid "Changes saved!"
 msgstr ""
 
-#: mematool/controllers/profile.py:222
+#: mematool/controllers/profile.py:192
 msgid "Nothing to save!"
 msgstr ""
 
-#: mematool/controllers/profile.py:229
+#: mematool/controllers/profile.py:200
 msgid "Password updated!"
 msgstr ""
 
-#: mematool/templates/auth/login.mako:5 mematool/templates/auth/login.mako:12
-msgid "Login"
-msgstr ""
-
-#: mematool/templates/auth/login.mako:10
-msgid "syn2cat username"
-msgstr ""
-
-#: mematool/templates/auth/login.mako:11
-msgid "password"
-msgstr ""
-
-#: mematool/templates/base.mako:43
-msgid "Dashboard"
-msgstr ""
-
-#: mematool/templates/base.mako:49
+#: mematool/controllers/statistics.py:62 mematool/templates/base.mako:42
 msgid "Statistics"
 msgstr ""
 
-#: mematool/templates/base.mako:51
+#: mematool/model/lechecker.py:141
+msgid "Invalid e-mail address"
+msgstr ""
+
+#: mematool/model/lechecker.py:146
+msgid "Invalid domain"
+msgstr ""
+
+#: mematool/model/lechecker.py:151
+msgid "Invalid username"
+msgstr ""
+
+#: mematool/model/lechecker.py:156
+msgid "Invalid value"
+msgstr ""
+
+#: mematool/model/lechecker.py:161
+msgid "Invalid mode"
+msgstr ""
+
+#: mematool/model/lechecker.py:181
+msgid "Invalid phone number"
+msgstr ""
+
+#: mematool/model/lechecker.py:191
+msgid "Invalid PGP key"
+msgstr ""
+
+#: mematool/model/lechecker.py:196
+msgid "Invalid iButton UID"
+msgstr ""
+
+#: mematool/model/lechecker.py:201
+msgid "Invalid password"
+msgstr ""
+
+#: mematool/model/lechecker.py:208
+msgid "Second password not valid"
+msgstr ""
+
+#: mematool/model/lechecker.py:211
+msgid "Passwords do not match"
+msgstr ""
+
+#: mematool/model/lechecker.py:217
+msgid "Invalid country code"
+msgstr ""
+
+#: mematool/model/lechecker.py:234
+msgid "Invalid Boolean value"
+msgstr ""
+
+#: mematool/model/member.py:164
+msgid "Invalid surname"
+msgstr ""
+
+#: mematool/model/member.py:170
+msgid "Invalid given name"
+msgstr ""
+
+#: mematool/model/member.py:176
+msgid "Invalid birth date"
+msgstr ""
+
+#: mematool/model/member.py:182
+msgid "Invalid address"
+msgstr ""
+
+#: mematool/model/member.py:195
+msgid "Invalid mobile number"
+msgstr ""
+
+#: mematool/model/member.py:207
+msgid "Invalid login shell"
+msgstr ""
+
+#: mematool/model/member.py:213
+msgid "Invalid \"member since\" date"
+msgstr ""
+
+#: mematool/model/member.py:220
+msgid "Invalid \"membership canceled\" date"
+msgstr ""
+
+#: mematool/model/member.py:227
+msgid "Invalid SSH key"
+msgstr ""
+
+#: mematool/model/member.py:248
+msgid "Invalid convention signer"
+msgstr ""
+
+#: mematool/model/member.py:255
+msgid "Invalid XMPP/Jabber/GTalk ID"
+msgstr ""
+
+#: mematool/model/member.py:262
+msgid "Invalid Space-Key value"
+msgstr ""
+
+#: mematool/model/member.py:269
+msgid "Invalid NPO-Member value"
+msgstr ""
+
+#: mematool/model/member.py:276
+msgid "Invalid nationality"
+msgstr ""
+
+#: mematool/templates/auth/login.mako:5 mematool/templates/auth/login.mako:13
+msgid "Login"
+msgstr ""
+
+#: mematool/templates/auth/login.mako:11
+msgid "syn2cat username"
+msgstr ""
+
+#: mematool/templates/auth/login.mako:12
+msgid "password"
+msgstr ""
+
+#: mematool/templates/base.mako:36
+msgid "Dashboard"
+msgstr ""
+
+#: mematool/templates/base.mako:43
+msgid "Mails"
+msgstr ""
+
+#: mematool/templates/base.mako:45
 msgid "Profile"
 msgstr ""
 
-#: mematool/templates/base.mako:53
+#: mematool/templates/base.mako:46
 msgid "Logout"
 msgstr ""
 
-#: mematool/templates/base.mako:68
+#: mematool/templates/base.mako:66
 msgid "Menu"
 msgstr ""
 
@@ -271,249 +416,392 @@ msgstr ""
 msgid "Group name:"
 msgstr ""
 
-#: mematool/templates/groups/editGroup.mako:30
+#: mematool/templates/groups/editGroup.mako:28
+msgid "Group members"
+msgstr ""
+
+#: mematool/templates/groups/editGroup.mako:40
 msgid "Add group"
 msgstr ""
 
-#: mematool/templates/groups/editGroup.mako:32
+#: mematool/templates/groups/editGroup.mako:42
 msgid "Edit group"
 msgstr ""
 
-#: mematool/templates/groups/listGroups.mako:9
+#: mematool/templates/groups/listGroups.mako:10
 msgid "Group"
 msgstr ""
 
-#: mematool/templates/groups/listGroups.mako:10
-#: mematool/templates/members/viewAll.mako:31
-#: mematool/templates/payments/listPayments.mako:14
-#: mematool/templates/payments/showOutstanding.mako:30
+#: mematool/templates/groups/listGroups.mako:11
+#: mematool/templates/mails/listAliases.mako:10
+#: mematool/templates/mails/listDomains.mako:11
+#: mematool/templates/members/viewAll.mako:35
+#: mematool/templates/payments/listPayments.mako:24
+#: mematool/templates/payments/showOutstanding.mako:37
 msgid "Tools"
 msgstr ""
 
-#: mematool/templates/groups/listGroups.mako:15
+#: mematool/templates/groups/listGroups.mako:16
+#: mematool/templates/mails/listAliases.mako:15
 msgid "Edit"
 msgstr ""
 
-#: mematool/templates/groups/listGroups.mako:16
+#: mematool/templates/groups/listGroups.mako:17
 msgid "Un-manage"
 msgstr ""
 
-#: mematool/templates/groups/listGroups.mako:17
-#: mematool/templates/payments/listPayments.mako:30
+#: mematool/templates/groups/listGroups.mako:18
+msgid "Are you sure you want to delete"
+msgstr ""
+
+#: mematool/templates/groups/listGroups.mako:18
+#: mematool/templates/mails/listAliases.mako:16
+#: mematool/templates/mails/listDomains.mako:17
+#: mematool/templates/payments/listPayments.mako:53
 msgid "Delete"
 msgstr ""
 
+#: mematool/templates/mails/editAlias.mako:23
+#: mematool/templates/mails/editAlias.mako:36
+msgid "Alias name:"
+msgstr ""
+
+#: mematool/templates/mails/editAlias.mako:29
+#: mematool/templates/mails/editDomain.mako:21
+msgid "Domain name:"
+msgstr ""
+
+#: mematool/templates/mails/editAlias.mako:44
+msgid "Related aliases"
+msgstr ""
+
+#: mematool/templates/mails/editAlias.mako:52
+msgid "Mail destination"
+msgstr ""
+
+#: mematool/templates/mails/editAlias.mako:65
+msgid "Edit alias"
+msgstr ""
+
+#: mematool/templates/mails/editDomain.mako:35
+msgid "Edit domain"
+msgstr ""
+
+#: mematool/templates/mails/listAliases.mako:9
+msgid "Alias"
+msgstr ""
+
+#: mematool/templates/mails/listAliases.mako:16
+#: mematool/templates/mails/listDomains.mako:17
+msgid "Are you _really_ sure you want to delete"
+msgstr ""
+
+#: mematool/templates/mails/listDomains.mako:10
+msgid "Domain"
+msgstr ""
+
+#: mematool/templates/mails/listDomains.mako:16
+msgid "Aliases"
+msgstr ""
+
 #: mematool/templates/members/editMember.mako:32
-#: mematool/templates/members/viewAll.mako:10
-#: mematool/templates/payments/showOutstanding.mako:18
-#: mematool/templates/profile/edit.mako:31
+#: mematool/templates/members/viewAll.mako:17
+#: mematool/templates/members/viewDiff.mako:30
+#: mematool/templates/members/viewDiff.mako:123
+#: mematool/templates/payments/showOutstanding.mako:22
+#: mematool/templates/profile/edit.mako:40
 msgid "Username"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:45
-#: mematool/templates/profile/edit.mako:39
+#: mematool/templates/members/viewDiff.mako:38
+#: mematool/templates/members/viewDiff.mako:131
+#: mematool/templates/profile/edit.mako:48
 msgid "User ID"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:54
-#: mematool/templates/profile/edit.mako:47
+#: mematool/templates/profile/edit.mako:56
 msgid "Additional groups"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:57
-#: mematool/templates/profile/edit.mako:54
+#: mematool/templates/profile/edit.mako:63
 msgid "full member"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:58
-#: mematool/templates/profile/edit.mako:55
+#: mematool/templates/profile/edit.mako:64
 msgid "locked member"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:63
-#: mematool/templates/profile/edit.mako:60
+#: mematool/templates/profile/edit.mako:69
 msgid "Common name"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:71
-#: mematool/templates/members/viewAll.mako:13
-#: mematool/templates/payments/showOutstanding.mako:21
-#: mematool/templates/profile/edit.mako:68
+#: mematool/templates/members/viewAll.mako:20
+#: mematool/templates/members/viewDiff.mako:46
+#: mematool/templates/members/viewDiff.mako:139
+#: mematool/templates/payments/showOutstanding.mako:25
+#: mematool/templates/profile/edit.mako:77
 msgid "Surname"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:79
-#: mematool/templates/members/viewAll.mako:16
-#: mematool/templates/payments/showOutstanding.mako:24
-#: mematool/templates/profile/edit.mako:76
+#: mematool/templates/members/viewAll.mako:23
+#: mematool/templates/members/viewDiff.mako:54
+#: mematool/templates/members/viewDiff.mako:147
+#: mematool/templates/payments/showOutstanding.mako:28
+#: mematool/templates/profile/edit.mako:85
 msgid "Given name"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:87
-#: mematool/templates/profile/edit.mako:84
-msgid "Convention signer"
+msgid "Nationality (2 char iso-code)"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:95
-#: mematool/templates/profile/edit.mako:92
-msgid "Birth Date"
+#: mematool/templates/profile/edit.mako:93
+msgid "Convention signer"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:103
-#: mematool/templates/profile/edit.mako:100
-msgid "Address"
+#: mematool/templates/members/viewDiff.mako:62
+#: mematool/templates/members/viewDiff.mako:155
+#: mematool/templates/profile/edit.mako:101
+msgid "Birth Date"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:111
-#: mematool/templates/profile/edit.mako:108
-msgid "Phone"
+#: mematool/templates/members/viewDiff.mako:70
+#: mematool/templates/members/viewDiff.mako:163
+#: mematool/templates/profile/edit.mako:109
+msgid "Address"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:119
-#: mematool/templates/members/viewAll.mako:22
-#: mematool/templates/profile/edit.mako:116
-msgid "Mobile"
+#: mematool/templates/members/viewDiff.mako:78
+#: mematool/templates/members/viewDiff.mako:171
+#: mematool/templates/profile/edit.mako:117
+msgid "Phone"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:127
-#: mematool/templates/profile/edit.mako:124
-msgid "E-Mail"
+#: mematool/templates/members/viewDiff.mako:86
+#: mematool/templates/members/viewDiff.mako:179
+#: mematool/templates/profile/edit.mako:125
+msgid "Mobile"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:135
-#: mematool/templates/profile/edit.mako:132
-msgid "XMPP/Jabber/GTalk ID"
+#: mematool/templates/members/viewAll.mako:26
+#: mematool/templates/members/viewDiff.mako:94
+#: mematool/templates/members/viewDiff.mako:187
+#: mematool/templates/payments/showOutstanding.mako:31
+#: mematool/templates/profile/edit.mako:133
+msgid "E-Mail"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:143
-#: mematool/templates/profile/edit.mako:140
-msgid "Login Shell"
+#: mematool/templates/members/viewDiff.mako:102
+#: mematool/templates/members/viewDiff.mako:195
+#: mematool/templates/profile/edit.mako:141
+msgid "XMPP/Jabber/GTalk ID"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:151
-#: mematool/templates/profile/edit.mako:156
-msgid "Member since"
+#: mematool/templates/profile/edit.mako:149
+msgid "Login Shell"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:159
-msgid "Membership canceled"
+#: mematool/templates/profile/edit.mako:165
+msgid "Member since"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:167
-#: mematool/templates/profile/edit.mako:164
-msgid "PGP Key"
+msgid "Membership canceled"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:175
-#: mematool/templates/profile/edit.mako:172
-msgid "SSH Public Key"
+#: mematool/templates/profile/edit.mako:173
+msgid "PGP Key"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:183
-#: mematool/templates/profile/edit.mako:180
-msgid "Password"
+msgid "iButton UID"
 msgstr ""
 
 #: mematool/templates/members/editMember.mako:191
-#: mematool/templates/profile/edit.mako:188
+msgid "Has space key"
+msgstr ""
+
+#: mematool/templates/members/editMember.mako:199
+msgid "Is NPO member"
+msgstr ""
+
+#: mematool/templates/members/editMember.mako:207
+#: mematool/templates/profile/edit.mako:181
+msgid "SSH Public Key"
+msgstr ""
+
+#: mematool/templates/members/editMember.mako:215
+#: mematool/templates/profile/edit.mako:189
+msgid "Password"
+msgstr ""
+
+#: mematool/templates/members/editMember.mako:223
+#: mematool/templates/profile/edit.mako:197
 msgid "Repeat Password"
 msgstr ""
 
-#: mematool/templates/members/editMember.mako:203
-#: mematool/templates/profile/edit.mako:195
+#: mematool/templates/members/editMember.mako:236
+#: mematool/templates/profile/edit.mako:204
 msgid "Submit"
 msgstr ""
 
-#: mematool/templates/members/viewAll.mako:19
-#: mematool/templates/profile/edit.mako:148
-msgid "Home directory"
+#: mematool/templates/members/viewAll.mako:7
+msgid "Export as CSV"
 msgstr ""
 
-#: mematool/templates/members/viewAll.mako:25
+#: mematool/templates/members/viewAll.mako:8
+msgid "Export as RCSL CSV"
+msgstr ""
+
+#: mematool/templates/members/viewAll.mako:29
 msgid "PEAP"
 msgstr ""
 
-#: mematool/templates/members/viewAll.mako:28
+#: mematool/templates/members/viewAll.mako:32
 msgid "SSH"
 msgstr ""
 
-#: mematool/templates/payments/editPayment.mako:17
+#: mematool/templates/members/viewDiff.mako:8
+msgid "The user has submitted the following change request."
+msgstr ""
+
+#: mematool/templates/members/viewDiff.mako:9
+msgid "On the left is his old data and on the right the updated one."
+msgstr ""
+
+#: mematool/templates/members/viewDiff.mako:13
+msgid "Please carefully review the changes and accept only valid data."
+msgstr ""
+
+#: mematool/templates/payments/bulkAdd.mako:16
+#: mematool/templates/payments/editPayment.mako:20
 msgid "back to Payments"
 msgstr ""
 
-#: mematool/templates/payments/editPayment.mako:29
-msgid "Amount payed"
+#: mematool/templates/payments/bulkAdd.mako:28
+msgid "How many months"
 msgstr ""
 
-#: mematool/templates/payments/editPayment.mako:33
-msgid "Date payed"
+#: mematool/templates/payments/bulkAdd.mako:33
+msgid "Payment(s) verified"
 msgstr ""
 
-#: mematool/templates/payments/editPayment.mako:37
-msgid "Reason for payment"
-msgstr ""
-
-#: mematool/templates/payments/editPayment.mako:41
-msgid "payment method"
-msgstr ""
-
-#: mematool/templates/payments/editPayment.mako:49
+#: mematool/templates/payments/bulkAdd.mako:40
+#: mematool/templates/payments/editPayment.mako:54
 msgid "Add payment"
 msgstr ""
 
-#: mematool/templates/payments/editPayment.mako:51
+#: mematool/templates/payments/editPayment.mako:32
+msgid "Date payed"
+msgstr ""
+
+#: mematool/templates/payments/editPayment.mako:36
+#: mematool/templates/payments/listPayments.mako:23
+msgid "Status"
+msgstr ""
+
+#: mematool/templates/payments/editPayment.mako:38
+msgid "Normal payment"
+msgstr ""
+
+#: mematool/templates/payments/editPayment.mako:39
+msgid "No payment"
+msgstr ""
+
+#: mematool/templates/payments/editPayment.mako:40
+msgid "Not a member"
+msgstr ""
+
+#: mematool/templates/payments/editPayment.mako:45
+msgid "Payment verified"
+msgstr ""
+
+#: mematool/templates/payments/editPayment.mako:56
 msgid "Edit payment"
 msgstr ""
 
 #: mematool/templates/payments/listPayments.mako:9
+msgid "Year"
+msgstr ""
+
+#: mematool/templates/payments/listPayments.mako:16
+msgid "Bulk add multiple months"
+msgstr ""
+
+#: mematool/templates/payments/listPayments.mako:21
 msgid "Date"
 msgstr ""
 
-#: mematool/templates/payments/listPayments.mako:10
-msgid "Amount"
+#: mematool/templates/payments/listPayments.mako:22
+msgid "Validated"
 msgstr ""
 
-#: mematool/templates/payments/listPayments.mako:11
-msgid "Reason"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:12
-msgid "by method"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:13
-msgid "validated"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:26
+#: mematool/templates/payments/listPayments.mako:49
 msgid "Modify"
 msgstr ""
 
-#: mematool/templates/payments/listPayments.mako:28
-msgid "Duplicate"
-msgstr ""
-
-#: mematool/templates/payments/listPayments.mako:29
+#: mematool/templates/payments/listPayments.mako:52
 msgid "Validate"
 msgstr ""
 
-#: mematool/templates/payments/showOutstanding.mako:27
+#: mematool/templates/payments/listPayments.mako:56
+msgid "Add"
+msgstr ""
+
+#: mematool/templates/payments/showOutstanding.mako:34
 msgid "Payment good"
 msgstr ""
 
-#: mematool/templates/payments/showOutstanding.mako:35
+#: mematool/templates/payments/showOutstanding.mako:43
 msgid "no"
 msgstr ""
 
-#: mematool/templates/payments/showOutstanding.mako:35
+#: mematool/templates/payments/showOutstanding.mako:43
 msgid "yes"
 msgstr ""
 
-#: mematool/templates/payments/showOutstanding.mako:42
+#: mematool/templates/payments/showOutstanding.mako:53
 msgid "payments"
 msgstr ""
 
-#: mematool/templates/profile/edit.mako:180
+#: mematool/templates/pendingMemberValidations.mako:3
+msgid "There are pending validation requests regarding member profile updates."
+msgstr ""
+
+#: mematool/templates/profile/edit.mako:32
+msgid "Your account is currently locked for validation"
+msgstr ""
+
+#: mematool/templates/profile/edit.mako:157
+msgid "Home directory"
+msgstr ""
+
+#: mematool/templates/profile/edit.mako:189
 msgid "only ASCII chars"
+msgstr ""
+
+#: mematool/templates/statistics/index.mako:9
+msgid "Key"
+msgstr ""
+
+#: mematool/templates/statistics/index.mako:10
+msgid "Value"
 msgstr ""
 
