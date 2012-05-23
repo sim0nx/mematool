@@ -6,6 +6,7 @@ from pylons.controllers import WSGIController
 from pylons.controllers.util import abort, redirect
 from pylons.templating import render_mako as render
 from pylons import session, request, url, config
+from pylons.i18n.translation import set_lang
 import logging
 
 from mematool.model.meta import Session
@@ -41,6 +42,9 @@ class BaseController(WSGIController):
     # WSGIController.__call__ dispatches to the Controller method
     # the request is routed to. This routing information is
     # available in environ['pylons.routes_dict']
+    if 'lang' in session:
+      set_lang(session['lang'])
+
     try:
       return WSGIController.__call__(self, environ, start_response)
     finally:
