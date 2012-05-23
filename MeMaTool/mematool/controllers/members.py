@@ -24,6 +24,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import redirect
 from pylons import config
+from pylons.i18n.translation import _
 
 from mematool.lib.base import BaseController, render, Session
 from mematool.model import Member, TmpMember
@@ -40,12 +41,6 @@ from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
 from pylons.decorators.rest import restrict
 
-from webob.exc import HTTPUnauthorized
-
-import gettext
-_ = gettext.gettext
-
-
 
 class MembersController(BaseController):
 
@@ -53,20 +48,21 @@ class MembersController(BaseController):
     super(MembersController, self).__init__()
     self.lmf = LdapModelFactory()
 
+  @BaseController.needAdmin
+  def __before__(self):
+    super(MembersController, self).__before__()
+    self._sidebar()
+
+  def _require_auth(self):
+    return True
+
+  def _sidebar(self):
     c.actions = list()
     c.actions.append( (_('Show all members'), 'members', 'showAllMembers') )
     c.actions.append( (_('Add member'), 'members', 'addMember') )
     c.actions.append( (_('Active members'), 'members', 'showActiveMembers') )
     c.actions.append( (_('Former members'), 'members', 'showFormerMembers') )
-    #c.actions.append( ('RCSL export', 'members', 'rcslExport') )
     c.actions.append( (_('Groups'), 'groups', 'index') )
-
-  @BaseController.needAdmin
-  def __before__(self):
-    super(MembersController, self).__before__()
-
-  def _require_auth(self):
-    return True
 
   def index(self):
     return self.showAllMembers()
@@ -386,4 +382,3 @@ class MembersController(BaseController):
       print 'No such user !'
 
     return 'ERROR 4x0'
-

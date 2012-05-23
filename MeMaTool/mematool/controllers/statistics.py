@@ -24,6 +24,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import redirect
 from pylons import config
+from pylons.i18n.translation import _
 
 from mematool.lib.base import BaseController, render, Session
 from mematool.model import Member, TmpMember, Payment
@@ -39,10 +40,6 @@ from sqlalchemy import and_
 from datetime import date, datetime
 
 from webob.exc import HTTPUnauthorized
-
-import gettext
-_ = gettext.gettext
-
 
 
 class StatisticsController(BaseController):

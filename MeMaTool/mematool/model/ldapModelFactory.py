@@ -22,6 +22,7 @@
 import logging
 
 from pylons import config
+from pylons.i18n.translation import _
 
 #from mematool.lib.base import Session
 #from sqlalchemy.orm.exc import NoResultFound
@@ -36,10 +37,6 @@ log = logging.getLogger(__name__)
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
 import ldap
 import re
-
-import gettext
-_ = gettext.gettext
-
 
 
 class LdapModelFactory(BaseModelFactory):

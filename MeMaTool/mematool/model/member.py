@@ -21,6 +21,7 @@
 # -*- coding: utf-8 -*-
 
 
+from pylons.i18n.translation import _
 from mematool.model.meta import Base
 
 from datetime import date
@@ -32,9 +33,6 @@ from binascii import b2a_base64, a2b_base64
 from mematool.lib.syn2cat import regex
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 import os
-
-import gettext
-_ = gettext.gettext
 
 
 class Member():

@@ -22,6 +22,7 @@
 import logging
 
 from pylons import config
+from pylons.i18n.translation import _
 
 from mematool.lib.base import Session
 from sqlalchemy.orm.exc import NoResultFound
@@ -29,10 +30,6 @@ from mematool.model import Member
 from mematool.model import Group
 
 log = logging.getLogger(__name__)
-
-import gettext
-_ = gettext.gettext
-
 
 
 class BaseModelFactory(object):

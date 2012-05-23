@@ -19,10 +19,9 @@
 #    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 from pylons import request
+from pylons.i18n.translation import _
 import re
 from mematool.lib.syn2cat import regex, countrycodes
-import gettext
-_ = gettext.gettext
 
 
 class InvalidParameterFormat(Exception):

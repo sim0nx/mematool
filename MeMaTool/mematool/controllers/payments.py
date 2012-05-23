@@ -23,6 +23,7 @@ log = logging.getLogger(__name__)
 
 from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import redirect
+from pylons.i18n.translation import _
 
 from mematool.lib.base import BaseController, render, Session
 from mematool.lib.helpers import *
@@ -45,24 +46,23 @@ from dateutil.relativedelta import relativedelta
 from pylons.decorators import validate
 from pylons.decorators.rest import restrict
 
-import gettext
-_ = gettext.gettext
-
 
 class PaymentsController(BaseController):
   def __init__(self):
     super(PaymentsController, self).__init__()
     self.lmf = LdapModelFactory()
 
-    c.actions = list()
-    c.actions.append( (_('All payments'), 'payments', 'listPayments') )
-    c.actions.append( (_('Outstanding payment'), 'payments', 'index') )
-
   def __before__(self, action, **param):
     super(PaymentsController, self).__before__()
+    self._sidebar()
 
   def _require_auth(self):
     return True
+
+  def _sidebar(self):
+    c.actions = list()
+    c.actions.append( (_('All payments'), 'payments', 'listPayments') )
+    c.actions.append( (_('Outstanding payment'), 'payments', 'index') )
 
   def index(self):
     if self.lmf.isUserInGroup(self.identity, 'office'):

@@ -24,6 +24,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import redirect
 from pylons import config
+from pylons.i18n.translation import _, set_lang
 
 from mematool.lib.base import BaseController, render, Session
 from mematool.model import Member, TmpMember
@@ -40,10 +41,6 @@ from webob.exc import HTTPUnauthorized
 
 from email.mime.text import MIMEText
 
-import gettext
-_ = gettext.gettext
-
-
 
 class ProfileController(BaseController):
 
@@ -53,18 +50,17 @@ class ProfileController(BaseController):
 
   def __before__(self):
     super(ProfileController, self).__before__()
-
-    if not self.identity:
-      redirect(url(controller='error', action='forbidden'))
-
+    self._sidebar()
 
   def _require_auth(self):
     return True
 
+  def _sidebar(self):
+    c.actions = list()
+    c.actions.append( (_('Payments'), 'payments', 'listPayments', session['identity']) )
 
   def index(self):
     return self.edit()
-
 
   def edit(self):
     c.heading = _('Edit profile')
@@ -98,18 +94,12 @@ class ProfileController(BaseController):
       else:
         c.member.locked_member = False
 
-      c.actions = list()
-      c.actions.append( (_('Payments'), 'payments', 'listPayments', session['identity']) )
-
-
       return render('/profile/edit.mako')
 
     except LookupError:
       print 'Edit :: No such user !'
 
-
     return 'ERROR 4x0'
-
 
   def checkMember(f):
     def new_f(self):
@@ -150,7 +140,6 @@ class ProfileController(BaseController):
 
       return f(self)
     return new_f
-
 
   @checkMember
   def doEdit(self):
@@ -203,7 +192,6 @@ class ProfileController(BaseController):
         session['flash'] = _('Nothing to save!')
         session['flash_class'] = 'info'
 
-
       if 'userPassword' in request.params and 'userPassword2' in request.params and request.params['userPassword'] != '' and request.params['userPassword'] == request.params['userPassword2']:
         m.setPassword(request.params['userPassword'])
         self.lmf.saveMember(m, is_admin=False)
@@ -225,3 +213,14 @@ class ProfileController(BaseController):
     to = 'office@hackerspace.lu'
     subject = 'syn2cat mematool - request for validation'
     self.sendMail(to, subject, body)
+
+  def setLang(self):
+    if (not 'lang' in request.params):
+      redirect(url(controller='members', action='showAllMembers'))
+
+    if request.params['lang'] in ('en', 'lb', 'de'):
+      session['lang'] = request.params['lang']
+      session.save()
+      set_lang(request.params['lang'])
+
+    redirect(url(controller='members', action='showAllMembers'))

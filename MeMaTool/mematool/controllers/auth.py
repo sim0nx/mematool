@@ -2,6 +2,7 @@ import logging
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
+from pylons.i18n.translation import _
 
 from mematool.lib.base import BaseController, render
 from pylons.decorators.secure import https
@@ -9,8 +10,6 @@ from mematool.lib.syn2cat.auth.auth_ldap import LDAPAuthAdapter
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
 
-import gettext
-_ = gettext.gettext
 
 log = logging.getLogger(__name__)
 

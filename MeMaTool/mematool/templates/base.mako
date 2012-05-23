@@ -45,6 +45,11 @@
           <li>${h.link_to(_('Profile'),url(controller='profile', action='index'))}</li>
           <li>${h.link_to(_('Logout'),url(controller='auth', action='logout',id=None))}</li>
         </ul>
+        <ul class="list-horizontal">
+          <li><a href="/profile/setLang?lang=en"><img src="/images/icons/flags/en.png" alt="en"/></a></li>
+          <li><a href="/profile/setLang?lang=lb"><img src="/images/icons/flags/lu.png" alt="lb"/></a></li>
+          <li><a href="/profile/setLang?lang=de"><img src="/images/icons/flags/de.png" alt="de"/></a></li>
+        </ul>
       </nav>
       % endif
       

@@ -23,6 +23,7 @@ log = logging.getLogger(__name__)
 
 from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import redirect
+from pylons.i18n.translation import _
 
 from mematool.lib.base import BaseController, render
 
@@ -41,8 +42,6 @@ from pylons.decorators.rest import restrict
 import dateutil.parser
 import datetime
 
-import gettext
-_ = gettext.gettext
 
 
 class MailsController(BaseController):
@@ -50,16 +49,18 @@ class MailsController(BaseController):
     super(MailsController, self).__init__()
     self.lmf = LdapModelFactory()
 
+  def __before__(self, action, **param):
+    super(MailsController, self).__before__()
+    self._sidebar()
+
+  def _require_auth(self):
+    return True
+
+  def _sidebar(self):
     c.actions = list()
     c.actions.append((_('Show all domains'), 'mails', 'listDomains'))
     c.actions.append((_('Add domain'), 'mails', 'editDomain'))
     c.actions.append((_('Add alias'), 'mails', 'editAlias'))
-
-  def __before__(self, action, **param):
-    super(MailsController, self).__before__()
-
-  def _require_auth(self):
-    return True
 
   def index(self):
     if self.lmf.isUserInGroup(self.identity, 'office') or self.lmf.isUserInGroup(self.identity, 'sysops'):
