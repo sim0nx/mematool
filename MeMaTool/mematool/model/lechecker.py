@@ -117,7 +117,8 @@ class ParamChecker(object):
         return True
       else:
         '''if set and does not match syntax check'''
-        raise InvalidParameterFormat(error_msg)
+        if not optional:
+          raise InvalidParameterFormat(error_msg)
 
     if optional:
       '''if optional just return false'''
@@ -237,6 +238,6 @@ class ParamChecker(object):
       param=param, optional=optional)
 
   @staticmethod
-  def checkInt(fn, param=True, min_len=8, max_len=999, optional=False):
+  def checkInt(fn, param=True, min_len=1, max_len=999, optional=False):
     return ParamChecker._baseCheckInt(fn, _('Invalid Integer value'),
       min_len=min_len, max_len=max_len, param=param, optional=optional)
