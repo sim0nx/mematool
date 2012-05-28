@@ -101,7 +101,6 @@ class BaseModelFactory(object):
 
     return []
 
-
   def getGroupMembers(self, group):
     pass
 

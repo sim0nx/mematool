@@ -26,10 +26,11 @@ from sqlalchemy.orm import sessionmaker, relation
 from mematool.model.meta import Base
 from mematool.lib.base import Session
 
+
 class Paymentmethod(Base):
   __tablename__ = 'paymentmethod'
   __table_args__ = (
-    {'mysql_engine':'InnoDB'}
+    {'mysql_engine': 'InnoDB'}
     )
 
   idpaymentmethod = Column(Integer, primary_key=True)
@@ -43,4 +44,3 @@ class Paymentmethod(Base):
 
   def save(self):
     Session.commit()
-

@@ -19,7 +19,6 @@
 #    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 class Alias(object):
   str_vars = ['dn_mail']
   list_vars = ['mail', 'maildrop']

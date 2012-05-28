@@ -37,34 +37,34 @@ import os
 
 class Member():
   # ldap
-  str_vars = ['uid',\
-    'cn',\
-    'sn',\
-    'givenName',\
-    'homePhone',\
-    'mobile',\
-    'mail',\
-    'xmppID',\
-    'userPassword',\
-    'sambaNTPassword',\
-    'sambaSID',\
-    'sshPublicKey',\
-    'pgpKey',\
-    'iButtonUID',\
-    'conventionSigner',\
-    'uidNumber',\
-    'gidNumber',\
-    'loginShell',\
-    'hDirectory',\
-    'birthDate',\
-    'homePostalAddress',\
-    'arrivalDate',\
-    'leavingDate',\
+  str_vars = ['uid',
+    'cn',
+    'sn',
+    'givenName',
+    'homePhone',
+    'mobile',
+    'mail',
+    'xmppID',
+    'userPassword',
+    'sambaNTPassword',
+    'sambaSID',
+    'sshPublicKey',
+    'pgpKey',
+    'iButtonUID',
+    'conventionSigner',
+    'uidNumber',
+    'gidNumber',
+    'loginShell',
+    'hDirectory',
+    'birthDate',
+    'homePostalAddress',
+    'arrivalDate',
+    'leavingDate',
     'nationality']
   list_vars = ['groups']
-  bool_vars = ['fullMember',\
-    'lockedMember',\
-    'spaceKey',\
+  bool_vars = ['fullMember',
+    'lockedMember',
+    'spaceKey',
     'npoMember']
 
   '''
@@ -95,7 +95,6 @@ class Member():
   fullMember = False
   lockedMember = False
   '''
-  
 
   def __init__(self):
     for v in self.str_vars:
@@ -148,8 +147,7 @@ class Member():
   def generateUserSID(self):
     #@TODO put in config file
     serverSambaSID = 'S-1-1-1'
-    self.sambaSID = serverSambaSID + '-' + str( (int(self.uidNumber) * 2) + 1000 )
-
+    self.sambaSID = serverSambaSID + '-' + str((int(self.uidNumber) * 2) + 1000)
 
   ####################
   # checker interface

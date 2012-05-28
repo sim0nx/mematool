@@ -67,8 +67,8 @@ class TypeChecker(object):
 
   @staticmethod
   def isParamStr(p, min_len=0, max_len=999999, regex=None):
-    if len(p) >= min_len  and len(p) <= max_len:
-      if regex != None:
+    if len(p) >= min_len and len(p) <= max_len:
+      if regex is not None:
         if re.match(regex, p, re.IGNORECASE):
           return True
       else:
@@ -124,7 +124,7 @@ class ParamChecker(object):
     if optional:
       '''if optional just return false'''
       return False
-    
+
     '''in any other case raise exception'''
     raise InvalidParameterFormat(error_msg)
 
@@ -138,22 +138,22 @@ class ParamChecker(object):
 
   @staticmethod
   def checkEmail(fn, param=True, optional=False):
-    return ParamChecker._baseCheckString(fn, _('Invalid e-mail address'),\
+    return ParamChecker._baseCheckString(fn, _('Invalid e-mail address'),
       param=param, optional=optional, regex=regex.email)
 
   @staticmethod
   def checkDomain(fn, param=True, optional=False):
-    return ParamChecker._baseCheckString(fn, _('Invalid domain'), param=param,\
+    return ParamChecker._baseCheckString(fn, _('Invalid domain'), param=param,
       max_len=64, optional=optional, regex=regex.domain)
 
   @staticmethod
   def checkUsername(fn, param=True, optional=False):
-    return ParamChecker._baseCheckString(fn, _('Invalid username'), param=param,\
+    return ParamChecker._baseCheckString(fn, _('Invalid username'), param=param,
       max_len=64, optional=optional, regex=regex.username)
 
   @staticmethod
   def checkString(fn, param=True, min_len=0, max_len=255, regex=None, optional=False):
-    return ParamChecker._baseCheckString(fn, _('Invalid value'), param=param,\
+    return ParamChecker._baseCheckString(fn, _('Invalid value'), param=param,
       min_len=min_len, max_len=max_len, regex=regex, optional=optional)
 
   @staticmethod
@@ -178,27 +178,27 @@ class ParamChecker(object):
 
   @staticmethod
   def checkPhone(fn, param=True, optional=False):
-    return ParamChecker._baseCheckString(fn, _('Invalid phone number'),\
+    return ParamChecker._baseCheckString(fn, _('Invalid phone number'),
       param=param, optional=optional, regex=regex.phone)
 
   @staticmethod
   def checkDate(fn, param=True, optional=False):
-    return ParamChecker._baseCheckString(fn, _('Invalid date'),\
+    return ParamChecker._baseCheckString(fn, _('Invalid date'),
       param=param, optional=optional, regex=regex.date)
 
   @staticmethod
   def checkPGP(fn, param=True, optional=False):
-    return ParamChecker._baseCheckString(fn, _('Invalid PGP key'),\
+    return ParamChecker._baseCheckString(fn, _('Invalid PGP key'),
       param=param, optional=optional, regex=regex.pgpKey)
 
   @staticmethod
   def checkiButtonUID(fn, param=True, optional=False):
-    return ParamChecker._baseCheckString(fn, _('Invalid iButton UID'),\
+    return ParamChecker._baseCheckString(fn, _('Invalid iButton UID'),
       param=param, optional=optional, regex=regex.iButtonUID)
 
   @staticmethod
   def checkPassword(fn1, fn2, param=True, min_len=8, max_len=999, regex=None, optional=False):
-    ParamChecker._baseCheckString(fn1, _('Invalid password'), param=param,\
+    ParamChecker._baseCheckString(fn1, _('Invalid password'), param=param,
       min_len=min_len, max_len=max_len, regex=regex, optional=optional)
 
     if param and TypeChecker.isParamSet(fn2):
@@ -216,7 +216,7 @@ class ParamChecker(object):
   def checkCountryCode(fn, param=True, optional=False):
     error_msg = _('Invalid country code')
 
-    ParamChecker._baseCheckString(fn, error_msg, param=param,\
+    ParamChecker._baseCheckString(fn, error_msg, param=param,
       min_len=2, max_len=2, optional=optional)
 
     if fn.lower() in countrycodes.cc:
@@ -231,7 +231,5 @@ class ParamChecker(object):
 
   @staticmethod
   def checkBool(fn, param=True, optional=False):
-    return ParamChecker._baseCheckBool(fn, _('Invalid Boolean value'),\
+    return ParamChecker._baseCheckBool(fn, _('Invalid Boolean value'),
       param=param, optional=optional)
-
-

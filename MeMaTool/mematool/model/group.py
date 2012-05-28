@@ -26,11 +26,12 @@ from sqlalchemy.orm import sessionmaker, relation
 from mematool.model.meta import Base
 from mematool.lib.base import Session
 
+
 class Group(Base):
   '''Table containing managed groups'''
   __tablename__ = 'group'
   __table_args__ = (
-    {'mysql_engine':'InnoDB'}
+    {'mysql_engine': 'InnoDB'}
     )
 
   id = Column(Integer, primary_key=True)

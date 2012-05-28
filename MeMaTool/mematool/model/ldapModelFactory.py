@@ -31,7 +31,7 @@ from mematool.model import Member
 from mematool.model import Group
 from mematool.model import Domain
 from mematool.model import Alias
- 
+
 log = logging.getLogger(__name__)
 
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
@@ -63,7 +63,7 @@ class LdapModelFactory(BaseModelFactory):
     attrs = ['*']
     basedn = 'uid=' + str(uid) + ',' + str(self.cnf.get('ldap.basedn_users'))
 
-    result = self.ldapcon.search_s( basedn, ldap.SCOPE_SUBTREE, filter_, attrs )
+    result = self.ldapcon.search_s(basedn, ldap.SCOPE_SUBTREE, filter_, attrs)
 
     if not result:
       raise LookupError('No such user !')
@@ -106,11 +106,11 @@ class LdapModelFactory(BaseModelFactory):
     attrs = ['uid', 'uidNumber']
     users = []
 
-    result = self.ldapcon.search_s( self.cnf.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs )
+    result = self.ldapcon.search_s(self.cnf.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs)
 
     for dn, attr in result:
       if int(attr['uidNumber'][0]) >= 1000 and int(attr['uidNumber'][0]) < 65000:
-        users.append( attr['uid'][0] )
+        users.append(attr['uid'][0])
 
     users.sort()
 
@@ -125,7 +125,6 @@ class LdapModelFactory(BaseModelFactory):
         ausers.append(u)
 
     return ausers
-        
 
   def getUserGroupList(self, uid):
     '''Get a list of groups a user is a member of'''
@@ -133,7 +132,7 @@ class LdapModelFactory(BaseModelFactory):
     attrs = ['cn']
     groups = []
 
-    result = self.ldapcon.search_s( self.cnf.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs )
+    result = self.ldapcon.search_s(self.cnf.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
 
     for dn, attr in result:
       for key, value in attr.iteritems():
@@ -148,7 +147,7 @@ class LdapModelFactory(BaseModelFactory):
   def getHighestUidNumber(self):
     '''Get the highest used uid-number
     this is used when adding a new user'''
-    result = self.ldapcon.search_s( self.cnf.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, self.cnf.get('ldap.uid_filter'), [self.cnf.get('ldap.uid_filter_attrs')] )
+    result = self.ldapcon.search_s(self.cnf.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, self.cnf.get('ldap.uid_filter'), [self.cnf.get('ldap.uid_filter_attrs')])
 
     uidNumber = -1
 
@@ -166,8 +165,8 @@ class LdapModelFactory(BaseModelFactory):
     filter = '(uid=' + uid + ')'
     attrs = ['uidNumber']
 
-    result = self.ldapcon.search_s( self.cnf.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs )
-    
+    result = self.ldapcon.search_s(self.cnf.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs)
+
     if not result:
       raise LookupError('No such user !')
 
@@ -292,8 +291,8 @@ class LdapModelFactory(BaseModelFactory):
       mod_attrs.remove(None)
 
     dn = 'uid=' + member.uid + ',' + self.cnf.get('ldap.basedn_users')
-    dn = dn.encode('ascii','ignore')
-    result = self.ldapcon.add_s( dn, mod_attrs)
+    dn = dn.encode('ascii', 'ignore')
+    result = self.ldapcon.add_s(dn, mod_attrs)
 
     self.changeUserGroup(member.uid, 'syn2cat_full_member', member.fullMember)
     self.changeUserGroup(member.uid, 'syn2cat_locked_member', member.lockedMember)
@@ -308,13 +307,13 @@ class LdapModelFactory(BaseModelFactory):
     m = self.getUser(uid)
 
     if status and not group in m.groups:
-      mod_attrs = [ (ldap.MOD_ADD, 'memberUid', uid.encode('ascii','ignore')) ]
+      mod_attrs = [(ldap.MOD_ADD, 'memberUid', uid.encode('ascii', 'ignore'))]
     elif not status and group in m.groups:
-      mod_attrs = [ (ldap.MOD_DELETE, 'memberUid', uid.encode('ascii','ignore')) ]
+      mod_attrs = [(ldap.MOD_DELETE, 'memberUid', uid.encode('ascii', 'ignore'))]
 
     if len(mod_attrs) == 1:
       try:
-        result = self.ldapcon.modify_s('cn=' + group.encode('ascii','ignore') + ',' + self.cnf.get('ldap.basedn_groups'), mod_attrs)
+        result = self.ldapcon.modify_s('cn=' + group.encode('ascii', 'ignore') + ',' + self.cnf.get('ldap.basedn_groups'), mod_attrs)
       except (ldap.TYPE_OR_VALUE_EXISTS, ldap.NO_SUCH_ATTRIBUTE):
         pass
       except:
@@ -328,7 +327,7 @@ class LdapModelFactory(BaseModelFactory):
     filter = '(cn=' + gid + ')'
     attrs = ['*']
 
-    result = self.ldapcon.search_s( self.cnf.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs )
+    result = self.ldapcon.search_s(self.cnf.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
 
     if not result:
       raise LookupError('No such group !')
@@ -353,12 +352,12 @@ class LdapModelFactory(BaseModelFactory):
     '''Get a list of all groups'''
     filter = '(cn=*)'
     attrs = ['cn', 'gidNumber']
-    
-    result = self.ldapcon.search_s( self.cnf.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs )
+
+    result = self.ldapcon.search_s(self.cnf.get('ldap.basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
     groups = []
-    
+
     for dn, attr in result:
-      groups.append( attr['cn'][0] )
+      groups.append(attr['cn'][0])
 
     return groups
 
@@ -404,8 +403,8 @@ class LdapModelFactory(BaseModelFactory):
           mod_attrs.remove(None)
 
         dn = 'cn=' + gid + ',' + self.cnf.get('ldap.basedn_groups')
-        dn = dn.encode('ascii','ignore')
-        result = self.ldapcon.add_s( dn, mod_attrs)
+        dn = dn.encode('ascii', 'ignore')
+        result = self.ldapcon.add_s(dn, mod_attrs)
 
         if result is None:
           return False
@@ -417,7 +416,7 @@ class LdapModelFactory(BaseModelFactory):
   def deleteGroup(self, gid):
     '''Completely remove a group'''
     dn = 'cn=' + gid + ',' + self.cnf.get('ldap.basedn_groups')
-    dn = dn.encode('ascii','ignore')
+    dn = dn.encode('ascii', 'ignore')
     retVal = self.ldapcon.delete_s(dn)
 
     if not retVal is None and super(LdapModelFactory, self).deleteGroup(gid):
@@ -457,8 +456,8 @@ class LdapModelFactory(BaseModelFactory):
         mod_attrs.remove(None)
 
       dn = 'dc=' + domain + ',' + self.cnf.get('ldap.basedn')
-      dn = dn.encode('ascii','ignore')
-      result = self.ldapcon.add_s( dn, mod_attrs)
+      dn = dn.encode('ascii', 'ignore')
+      result = self.ldapcon.add_s(dn, mod_attrs)
 
       if result is None:
         return False
@@ -473,7 +472,7 @@ class LdapModelFactory(BaseModelFactory):
 
     if domain in dl:
       dn = 'dc=' + domain + ',' + self.cnf.get('ldap.basedn')
-      dn = dn.encode('ascii','ignore')
+      dn = dn.encode('ascii', 'ignore')
       retVal = self.ldapcon.delete_s(dn)
 
       if not retVal is None:
@@ -488,7 +487,7 @@ class LdapModelFactory(BaseModelFactory):
     attrs = ['*']
     basedn = 'dc=' + str(domain) + ',' + str(self.cnf.get('ldap.basedn'))
 
-    result = self.ldapcon.search_s( basedn, ldap.SCOPE_BASE, filter_, attrs )
+    result = self.ldapcon.search_s(basedn, ldap.SCOPE_BASE, filter_, attrs)
 
     if not result:
       raise LookupError('No such domain !')
@@ -527,7 +526,7 @@ class LdapModelFactory(BaseModelFactory):
     filter_ = '(&(objectClass=mailAlias)(mail=' + str(alias) + '))'
     attrs = ['*']
     basedn = str(self.cnf.get('ldap.basedn'))
-    result = self.ldapcon.search_s( basedn, ldap.SCOPE_SUBTREE, filter_, attrs )
+    result = self.ldapcon.search_s(basedn, ldap.SCOPE_SUBTREE, filter_, attrs)
 
     if not result:
       raise LookupError('No such alias !')
@@ -575,7 +574,7 @@ class LdapModelFactory(BaseModelFactory):
     for dn, attr in result:
       dn_split = dn.split(',')
       a = dn_split[0].split('=')[1]
-      
+
       aliases.append(a)
 
     return aliases
@@ -607,9 +606,9 @@ class LdapModelFactory(BaseModelFactory):
         mod_attrs.remove(None)
 
       dn = 'mail=' + alias.dn_mail + ',dc=' + alias.domain + ',' + self.cnf.get('ldap.basedn')
-      dn = dn.encode('ascii','ignore')
+      dn = dn.encode('ascii', 'ignore')
 
-      result = self.ldapcon.add_s( dn, mod_attrs)
+      result = self.ldapcon.add_s(dn, mod_attrs)
 
       if result is None:
         return False
@@ -633,7 +632,7 @@ class LdapModelFactory(BaseModelFactory):
           break
 
       if not found:
-        mod_attrs.append((ldap.MOD_ADD, 'mail', m.encode('ascii','ignore')))
+        mod_attrs.append((ldap.MOD_ADD, 'mail', m.encode('ascii', 'ignore')))
 
     for m in oldalias.mail:
       if m == oldalias.dn_mail:
@@ -646,7 +645,7 @@ class LdapModelFactory(BaseModelFactory):
           break
 
       if not found:
-        mod_attrs.append((ldap.MOD_DELETE, 'mail', m.encode('ascii','ignore')))
+        mod_attrs.append((ldap.MOD_DELETE, 'mail', m.encode('ascii', 'ignore')))
 
     for m in alias.maildrop:
       if m == alias.dn_mail:
@@ -659,7 +658,7 @@ class LdapModelFactory(BaseModelFactory):
           break
 
       if not found:
-        mod_attrs.append((ldap.MOD_ADD, 'maildrop', m.encode('ascii','ignore')))
+        mod_attrs.append((ldap.MOD_ADD, 'maildrop', m.encode('ascii', 'ignore')))
 
     for m in oldalias.maildrop:
       if m == oldalias.dn_mail:
@@ -672,19 +671,17 @@ class LdapModelFactory(BaseModelFactory):
           break
 
       if not found:
-        mod_attrs.append((ldap.MOD_DELETE, 'maildrop', m.encode('ascii','ignore')))
-
+        mod_attrs.append((ldap.MOD_DELETE, 'maildrop', m.encode('ascii', 'ignore')))
 
     while None in mod_attrs:
       mod_attrs.remove(None)
-
 
     # nothing to do
     if len(mod_attrs) == 0:
       return True
 
-    dn = alias.getDN(self.cnf.get('ldap.basedn')).encode('ascii','ignore')
-    result = self.ldapcon.modify_s( dn, mod_attrs)
+    dn = alias.getDN(self.cnf.get('ldap.basedn')).encode('ascii', 'ignore')
+    result = self.ldapcon.modify_s(dn, mod_attrs)
 
     if result is None:
       return False
@@ -695,13 +692,10 @@ class LdapModelFactory(BaseModelFactory):
     '''Completely remove a alias'''
 
     a = self.getAlias(alias)
-    dn =  a.getDN(self.cnf.get('ldap.basedn')).encode('ascii','ignore')
+    dn = a.getDN(self.cnf.get('ldap.basedn')).encode('ascii', 'ignore')
     retVal = self.ldapcon.delete_s(dn)
 
     if not retVal is None:
       return True
 
     return False
-
-
-

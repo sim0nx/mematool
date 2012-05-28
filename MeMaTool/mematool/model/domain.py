@@ -19,7 +19,6 @@
 #    along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 class Domain(object):
   str_vars = ['dc']
 
