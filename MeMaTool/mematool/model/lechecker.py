@@ -135,6 +135,10 @@ class ParamChecker(object):
     return ParamChecker._baseCheck(fn, error_msg, TypeChecker.isParamBool, param, optional, **kwargs)
 
   @staticmethod
+  def _baseCheckInt(fn, error_msg, param=True, optional=False, **kwargs):
+    return ParamChecker._baseCheck(fn, error_msg, TypeChecker.isParamInt, param, optional, **kwargs)
+
+  @staticmethod
   def checkEmail(fn, param=True, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid e-mail address'),
       param=param, optional=optional, regex=regex.email)
@@ -231,3 +235,8 @@ class ParamChecker(object):
   def checkBool(fn, param=True, optional=False):
     return ParamChecker._baseCheckBool(fn, _('Invalid Boolean value'),
       param=param, optional=optional)
+
+  @staticmethod
+  def checkInt(fn, param=True, min_len=8, max_len=999, optional=False):
+    return ParamChecker._baseCheckInt(fn, _('Invalid Integer value'),
+      min_len=min_len, max_len=max_len, param=param, optional=optional)
