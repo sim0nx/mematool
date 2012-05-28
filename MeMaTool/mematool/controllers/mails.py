@@ -142,7 +142,9 @@ class MailsController(BaseController):
   def deleteDomain(self):
     return 'HARD disabled ... you do not want to mess with this in production!!!'
 
-    if not self._isParamStr('domain'):
+    try:
+      ParamChecker.checkDomain('domain', param=True)
+    except:
       redirect(url(controller='mails', action='index'))
 
     try:
@@ -163,8 +165,10 @@ class MailsController(BaseController):
 
   @BaseController.needAdmin
   def listAliases(self):
-    if not self._isParamStr('domain'):
-      redirect(url(controller='mail', action='index'))
+    try:
+      ParamChecker.checkDomain('domain', param=True)
+    except:
+      redirect(url(controller='mails', action='index'))
 
     c.heading = _('Aliases for domain: %s') % (request.params['domain'])
     c.domain = request.params['domain']
@@ -350,7 +354,9 @@ class MailsController(BaseController):
 
   @BaseController.needAdmin
   def deleteAlias(self):
-    if not self._isParamStr('alias'):
+    try:
+      ParamChecker.checkEmail('alias', param=True)
+    except:
       redirect(url(controller='mails', action='index'))
 
     try:

@@ -31,6 +31,7 @@ from mematool.lib.syn2cat import regex
 from datetime import date
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model import Group
+from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
 # Decorators
 from pylons.decorators import validate
@@ -112,17 +113,19 @@ class GroupsController(BaseController):
         errors = []
         items = {}
 
-        if not self._isParamStr('gid', max_len=64):
+        try:
+          ParamChecker.checkUsername('gid', param=True)
+        except:
           formok = False
-          print request.params['gid']
           errors.append(_('Invalid group ID'))
 
         if 'users' in request.params:
-          if not self._isParamStr('users') or not re.match(r'([\w]{1,20}\n?)*', request.params['users'], re.I):
+          try:
+            ParamChecker.checkString('users', param=True, min_len=1, max_len=9999, regex=r'([\w]{1,20}\n?)*')
+            items['users'] = request.params['users']
+          except:
             formok = False
             errors.append(_('Invalid group names'))
-          else:
-            items['users'] = request.params['users']
 
         if not formok:
           session['errors'] = errors
@@ -187,7 +190,9 @@ class GroupsController(BaseController):
 
   @BaseController.needGroup('superadmins')
   def unmanageGroup(self):
-    if not self._isParamStr('gid'):
+    try:
+      ParamChecker.checkUsername('gid', param=True)
+    except:
       redirect(url(controller='groups', action='index'))
 
     result = self.lmf.unmanageGroup(request.params['gid'])
@@ -205,7 +210,9 @@ class GroupsController(BaseController):
 
   @BaseController.needGroup('superadmins')
   def deleteGroup(self):
-    if not self._isParamStr('gid'):
+    try:
+      ParamChecker.checkUsername('gid', param=True)
+    except:
       redirect(url(controller='groups', action='index'))
 
     result = self.lmf.deleteGroup(request.params['gid'])
