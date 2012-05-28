@@ -33,6 +33,7 @@ import re
 from mematool.lib.syn2cat import regex
 
 from mematool.model.ldapModelFactory import LdapModelFactory
+from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import and_, or_
 from webob.exc import HTTPUnauthorized
@@ -71,7 +72,10 @@ class PaymentsController(BaseController):
   @BaseController.needFinanceAdmin
   def validatePayment(self):
     """ Validate a payment specified by an id """
-    if not self._isParamStr('member_id') or not self._isParamInt('idPayment'):
+    try:
+      ParamChecker.checkUsername('member_id', param=True)
+      ParamChecker.checkInt('idPayment', param=True)
+    except:
       redirect(url(controller='payments', action='index'))
 
     try:
@@ -106,7 +110,9 @@ class PaymentsController(BaseController):
     return lastDate
 
   def bulkAdd(self):
-    if not self._isParamStr('member_id'):
+    try:
+      ParamChecker.checkUsername('member_id', param=True)
+    except:
       redirect(url(controller='payments', action='index'))
 
     c.member_id = request.params['member_id']
@@ -115,15 +121,22 @@ class PaymentsController(BaseController):
     return render('/payments/bulkAdd.mako')
 
   def doBulkAdd(self):
-    if not self._isParamStr('member_id') or not self._isParamInt('months'):
+    try:
+      ParamChecker.checkUsername('member_id', param=True)
+      ParamChecker.checkInt('months', param=True, max_len=2)
+    except:
       redirect(url(controller='payments', action='index'))
 
     lastDate = self._getLastPayment(request.params['member_id'])
     months = int(request.params['months'])
     verified = False
 
-    if self.isFinanceAdmin() and self._isParamInt('verified'):
-      verified = True
+    if self.isFinanceAdmin():
+      try:
+        ParamChecker.checkInt('verified', param=True, max_len=1)
+        verified = True
+      except:
+        pass
 
     try:
       for i in range(months):
@@ -197,11 +210,25 @@ class PaymentsController(BaseController):
     elif not self.isAdmin() and not self.isFinanceAdmin() and not request.params['member_id'] == self.identity:
       redirect(url(controller='error', action='forbidden'))
 
-    year = datetime.now().year
-    if 'year' in request.params and IsInt(request.params['year']) and int(request.params['year']) > 1970 and int(request.params['year']) < 2222:
-      year = int(request.params['year'])
-    elif self._isParamStr('member_id'):
-      year = self._getLastPayment(request.params['member_id']).year
+    year = None
+
+    if year is None:
+      try:
+        ParamChecker.checkInt('year', param=True, max_len=4)
+        if int(request.params['year']) > 1970 and int(request.params['year']) < 2222:
+          year = request.params['year']
+      except:
+        pass
+
+    if year is None:
+      try:
+        ParamChecker.checkUsername('member_id', param=True)
+        year = self._getLastPayment(request.params['member_id']).year
+      except:
+        pass
+
+    if year is None:
+      year = datetime.now().year
 
     c.heading = _('Payments for the year %s, user %s') % (str(year), request.params['member_id'])
     c.member_id = request.params['member_id']
@@ -294,7 +321,7 @@ class PaymentsController(BaseController):
       # @TODO request.params may contain multiple values per key... test & fix
       if (not 'member_id' in request.params):
         redirect(url(controller='members', action='index'))
-      elif not self.isAdmin() and not request.params['member_id'] == self.identity or (request.params['member_id'] == self.identity and self._isParamInt('idPayment')):
+      elif not self.isAdmin() and not request.params['member_id'] == self.identity or (request.params['member_id'] == self.identity and ParamChecker.checkInt('idPayment', param=True, optional=True)):
         redirect(url(controller='error', action='forbidden'))
       else:
         formok = True
@@ -302,23 +329,25 @@ class PaymentsController(BaseController):
         items = {}
         d = None
 
-        if not 'date' in request.params or not re.match(regex.date, request.params['date'], re.IGNORECASE):
-          formok = False
-          errors.append(_('Invalid date'))
-        else:
+        try:
+          ParamChecker.checkDate('date', param=True)
           d = parser.parse(request.params['date'])
           d = date(d.year, d.month, 1)
+        except:
+          formok = False
+          errors.append(_('Invalid date'))
 
-        if not 'status' in request.params or not self._isParamInt('status'):
+        try:
+          ParamChecker.checkInt('status', param=True)
+          items['status'] = int(request.params['status'])
+        except:
           formok = False
           errors.append(_('Invalid payment status'))
-          print request.params['status']
-        else:
-          items['status'] = int(request.params['status'])
 
-        if self._isParamInt('idPayment'):
+        try:
+          ParamChecker.checkInt('idPayment', param=True)
           items['idPayment'] = int(request.params['idPayment'])
-        else:
+        except:
           items['idPayment'] = 0
 
         if not d is None and items['idPayment'] == 0:
@@ -349,10 +378,9 @@ class PaymentsController(BaseController):
   @restrict('POST')
   def savePayment(self, member_id, items):
     """ Save a new or edited payment """
-
     verified = False
 
-    if self.isFinanceAdmin() and self._isParamInt('verified'):
+    if self.isFinanceAdmin() and ParamChecker.checkInt('verified', param=True, optional=True):
       verified = True
 
     if items['idPayment'] > 0:
@@ -396,7 +424,10 @@ class PaymentsController(BaseController):
   @BaseController.needFinanceAdmin
   def deletePayment(self):
     """ Delete a payment specified by an id """
-    if not self._isParamStr('member_id') or not self._isParamInt('idPayment'):
+    try:
+      ParamChecker.checkUsername('member_id', param=True)
+      ParamChecker.checkInt('idPayment', param=True)
+    except:
       redirect(url(controller='members', action='index'))
 
     try:
