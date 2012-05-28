@@ -72,7 +72,6 @@ class BaseController(WSGIController):
   def _require_auth(self):
     return True
 
-
   def _isParamSet(self, param):
     if param in request.params and request.params[param] != '':
       return True
@@ -102,7 +101,10 @@ class BaseController(WSGIController):
     return False
 
   def _forbidden(self):
-    redirect(url(controller='error', action='forbidden'))
+    if not self.identity:
+      redirect(url(controller='auth', action='login'))
+    else:
+      redirect(url(controller='error', action='forbidden'))
 
   @staticmethod
   def needSuperAdmin(f):

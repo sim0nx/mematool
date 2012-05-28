@@ -38,6 +38,7 @@ class ErrorController(BaseController):
     '''
     request = self._py_object.request
     resp = request.environ.get('pylons.original_response')
+
     try:
         content = literal(resp.body) or cgi.escape(request.GET.get('message', ''))
 
@@ -60,3 +61,6 @@ class ErrorController(BaseController):
   def forbidden(self):
     c.heading = '403'
     return render('/unauthorized.mako')
+
+  def _require_auth(self):
+    return False
