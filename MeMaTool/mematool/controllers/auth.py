@@ -13,11 +13,12 @@ from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
 
 log = logging.getLogger(__name__)
 
+
 class AuthController(BaseController):
   def __init__(self):
     super(AuthController, self).__init__()
 
-  def index(self,environ):
+  def index(self, environ):
     if self.identity is not None:
       redirect(url(controller='members', action='showAllMembers'))
     else:
@@ -36,7 +37,6 @@ class AuthController(BaseController):
 
     return render('/auth/login.mako')
 
-
   def doLogin(self):
     if not 'username' in request.params or request.params['username'] == '' or not 'password' in request.params or request.params['password'] == '':
       print "crap"
@@ -48,7 +48,7 @@ class AuthController(BaseController):
         self._clearSession()
 
         session['identity'] = request.params['username']
-        session['secret'] = encodeAES( request.params['password'] )
+        session['secret'] = encodeAES(request.params['password'])
         lmf = LdapModelFactory()
         session['groups'] = lmf.getUserGroupList(request.params['username'])
         # dummy call to set the variable

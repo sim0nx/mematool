@@ -42,7 +42,6 @@ import dateutil.parser
 import datetime
 
 
-
 class GroupsController(BaseController):
   def __init__(self):
     super(GroupsController, self).__init__()
@@ -74,7 +73,6 @@ class GroupsController(BaseController):
     c.groups = self.lmf.getManagedGroupList()
 
     return render('/groups/listGroups.mako')
-
 
   @BaseController.needGroup('superadmins')
   def editGroup(self):
@@ -135,17 +133,15 @@ class GroupsController(BaseController):
           # @TODO request.params may contain multiple values per key... test & fix
           for k in request.params.iterkeys():
             session['reqparams'][k] = request.params[k]
-            
+
           session.save()
 
           redirect(url(controller='groups', action='editGroup'))
         else:
           items['gid'] = request.params['gid']
 
-
       return f(self, items)
     return new_f
-
 
   @BaseController.needGroup('superadmins')
   @checkEdit

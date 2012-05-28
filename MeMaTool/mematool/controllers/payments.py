@@ -61,8 +61,8 @@ class PaymentsController(BaseController):
 
   def _sidebar(self):
     c.actions = list()
-    c.actions.append( (_('All payments'), 'payments', 'listPayments') )
-    c.actions.append( (_('Outstanding payment'), 'payments', 'index') )
+    c.actions.append((_('All payments'), 'payments', 'listPayments'))
+    c.actions.append((_('Outstanding payment'), 'payments', 'index'))
 
   def index(self):
     if self.lmf.isUserInGroup(self.identity, 'office'):
@@ -101,7 +101,7 @@ class PaymentsController(BaseController):
 
     try:
       p = Session.query(Payment).filter(and_(Payment.uid == uid, or_(Payment.status == 0, Payment.status == 2))).order_by(Payment.date.desc()).first()
-      lastDate = p.date + relativedelta(months = +1)
+      lastDate = p.date + relativedelta(months = + 1)
     except Exception as e:
       pass
 
@@ -228,21 +228,20 @@ class PaymentsController(BaseController):
 
       c.year = year
       c.payments = payments
-    
 
     except AttributeError, e:
       return 'This member has made no payments o.O ?!: %s' % e
     except NoResultFound:
-      return "this member has no payments on records" ## replace by "this member has made no payments" message
-        
-    session['return_to'] = ('payments','listPayments')
+      return "this member has no payments on records"  # replace by "this member has made no payments" message
+
+    session['return_to'] = ('payments', 'listPayments')
     session.save()
 
     # blind call ... we don't care about the return value
     # but only that the call sets a session variable
     self.isFinanceAdmin()
 
-    c.actions.append( ('Add payment', 'payments', 'editPayment', request.params['member_id']) )
+    c.actions.append(('Add payment', 'payments', 'editPayment', request.params['member_id']))
 
     return render('/payments/listPayments.mako')
 
@@ -288,8 +287,7 @@ class PaymentsController(BaseController):
       redirect(url(controller='members', action='index'))
 
     c.heading = _('%s payment for user %s') % (action, c.member_id)
-
-    c.actions.append( ('List payments', 'payments', 'listPayments', request.params['member_id']) )
+    c.actions.append(('List payments', 'payments', 'listPayments', request.params['member_id']))
 
     return render('/payments/editPayment.mako')
 
@@ -339,13 +337,12 @@ class PaymentsController(BaseController):
           # @TODO request.params may contain multiple values per key... test & fix
           for k in request.params.iterkeys():
             session['reqparams'][k] = request.params[k]
-            
+
           session.save()
 
           redirect(url(controller='payments', action='editPayment', member_id=request.params['member_id'], idPayment=items['idPayment']))
         else:
           items['date'] = d
-
 
       return f(self, request.params['member_id'], items)
     return new_f

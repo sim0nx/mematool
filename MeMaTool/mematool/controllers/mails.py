@@ -43,7 +43,6 @@ import dateutil.parser
 import datetime
 
 
-
 class MailsController(BaseController):
   def __init__(self):
     super(MailsController, self).__init__()
@@ -120,7 +119,7 @@ class MailsController(BaseController):
           # @TODO request.params may contain multiple values per key... test & fix
           for k in request.params.iterkeys():
             session['reqparams'][k] = request.params[k]
-            
+
           session.save()
 
           redirect(url(controller='mails', action='editDomain'))
@@ -129,7 +128,6 @@ class MailsController(BaseController):
 
       return f(self, items)
     return new_f
-
 
   @BaseController.needAdmin
   @checkEditDomain

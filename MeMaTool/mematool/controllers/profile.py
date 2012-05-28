@@ -57,7 +57,7 @@ class ProfileController(BaseController):
 
   def _sidebar(self):
     c.actions = list()
-    c.actions.append( (_('Payments'), 'payments', 'listPayments', session['identity']) )
+    c.actions.append((_('Payments'), 'payments', 'listPayments', session['identity']))
 
   def index(self):
     return self.edit()
@@ -199,7 +199,7 @@ class ProfileController(BaseController):
 
         session['flash'] = _('Password updated!')
         session['flash_class'] = 'success'
-    
+
     session.save()
     redirect(url(controller='profile', action='index'))
 

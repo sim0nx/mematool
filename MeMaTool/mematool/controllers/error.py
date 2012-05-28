@@ -9,6 +9,7 @@ from webhelpers.html.builder import literal
 from mematool.lib.base import BaseController, render
 from pylons import tmpl_context as c
 
+
 class ErrorController(BaseController):
   """Generates error documents as and when they are required.
 

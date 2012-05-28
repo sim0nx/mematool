@@ -58,11 +58,11 @@ class MembersController(BaseController):
 
   def _sidebar(self):
     c.actions = list()
-    c.actions.append( (_('Show all members'), 'members', 'showAllMembers') )
-    c.actions.append( (_('Add member'), 'members', 'addMember') )
-    c.actions.append( (_('Active members'), 'members', 'showActiveMembers') )
-    c.actions.append( (_('Former members'), 'members', 'showFormerMembers') )
-    c.actions.append( (_('Groups'), 'groups', 'index') )
+    c.actions.append((_('Show all members'), 'members', 'showAllMembers'))
+    c.actions.append((_('Add member'), 'members', 'addMember'))
+    c.actions.append((_('Active members'), 'members', 'showActiveMembers'))
+    c.actions.append((_('Former members'), 'members', 'showFormerMembers'))
+    c.actions.append((_('Groups'), 'groups', 'index'))
 
   def index(self):
     return self.showAllMembers()
@@ -138,11 +138,11 @@ class MembersController(BaseController):
 
           # @TODO request.params may contain multiple values per key... test & fix
           for k in request.params.iterkeys():
-            if (k == 'full_member' or k == 'locked_member')  and request.params[k] == 'on':
+            if (k == 'full_member' or k == 'locked_member') and request.params[k] == 'on':
               session['reqparams'][k] = 'checked'
             else:
               session['reqparams'][k] = request.params[k]
-            
+
           session.save()
 
           if request.params['mode'] == 'add':
@@ -375,7 +375,7 @@ class MembersController(BaseController):
 
         tmpmember = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
         c.tmpmember = tmpmember
- 
+
         return render('/members/viewDiff.mako')
 
     except LookupError:
