@@ -51,9 +51,6 @@ class StatisticsController(BaseController):
     if not self.identity:
       redirect(url(controller='error', action='forbidden'))
 
-  def _require_auth(self):
-    return True
-
   @BaseController.needAdmin
   def index(self):
     c.heading = _('Statistics')

@@ -55,9 +55,6 @@ class PaymentsController(BaseController):
     super(PaymentsController, self).__before__()
     self._sidebar()
 
-  def _require_auth(self):
-    return True
-
   def _sidebar(self):
     c.actions = list()
     c.actions.append((_('All payments'), 'payments', 'listPayments'))
