@@ -1,7 +1,24 @@
-"""The base Controller API
+#
+# Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
+#
+# This file is part of MeMaTool.
+#
+# MeMaTool is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# MeMaTool is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
+'''The base Controller API
 Provides the BaseController class for subclassing.
-"""
+'''
 from pylons.controllers import WSGIController
 from pylons.controllers.util import abort, redirect
 from pylons.templating import render_mako as render
@@ -72,34 +89,6 @@ class BaseController(WSGIController):
   def _require_auth(self):
     return True
 
-  def _isParamSet(self, param):
-    if param in request.params and request.params[param] != '':
-      return True
-
-    return False
-
-  def _isParamStr(self, param, min_len=0, max_len=255, regex=None):
-    if self._isParamSet(param) and len(request.params[param]) > min_len  and len(request.params[param]) <= max_len:
-      if regex != None:
-        if re.match(regex, request.params[param], re.IGNORECASE):
-          return True
-      else:
-        return True
-
-    return False
-
-  def _isParamInt(self, param, min_val=0, min_len=0, max_len=4):
-    if self._isParamStr(param, min_len, max_len) and IsInt(request.params[param]) and int(request.params[param]) >= min_val:
-      return True
-
-    return False
-
-  def _isParamFloat(self, param, min_val=0, min_len=0, max_len=4):
-    if self._isParamStr(param, min_len, max_len) and IsFloat(request.params[param]) and float(request.params[param]) >= min_val:
-      return True
-
-    return False
-
   def _forbidden(self):
     if not self.identity:
       redirect(url(controller='auth', action='login'))
@@ -138,13 +127,25 @@ class BaseController(WSGIController):
       return new_f
     return wrap_f
 
+  @staticmethod
+  def needVGroup(group):
+    def wrap_f(f):
+      def new_f(self, *args):
+        if self.isInVGroup(group):
+          return f(self, *args)
+
+        self._forbidden()
+
+      return new_f
+    return wrap_f
+
   def isInGroup(self, group):
-    if not 'identity' in session or str(group) == '' :
+    if not 'identity' in session or str(group) == '':
       return False
 
     session_string = 'isInGroup' + str(group)
 
-    if not session_string in session or 1==1:
+    if not session_string in session:
       session[session_string] = False
 
       if 'groups' in session:
@@ -158,34 +159,31 @@ class BaseController(WSGIController):
 
     return session[session_string]
 
-  def isAdmin(self):
-    if not 'identity' in session:
+  def isInVGroup(self, group):
+    if not 'identity' in session or str(group) == '':
       return False
 
-    if not 'isAdmin' in session:
-      session['isAdmin'] = False
-      if 'groups' in session:
-        for ag in self.admins:
-          if ag in session['groups']:
-            session['isAdmin'] = True
-            break
+    session_string = 'isInVGroup' + str(group)
+
+    if not session_string in session:
+      session[session_string] = False
+
+      if hasattr(self, group):
+        if session['identity'] in getattr(self, group):
+          session[session_string] = True
 
       session.save()
 
+    return session[session_string]
+
+  def isAdmin(self):
+    session['isAdmin'] = self.isInGroup('admins')
+    session.save()
     return session['isAdmin']
 
   def isFinanceAdmin(self):
-    if not 'identity' in session:
-      return False
-
-    if not 'isFinanceAdmin' in session:
-      if session['identity'] in self.financeadmins:
-        session['isFinanceAdmin'] = True
-      else:
-        session['isFinanceAdmin'] = False
-        
-      session.save()
-
+    session['isFinanceAdmin'] = self.isInVGroup('financeadmins')
+    session.save()
     return session['isFinanceAdmin']
 
   @staticmethod
