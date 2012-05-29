@@ -76,7 +76,12 @@ class MailsController(BaseController):
     if not 'domain' in request.params or request.params['domain'] == '':
       action = 'Adding'
       c.mode = 'add'
-    elif not request.params['domain'] == '' and len(request.params['domain']) > 0:
+    else:
+      try:
+        ParamChecker.checkDomain('domain')
+      except:
+        redirect(url(controller='mails', action='index'))
+
       action = 'Editing'
       c.mode = 'edit'
       try:
@@ -85,8 +90,6 @@ class MailsController(BaseController):
         # @TODO implement better handler
         print 'No such domain!'
         redirect(url(controller='mails', action='index'))
-    else:
-      redirect(url(controller='mails', action='index'))
 
     c.heading = '%s domain' % (action)
 
@@ -186,6 +189,11 @@ class MailsController(BaseController):
         c.select_domains.append([d.dc, d.dc])
 
     elif not request.params['alias'] == '':
+      try:
+        ParamChecker.checkEmail('alias')
+      except:
+        redirect(url(controller='mails', action='index'))
+
       action = 'Editing'
       c.alias = request.params['alias']
       c.mode = 'edit'
@@ -267,7 +275,9 @@ class MailsController(BaseController):
             if m == '':
               continue
 
-            if not re.match(regex.email, m, re.IGNORECASE):
+            try:
+              ParamChecker.checkEmail(m, param=False)
+            except:
               formok = False
               break
 
