@@ -50,9 +50,6 @@ class GroupsController(BaseController):
     super(GroupsController, self).__before__()
     self._sidebar()
 
-  def _require_auth(self):
-    return True
-
   def _sidebar(self):
     c.actions = list()
     c.actions.append((_('Show all groups'), 'groups', 'listGroups'))
@@ -133,7 +130,7 @@ class GroupsController(BaseController):
               if m == '':
                 continue
               else:
-                ParamChecker.checkUsername(m)
+                ParamChecker.checkUsername(m, param=False)
                 items['users'].append(m)
           except InvalidParameterFormat as ipf:
             formok = False
