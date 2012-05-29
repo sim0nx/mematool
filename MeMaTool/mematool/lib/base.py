@@ -90,7 +90,7 @@ class BaseController(WSGIController):
     return True
 
   def _forbidden(self):
-    if not self.identity:
+    if not self.identity and not 'identity' in session:
       redirect(url(controller='auth', action='login'))
     else:
       redirect(url(controller='error', action='forbidden'))
