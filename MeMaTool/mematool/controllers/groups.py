@@ -80,7 +80,12 @@ class GroupsController(BaseController):
       c.group = Group()
       action = 'Adding'
       c.gid = ''
-    elif not request.params['gid'] == '' and len(request.params['gid']) > 0:
+    else:
+      try:
+        ParamChecker.checkUsername('gid', param=True)
+      except:
+        redirect(url(controller='groups', action='index'))
+
       action = 'Editing'
       c.gid = request.params['gid']
       try:
@@ -97,8 +102,6 @@ class GroupsController(BaseController):
         # @TODO implement better handler
         print 'No such group!'
         redirect(url(controller='groups', action='index'))
-    else:
-      redirect(url(controller='groups', action='index'))
 
     c.heading = '%s group' % (action)
 
@@ -119,13 +122,22 @@ class GroupsController(BaseController):
           formok = False
           errors.append(_('Invalid group ID'))
 
+        items['users'] = []
+
         if 'users' in request.params:
           try:
-            ParamChecker.checkString('users', param=True, min_len=1, max_len=9999, regex=r'([\w]{1,20}\n?)*')
-            items['users'] = request.params['users']
-          except:
+            #ParamChecker.checkString('users', param=True, min_len=-1, max_len=9999, regex=r'([\w]{1,20}\n?)*')
+
+            for k in request.params['users'].split('\n'):
+              m = k.replace('\r', '').replace(' ', '')
+              if m == '':
+                continue
+              else:
+                ParamChecker.checkUsername(m)
+                items['users'].append(m)
+          except InvalidParameterFormat as ipf:
             formok = False
-            errors.append(_('Invalid group names'))
+            errors.append(_('Invalid user name(s)'))
 
         if not formok:
           session['errors'] = errors
@@ -137,7 +149,7 @@ class GroupsController(BaseController):
 
           session.save()
 
-          redirect(url(controller='groups', action='editGroup'))
+          redirect(url(controller='groups', action='editGroup', gid=request.params['gid']))
         else:
           items['gid'] = request.params['gid']
 
@@ -153,32 +165,22 @@ class GroupsController(BaseController):
       session['flash_class'] = 'error'
       session.save()
     else:
-      if 'users' in items and len(items['users']) > 0:
-        form_members = []
-        for k in items['users'].split('\n'):
-          m = k.replace('\r', '').replace(' ', '')
-          if m == '':
-            continue
+      try:
+        lgrp_members = self.lmf.getGroupMembers(items['gid'])
+      except LookupError:
+        lgrp_members = []
 
-          form_members.append(m)
+      # Adding new members
+      for m in items['users']:
+        if not m in lgrp_members:
+          #print 'adding -> ' + str(m)
+          self.lmf.changeUserGroup(m, items['gid'], True)
 
-        if len(form_members) > 0:
-          try:
-            lgrp_members = self.lmf.getGroupMembers(items['gid'])
-          except LookupError:
-            lgrp_members = []
-
-          # Adding new members
-          for m in form_members:
-            if not m in lgrp_members:
-              #print 'adding -> ' + str(m)
-              self.lmf.changeUserGroup(m, items['gid'], True)
-
-          # Removing members
-          for m in lgrp_members:
-            if not m in form_members:
-              #print 'removing -> ' + str(m)
-              self.lmf.changeUserGroup(m, items['gid'], False)
+      # Removing members
+      for m in lgrp_members:
+        if not m in items['users']:
+          #print 'removing -> ' + str(m)
+          self.lmf.changeUserGroup(m, items['gid'], False)
 
       # @TODO add group if not exist
 
