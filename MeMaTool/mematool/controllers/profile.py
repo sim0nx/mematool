@@ -49,7 +49,52 @@ class ProfileController(BaseController):
     super(ProfileController, self).__before__()
     self._sidebar()
 
-  def _print 'Edit :: No such user !'
+  def _require_auth(self):
+    return True
+
+  def _sidebar(self):
+    c.actions = list()
+    c.actions.append((_('Payments'), 'payments', 'listPayments', session['identity']))
+
+  def index(self):
+    return self.edit()
+
+  def edit(self):
+    c.heading = _('Edit profile')
+    c.formDisabled = ''
+
+    try:
+      member = self.lmf.getUser(session['identity'])
+
+      if member.validate:
+        tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
+        member.cn = tm.gn + ' ' + tm.sn
+        member.givenName = tm.gn
+        member.sn = tm.sn
+        member.birthDate = tm.birthDate
+        member.homePostalAddress = tm.homePostalAddress
+        member.homePhone = tm.phone
+        member.mobile = tm.mobile
+        member.mail = tm.mail
+        member.xmppID = tm.xmppID
+
+        c.formDisabled = 'disabled'
+
+      c.member = member
+
+      if member.fullMember:
+        c.member.full_member = True
+      else:
+        c.member.full_member = False
+      if member.lockedMember:
+        c.member.locked_member = True
+      else:
+        c.member.locked_member = False
+
+      return render('/profile/edit.mako')
+
+    except LookupError:
+      print 'Edit :: No such user !'
 
     return 'ERROR 4x0'
 
