@@ -213,7 +213,7 @@ class PaymentsController(BaseController):
       try:
         ParamChecker.checkInt('year', param=True, max_len=4)
         if int(request.params['year']) > 1970 and int(request.params['year']) < 2222:
-          year = request.params['year']
+          year = int(request.params['year'])
       except:
         pass
 
