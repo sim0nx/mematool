@@ -24,6 +24,7 @@ mematool/controllers/groups.py
 mematool/controllers/mails.py
 mematool/controllers/members.py
 mematool/controllers/payments.py
+mematool/controllers/preferences.py
 mematool/controllers/profile.py
 mematool/controllers/statistics.py
 mematool/lib/__init__.py
@@ -49,6 +50,7 @@ mematool/model/member.py
 mematool/model/meta.py
 mematool/model/payment.py
 mematool/model/paymentmethod.py
+mematool/model/preferences.py
 mematool/model/tmpmember.py
 mematool/public/bg.png
 mematool/public/favicon.ico
@@ -632,6 +634,7 @@ mematool/templates/payments/bulkAdd.mako
 mematool/templates/payments/editPayment.mako
 mematool/templates/payments/listPayments.mako
 mematool/templates/payments/showOutstanding.mako
+mematool/templates/preferences/edit.mako
 mematool/templates/profile/edit.mako
 mematool/templates/statistics/index.mako
 mematool/tests/__init__.py
