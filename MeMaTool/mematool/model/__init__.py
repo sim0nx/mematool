@@ -27,6 +27,7 @@ from mematool.model.group import Group
 from mematool.model.paymentmethod import Paymentmethod
 from mematool.model.domain import Domain
 from mematool.model.alias import Alias
+from mematool.model.preferences import Preferences
 
 
 def init_model(engine):
