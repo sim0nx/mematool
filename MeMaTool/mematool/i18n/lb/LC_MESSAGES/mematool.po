@@ -1,7 +1,7 @@
-# English translations for PROJECT.
-# Copyright (C) 2010 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-#
+# Translations template for MeMaTool.
+# Copyright (C) 2012 ORGANIZATION
+# This file is distributed under the same license as the MeMaTool project.
+# 
 # Translators:
 #   <sim0n@trypill.org>, 2011, 2012.
 #   <thierry.degeling@gmail.com>, 2011.
@@ -10,15 +10,14 @@ msgstr ""
 "Project-Id-Version: mematool\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2012-06-04 23:31+0200\n"
-"PO-Revision-Date: 2012-05-23 22:51+0000\n"
+"PO-Revision-Date: 2012-06-04 21:42+0000\n"
 "Last-Translator: sim0n <sim0n@trypill.org>\n"
-"Language-Team: Luxembourgish (http://www.transifex.net/projects/p/mematool/"
-"language/lb/)\n"
-"Language: lb\n"
+"Language-Team: Luxembourgish (http://www.transifex.net/projects/p/mematool/language/lb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
+"Language: lb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: mematool/controllers/auth.py:63 mematool/controllers/auth.py:107
@@ -46,9 +45,8 @@ msgid "Invalid group ID"
 msgstr "Ongülteg Gruppen ID"
 
 #: mematool/controllers/groups.py:137
-#, fuzzy
 msgid "Invalid user name(s)"
-msgstr "Ongültegen Benotzernumm"
+msgstr "Ongülteg(e) Benotzer"
 
 #: mematool/controllers/groups.py:161
 msgid "Failed to add group!"
@@ -190,7 +188,7 @@ msgstr "Verännerungen uweisen"
 
 #: mematool/controllers/payments.py:60
 msgid "All payments"
-msgstr "All Payementer"
+msgstr "All Transaktiounen"
 
 #: mematool/controllers/payments.py:61
 msgid "Outstanding payment"
@@ -198,19 +196,19 @@ msgstr "Onbezuelten Transaktiounen"
 
 #: mematool/controllers/payments.py:87
 msgid "Payment validation successfully toggled"
-msgstr "Payement Validatioun Status geupdatet"
+msgstr "Bezuelung Validatioun erfollegräich geupdatet"
 
 #: mematool/controllers/payments.py:90
 msgid "Saving payment failed"
-msgstr "Konnt Payement net späicheren"
+msgstr "Konnt d'Bezuelung net späicheren"
 
 #: mematool/controllers/payments.py:116
 msgid "Add bulk payments"
-msgstr "Puer Payementer beieneen bäisetzen"
+msgstr "Puer Bezuelungen beieneen bäisetzen"
 
 #: mematool/controllers/payments.py:150
 msgid "Payments added"
-msgstr "Payementer si bäigesat ginn"
+msgstr "Bezuelungen si bäigesat ginn"
 
 #: mematool/controllers/payments.py:153
 msgid "Operation failed"
@@ -218,17 +216,17 @@ msgstr "Feeler bei Transaktioun"
 
 #: mematool/controllers/payments.py:171
 msgid "Outstanding payments"
-msgstr "Net bezuelten Payementer"
+msgstr "Net bezuelten Transaktiounen"
 
 #: mematool/controllers/payments.py:230
 #, python-format
 msgid "Payments for the year %s, user %s"
-msgstr "Payementer fir d'Joer %s, vum Benotzer %s"
+msgstr "Bezuelungen fir d'Joer %s, vum Benotzer %s"
 
 #: mematool/controllers/payments.py:311
 #, python-format
 msgid "%s payment for user %s"
-msgstr "%s Payementer fir den Benotzer %s"
+msgstr "%s Transaktiounen fir den Benotzer %s"
 
 #: mematool/controllers/payments.py:335 mematool/model/lechecker.py:189
 msgid "Invalid date"
@@ -236,7 +234,7 @@ msgstr "Falschen Datum"
 
 #: mematool/controllers/payments.py:342
 msgid "Invalid payment status"
-msgstr "Ongültegen Payement Status"
+msgstr "Ongültegen Transaktioune Status"
 
 #: mematool/controllers/payments.py:355
 msgid "That month is already on records!"
@@ -252,7 +250,7 @@ msgstr "Ongültegen Member"
 
 #: mematool/controllers/payments.py:415
 msgid "Payment saved successfully."
-msgstr "Payement erfollegräich gespäichert."
+msgstr "Bezuelung erfollegräich gespäichert."
 
 #: mematool/controllers/preferences.py:52 mematool/templates/base.mako:45
 msgid "Profile"
@@ -264,14 +262,12 @@ msgid "Payments"
 msgstr "Bezuelungen"
 
 #: mematool/controllers/preferences.py:59
-#, fuzzy
 msgid "Edit preferences"
-msgstr "Profil editéieren"
+msgstr "Astellungen editéieren"
 
 #: mematool/controllers/preferences.py:93
-#, fuzzy
 msgid "Invalid language"
-msgstr "Ongültegen Wärt"
+msgstr "Ongülteg Sprooch"
 
 #: mematool/controllers/preferences.py:120
 #: mematool/controllers/preferences.py:132 mematool/controllers/profile.py:183
@@ -280,11 +276,11 @@ msgstr "Ännerungen gespäichert!"
 
 #: mematool/controllers/preferences.py:135
 msgid "Unknown error, nothing saved"
-msgstr ""
+msgstr "Onbekannte Fehler, et ass näischt gespäichert ginn"
 
 #: mematool/controllers/profile.py:54
 msgid "Preferences"
-msgstr ""
+msgstr "Astellungen"
 
 #: mematool/controllers/profile.py:61
 msgid "Edit profile"
@@ -355,9 +351,8 @@ msgid "Invalid Boolean value"
 msgstr "Ongültegen Booleanesche Wärt"
 
 #: mematool/model/lechecker.py:242
-#, fuzzy
 msgid "Invalid Integer value"
-msgstr "Ongültegen Wärt"
+msgstr "Ongülteg Zuel"
 
 #: mematool/model/member.py:160
 msgid "Invalid surname"
@@ -569,7 +564,7 @@ msgstr "Gespaarten Member"
 #: mematool/templates/members/editMember.mako:84
 #: mematool/templates/profile/edit.mako:87
 msgid "Common name"
-msgstr "Virnumm"
+msgstr "Numm"
 
 #: mematool/templates/members/editMember.mako:92
 #: mematool/templates/members/viewAll.mako:20
@@ -733,7 +728,7 @@ msgstr "Weivill Meint"
 
 #: mematool/templates/payments/bulkAdd.mako:33
 msgid "Payment(s) verified"
-msgstr "Payement(er) verifizéiert"
+msgstr "Bezuelung(e) verifizéiert"
 
 #: mematool/templates/payments/bulkAdd.mako:40
 #: mematool/templates/payments/editPayment.mako:54
@@ -751,11 +746,11 @@ msgstr "Status"
 
 #: mematool/templates/payments/editPayment.mako:38
 msgid "Normal payment"
-msgstr "Normale Payement"
+msgstr "Normal Bezuelung"
 
 #: mematool/templates/payments/editPayment.mako:39
 msgid "No payment"
-msgstr "Kee Payement"
+msgstr "Keng Bezuelung"
 
 #: mematool/templates/payments/editPayment.mako:40
 msgid "Not a member"
@@ -763,7 +758,7 @@ msgstr "Ass kee Member"
 
 #: mematool/templates/payments/editPayment.mako:45
 msgid "Payment verified"
-msgstr "Payement verifizéiert"
+msgstr "Bezuelung verifizéiert"
 
 #: mematool/templates/payments/editPayment.mako:56
 msgid "Edit payment"
@@ -814,12 +809,13 @@ msgid "payments"
 msgstr "Bezuelungen"
 
 #: mematool/templates/pendingMemberValidations.mako:3
-msgid "There are pending validation requests regarding member profile updates."
+msgid ""
+"There are pending validation requests regarding member profile updates."
 msgstr "Et gi Members Profiler déi iwwerpréift gi mussen."
 
 #: mematool/templates/preferences/edit.mako:23
 msgid "Language"
-msgstr ""
+msgstr "Sprooch"
 
 #: mematool/templates/profile/edit.mako:32
 msgid "Your account is currently locked for validation"
@@ -840,6 +836,3 @@ msgstr "Schlëssel"
 #: mematool/templates/statistics/index.mako:10
 msgid "Value"
 msgstr "Wärt"
-
-#~ msgid "Invalid group names"
-#~ msgstr "Ongülteg Gruppe Nimm"

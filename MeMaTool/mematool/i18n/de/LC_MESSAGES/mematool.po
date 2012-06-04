@@ -1,7 +1,7 @@
-# English translations for PROJECT.
-# Copyright (C) 2010 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-#
+# Translations template for MeMaTool.
+# Copyright (C) 2012 ORGANIZATION
+# This file is distributed under the same license as the MeMaTool project.
+# 
 # Translators:
 #   <sim0n@trypill.org>, 2012.
 #   <thierry.degeling@gmail.com>, 2011.
@@ -10,15 +10,14 @@ msgstr ""
 "Project-Id-Version: mematool\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2012-06-04 23:31+0200\n"
-"PO-Revision-Date: 2012-05-23 22:49+0000\n"
+"PO-Revision-Date: 2012-06-04 21:40+0000\n"
 "Last-Translator: sim0n <sim0n@trypill.org>\n"
-"Language-Team: German (http://www.transifex.net/projects/p/mematool/language/"
-"de/)\n"
-"Language: de\n"
+"Language-Team: German (http://www.transifex.net/projects/p/mematool/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: mematool/controllers/auth.py:63 mematool/controllers/auth.py:107
@@ -46,9 +45,8 @@ msgid "Invalid group ID"
 msgstr "Ungültige Gruppen ID"
 
 #: mematool/controllers/groups.py:137
-#, fuzzy
 msgid "Invalid user name(s)"
-msgstr "Ungültiger Benutzername"
+msgstr "Ungültige(r) Benutzername(n)"
 
 #: mematool/controllers/groups.py:161
 msgid "Failed to add group!"
@@ -264,14 +262,12 @@ msgid "Payments"
 msgstr "Zahlungen"
 
 #: mematool/controllers/preferences.py:59
-#, fuzzy
 msgid "Edit preferences"
-msgstr "Profil bearbeiten"
+msgstr "Einstellungen bearbeiten"
 
 #: mematool/controllers/preferences.py:93
-#, fuzzy
 msgid "Invalid language"
-msgstr "Ungültiger Wert"
+msgstr "Ungültige Sprache"
 
 #: mematool/controllers/preferences.py:120
 #: mematool/controllers/preferences.py:132 mematool/controllers/profile.py:183
@@ -280,11 +276,11 @@ msgstr "Bearbeitungen gespeichert!"
 
 #: mematool/controllers/preferences.py:135
 msgid "Unknown error, nothing saved"
-msgstr ""
+msgstr "Unbekannter Fehler; nichts gespeichert"
 
 #: mematool/controllers/profile.py:54
 msgid "Preferences"
-msgstr ""
+msgstr "Einstellungen"
 
 #: mematool/controllers/profile.py:61
 msgid "Edit profile"
@@ -355,9 +351,8 @@ msgid "Invalid Boolean value"
 msgstr "Ungültige Boolescher Wert"
 
 #: mematool/model/lechecker.py:242
-#, fuzzy
 msgid "Invalid Integer value"
-msgstr "Ungültiger Wert"
+msgstr "Ungültiger Zahlen Wert"
 
 #: mematool/model/member.py:160
 msgid "Invalid surname"
@@ -569,7 +564,7 @@ msgstr "gesperrtes Mitglied"
 #: mematool/templates/members/editMember.mako:84
 #: mematool/templates/profile/edit.mako:87
 msgid "Common name"
-msgstr "Vorname"
+msgstr "Name"
 
 #: mematool/templates/members/editMember.mako:92
 #: mematool/templates/members/viewAll.mako:20
@@ -720,9 +715,7 @@ msgstr "Auf der linken Seite die alten Daten, auf der Rechten, die neuen."
 
 #: mematool/templates/members/viewDiff.mako:13
 msgid "Please carefully review the changes and accept only valid data."
-msgstr ""
-"Bitte überprüfe die Änderungen sorgfältig und bestätige nur gültige "
-"Änderungen."
+msgstr "Bitte überprüfe die Änderungen sorgfältig und bestätige nur gültige Änderungen."
 
 #: mematool/templates/payments/bulkAdd.mako:16
 #: mematool/templates/payments/editPayment.mako:20
@@ -816,12 +809,13 @@ msgid "payments"
 msgstr "Zahlungen"
 
 #: mematool/templates/pendingMemberValidations.mako:3
-msgid "There are pending validation requests regarding member profile updates."
+msgid ""
+"There are pending validation requests regarding member profile updates."
 msgstr "Es gibt Mitglieder Profile die Überprüft werden müssen."
 
 #: mematool/templates/preferences/edit.mako:23
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 #: mematool/templates/profile/edit.mako:32
 msgid "Your account is currently locked for validation"
@@ -842,6 +836,3 @@ msgstr "Schlüssel"
 #: mematool/templates/statistics/index.mako:10
 msgid "Value"
 msgstr "Wert"
-
-#~ msgid "Invalid group names"
-#~ msgstr "Ungültige Gruppen Namen"
