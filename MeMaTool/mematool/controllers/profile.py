@@ -79,6 +79,7 @@ class ProfileController(BaseController):
         c.formDisabled = 'disabled'
 
       c.member = member
+      c.groups = self.lmf.getUserGroupList(session['identity'])
 
       if member.fullMember:
         c.member.full_member = True
