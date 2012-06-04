@@ -1,7 +1,7 @@
 # English translations for PROJECT.
 # Copyright (C) 2010 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# 
+#
 # Translators:
 #   <sim0n@trypill.org>, 2011, 2012.
 #   <thierry.degeling@gmail.com>, 2011.
@@ -9,58 +9,60 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mematool\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2010-10-10 22:57+0200\n"
+"POT-Creation-Date: 2012-06-04 23:31+0200\n"
 "PO-Revision-Date: 2012-05-23 22:51+0000\n"
 "Last-Translator: sim0n <sim0n@trypill.org>\n"
-"Language-Team: Luxembourgish (http://www.transifex.net/projects/p/mematool/language/lb/)\n"
+"Language-Team: Luxembourgish (http://www.transifex.net/projects/p/mematool/"
+"language/lb/)\n"
+"Language: lb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
-"Language: lb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: mematool/controllers/auth.py:69
+#: mematool/controllers/auth.py:63 mematool/controllers/auth.py:107
 msgid "Login failed!"
 msgstr "Feeler beim Aloggen!"
 
-#: mematool/controllers/groups.py:60
+#: mematool/controllers/groups.py:55
 msgid "Show all groups"
 msgstr "All Gruppen"
 
-#: mematool/controllers/groups.py:61
+#: mematool/controllers/groups.py:56
 msgid "Add Group"
 msgstr "Grupp bäisetzen"
 
-#: mematool/controllers/groups.py:62 mematool/templates/base.mako:38
+#: mematool/controllers/groups.py:57 mematool/templates/base.mako:38
 msgid "Members"
 msgstr "Memberen"
 
-#: mematool/controllers/groups.py:72
+#: mematool/controllers/groups.py:67
 msgid "Managed groups"
 msgstr "Verwalte Gruppe"
 
-#: mematool/controllers/groups.py:122
+#: mematool/controllers/groups.py:120
 msgid "Invalid group ID"
 msgstr "Ongülteg Gruppen ID"
 
-#: mematool/controllers/groups.py:127
-msgid "Invalid group names"
-msgstr "Ongülteg Gruppe Nimm"
+#: mematool/controllers/groups.py:137
+#, fuzzy
+msgid "Invalid user name(s)"
+msgstr "Ongültegen Benotzernumm"
 
-#: mematool/controllers/groups.py:155
+#: mematool/controllers/groups.py:161
 msgid "Failed to add group!"
 msgstr "Konnt Grupp net bäisetzen!"
 
-#: mematool/controllers/groups.py:188
+#: mematool/controllers/groups.py:184
 msgid "Group saved successfully"
 msgstr "Grupp gespäichert"
 
-#: mematool/controllers/groups.py:202
+#: mematool/controllers/groups.py:200
 msgid "Group no longer managed"
 msgstr "Grupp gëtt net méi verwalt"
 
-#: mematool/controllers/groups.py:205
+#: mematool/controllers/groups.py:203
 msgid "Failed to remove group from management!"
 msgstr "Konnt Grupp net vun der Verwaltung läschen!"
 
@@ -72,32 +74,32 @@ msgstr "Grupp ass geläscht ginn"
 msgid "Failed to delete group!"
 msgstr "Konnt Grupp net läschen!"
 
-#: mematool/controllers/mails.py:61
+#: mematool/controllers/mails.py:55
 msgid "Show all domains"
 msgstr "All Domains"
 
-#: mematool/controllers/mails.py:62
+#: mematool/controllers/mails.py:56
 #: mematool/templates/mails/editDomain.mako:33
 msgid "Add domain"
 msgstr "Domain bäisetzen"
 
-#: mematool/controllers/mails.py:63 mematool/templates/mails/editAlias.mako:63
+#: mematool/controllers/mails.py:57 mematool/templates/mails/editAlias.mako:63
 msgid "Add alias"
 msgstr "Alias bäisetzen"
 
-#: mematool/controllers/mails.py:73
+#: mematool/controllers/mails.py:67
 msgid "Managed domains"
 msgstr "Verwalten Domains"
 
-#: mematool/controllers/mails.py:139
+#: mematool/controllers/mails.py:135
 msgid "Failed to add domain!"
 msgstr "Konnt Domain net bäisetzen!"
 
-#: mematool/controllers/mails.py:156
+#: mematool/controllers/mails.py:154
 msgid "Domain successfully deleted"
 msgstr "Domain ass geläscht ginn"
 
-#: mematool/controllers/mails.py:159 mematool/controllers/mails.py:162
+#: mematool/controllers/mails.py:157 mematool/controllers/mails.py:160
 msgid "Failed to delete domain!"
 msgstr "Domain konnt net geläscht ginn!"
 
@@ -106,281 +108,310 @@ msgstr "Domain konnt net geläscht ginn!"
 msgid "Aliases for domain: %s"
 msgstr "Alias fir den Domain: %s"
 
-#: mematool/controllers/mails.py:265
+#: mematool/controllers/mails.py:270
 msgid "Invalid mail destination!"
 msgstr "Ongülteg Mail Destinatioun!"
 
-#: mematool/controllers/mails.py:280
+#: mematool/controllers/mails.py:287
 msgid "All aliases need to be within the same domain!"
 msgstr "All Alias muss ënnert dem nämmlechten Domain leien!"
 
-#: mematool/controllers/mails.py:287
+#: mematool/controllers/mails.py:294
 msgid "Invalid related aliases!"
 msgstr "Ongülteg zesummenhänkend Aliasen!"
 
-#: mematool/controllers/mails.py:343
+#: mematool/controllers/mails.py:350
 msgid "Alias successfully edited"
 msgstr "Alias ass geännert ginn"
 
-#: mematool/controllers/mails.py:348
+#: mematool/controllers/mails.py:355
 msgid "Error while editing alias"
 msgstr "Feeler beim editéieren vum Alias"
 
-#: mematool/controllers/mails.py:364
+#: mematool/controllers/mails.py:373
 msgid "Alias successfully deleted"
 msgstr "Alias ass geläscht ginn!"
 
-#: mematool/controllers/mails.py:367 mematool/controllers/mails.py:372
+#: mematool/controllers/mails.py:376 mematool/controllers/mails.py:381
 msgid "Failed to delete alias!"
 msgstr "Konnt Alias net läschen!"
 
-#: mematool/controllers/members.py:61
+#: mematool/controllers/members.py:55
 msgid "Show all members"
 msgstr "All Memberen"
 
-#: mematool/controllers/members.py:62 mematool/controllers/members.py:72
+#: mematool/controllers/members.py:56 mematool/controllers/members.py:66
 msgid "Add member"
 msgstr "Member bäisetzen"
 
-#: mematool/controllers/members.py:63
+#: mematool/controllers/members.py:57
 msgid "Active members"
 msgstr "Aktiv Memberen"
 
-#: mematool/controllers/members.py:64
+#: mematool/controllers/members.py:58
 msgid "Former members"
 msgstr "Freier Memberen"
 
-#: mematool/controllers/members.py:65
+#: mematool/controllers/members.py:59
 msgid "Groups"
 msgstr "Gruppen"
 
-#: mematool/controllers/members.py:84
+#: mematool/controllers/members.py:78
 msgid "Edit member"
 msgstr "Member editéieren"
 
-#: mematool/controllers/members.py:207
+#: mematool/controllers/members.py:202
 msgid "Member details successfully edited"
 msgstr "Member erfollegräich gespäichert"
 
-#: mematool/controllers/members.py:220
+#: mematool/controllers/members.py:215
 msgid "All members"
 msgstr "All Memberen"
 
-#: mematool/controllers/members.py:310
+#: mematool/controllers/members.py:305
 msgid "Nothing to validate!"
 msgstr "Näischt fir ze validéieren!"
 
-#: mematool/controllers/members.py:313
+#: mematool/controllers/members.py:308
 msgid "Member validation failed!"
 msgstr "Member Validatioun feelgeschloen!"
 
-#: mematool/controllers/members.py:333
+#: mematool/controllers/members.py:328
 msgid "Nothing to reject!"
 msgstr "Näischt fir ze verwerfen!"
 
-#: mematool/controllers/members.py:336
+#: mematool/controllers/members.py:331
 msgid "Failed to reject validation!"
 msgstr "Konnt d'Validatioun net verwerfen!"
 
-#: mematool/controllers/members.py:373
+#: mematool/controllers/members.py:368
 msgid "View diff"
 msgstr "Verännerungen uweisen"
 
-#: mematool/controllers/payments.py:64
+#: mematool/controllers/payments.py:60
 msgid "All payments"
 msgstr "All Payementer"
 
-#: mematool/controllers/payments.py:65
+#: mematool/controllers/payments.py:61
 msgid "Outstanding payment"
 msgstr "Onbezuelten Transaktiounen"
 
-#: mematool/controllers/payments.py:88
+#: mematool/controllers/payments.py:87
 msgid "Payment validation successfully toggled"
 msgstr "Payement Validatioun Status geupdatet"
 
-#: mematool/controllers/payments.py:91
+#: mematool/controllers/payments.py:90
 msgid "Saving payment failed"
 msgstr "Konnt Payement net späicheren"
 
-#: mematool/controllers/payments.py:115
+#: mematool/controllers/payments.py:116
 msgid "Add bulk payments"
 msgstr "Puer Payementer beieneen bäisetzen"
 
-#: mematool/controllers/payments.py:142
+#: mematool/controllers/payments.py:150
 msgid "Payments added"
 msgstr "Payementer si bäigesat ginn"
 
-#: mematool/controllers/payments.py:145
+#: mematool/controllers/payments.py:153
 msgid "Operation failed"
 msgstr "Feeler bei Transaktioun"
 
-#: mematool/controllers/payments.py:163
+#: mematool/controllers/payments.py:171
 msgid "Outstanding payments"
 msgstr "Net bezuelten Payementer"
 
-#: mematool/controllers/payments.py:208
+#: mematool/controllers/payments.py:230
 #, python-format
 msgid "Payments for the year %s, user %s"
 msgstr "Payementer fir d'Joer %s, vum Benotzer %s"
 
-#: mematool/controllers/payments.py:290
+#: mematool/controllers/payments.py:311
 #, python-format
 msgid "%s payment for user %s"
 msgstr "%s Payementer fir den Benotzer %s"
 
-#: mematool/controllers/payments.py:311 mematool/model/lechecker.py:186
+#: mematool/controllers/payments.py:335 mematool/model/lechecker.py:189
 msgid "Invalid date"
 msgstr "Falschen Datum"
 
-#: mematool/controllers/payments.py:318
+#: mematool/controllers/payments.py:342
 msgid "Invalid payment status"
 msgstr "Ongültegen Payement Status"
 
-#: mematool/controllers/payments.py:333
+#: mematool/controllers/payments.py:355
 msgid "That month is already on records!"
 msgstr "De Mount existéiert schonn!"
 
-#: mematool/controllers/payments.py:368
+#: mematool/controllers/payments.py:388
 msgid "Invalid record"
 msgstr "Ongültegen Antrag"
 
-#: mematool/controllers/payments.py:382
+#: mematool/controllers/payments.py:402
 msgid "Invalid member"
 msgstr "Ongültegen Member"
 
-#: mematool/controllers/payments.py:395
+#: mematool/controllers/payments.py:415
 msgid "Payment saved successfully."
 msgstr "Payement erfollegräich gespäichert."
 
-#: mematool/controllers/profile.py:60 mematool/templates/base.mako:40
+#: mematool/controllers/preferences.py:52 mematool/templates/base.mako:45
+msgid "Profile"
+msgstr "Profil"
+
+#: mematool/controllers/preferences.py:53 mematool/controllers/profile.py:55
+#: mematool/templates/base.mako:40
 msgid "Payments"
 msgstr "Bezuelungen"
 
-#: mematool/controllers/profile.py:66
-msgid "Edit profile"
+#: mematool/controllers/preferences.py:59
+#, fuzzy
+msgid "Edit preferences"
 msgstr "Profil editéieren"
 
-#: mematool/controllers/profile.py:187
+#: mematool/controllers/preferences.py:93
+#, fuzzy
+msgid "Invalid language"
+msgstr "Ongültegen Wärt"
+
+#: mematool/controllers/preferences.py:120
+#: mematool/controllers/preferences.py:132 mematool/controllers/profile.py:183
 msgid "Changes saved!"
 msgstr "Ännerungen gespäichert!"
 
-#: mematool/controllers/profile.py:192
+#: mematool/controllers/preferences.py:135
+msgid "Unknown error, nothing saved"
+msgstr ""
+
+#: mematool/controllers/profile.py:54
+msgid "Preferences"
+msgstr ""
+
+#: mematool/controllers/profile.py:61
+msgid "Edit profile"
+msgstr "Profil editéieren"
+
+#: mematool/controllers/profile.py:188
 msgid "Nothing to save!"
 msgstr "Näischt fir ze späicheren!"
 
-#: mematool/controllers/profile.py:200
+#: mematool/controllers/profile.py:196
 msgid "Password updated!"
 msgstr "Passwuert gespäichert!"
 
-#: mematool/controllers/statistics.py:62 mematool/templates/base.mako:42
+#: mematool/controllers/statistics.py:56 mematool/templates/base.mako:42
 msgid "Statistics"
 msgstr "Statistiken"
 
-#: mematool/model/lechecker.py:141
+#: mematool/model/lechecker.py:144
 msgid "Invalid e-mail address"
 msgstr "Ongülteg e-mail Adress"
 
-#: mematool/model/lechecker.py:146
+#: mematool/model/lechecker.py:149
 msgid "Invalid domain"
 msgstr "Ongültegen Domain"
 
-#: mematool/model/lechecker.py:151
+#: mematool/model/lechecker.py:154
 msgid "Invalid username"
 msgstr "Ongültegen Benotzernumm"
 
-#: mematool/model/lechecker.py:156
+#: mematool/model/lechecker.py:159
 msgid "Invalid value"
 msgstr "Ongültegen Wärt"
 
-#: mematool/model/lechecker.py:161
+#: mematool/model/lechecker.py:164
 msgid "Invalid mode"
 msgstr "Ongültegen Modus"
 
-#: mematool/model/lechecker.py:181
+#: mematool/model/lechecker.py:184
 msgid "Invalid phone number"
 msgstr "Ongülteg Telefonsnummer"
 
-#: mematool/model/lechecker.py:191
+#: mematool/model/lechecker.py:194
 msgid "Invalid PGP key"
 msgstr "Ongültegen PGP Schlëssel"
 
-#: mematool/model/lechecker.py:196
+#: mematool/model/lechecker.py:199
 msgid "Invalid iButton UID"
 msgstr "Ongülteg iButton UID"
 
-#: mematool/model/lechecker.py:201
+#: mematool/model/lechecker.py:204
 msgid "Invalid password"
 msgstr "Ongülteg Passwuert"
 
-#: mematool/model/lechecker.py:208
+#: mematool/model/lechecker.py:211
 msgid "Second password not valid"
 msgstr "Zweet Passwuert ass ongülteg"
 
-#: mematool/model/lechecker.py:211
+#: mematool/model/lechecker.py:214
 msgid "Passwords do not match"
 msgstr "Passwierder stemmen net iwwert eneen"
 
-#: mematool/model/lechecker.py:217
+#: mematool/model/lechecker.py:220
 msgid "Invalid country code"
 msgstr "Ongültegen Land Code"
 
-#: mematool/model/lechecker.py:234
+#: mematool/model/lechecker.py:237
 msgid "Invalid Boolean value"
 msgstr "Ongültegen Booleanesche Wärt"
 
-#: mematool/model/member.py:164
+#: mematool/model/lechecker.py:242
+#, fuzzy
+msgid "Invalid Integer value"
+msgstr "Ongültegen Wärt"
+
+#: mematool/model/member.py:160
 msgid "Invalid surname"
 msgstr "Ongültegen Familljennumm"
 
-#: mematool/model/member.py:170
+#: mematool/model/member.py:166
 msgid "Invalid given name"
 msgstr "Ongültegen Virnumm"
 
-#: mematool/model/member.py:176
+#: mematool/model/member.py:172
 msgid "Invalid birth date"
 msgstr "Ongültegen Gebuertsdatum"
 
-#: mematool/model/member.py:182
+#: mematool/model/member.py:178
 msgid "Invalid address"
 msgstr "Ongülteg Adress"
 
-#: mematool/model/member.py:195
+#: mematool/model/member.py:191
 msgid "Invalid mobile number"
 msgstr "Ongülteg Handysnummer"
 
-#: mematool/model/member.py:207
+#: mematool/model/member.py:203
 msgid "Invalid login shell"
 msgstr "Ongülteg Login Shell"
 
-#: mematool/model/member.py:213
+#: mematool/model/member.py:209
 msgid "Invalid \"member since\" date"
 msgstr "Ongültegen Datum fir \"Member säit\""
 
-#: mematool/model/member.py:220
+#: mematool/model/member.py:216
 msgid "Invalid \"membership canceled\" date"
 msgstr "Ongültegen Datum fir \"Member ausgetrueden\""
 
-#: mematool/model/member.py:227
+#: mematool/model/member.py:223
 msgid "Invalid SSH key"
 msgstr "Ongültegen SSH Schlëssel"
 
-#: mematool/model/member.py:248
+#: mematool/model/member.py:244
 msgid "Invalid convention signer"
 msgstr "Ongültegen Conventioun's Ënnerschreiwer"
 
-#: mematool/model/member.py:255
+#: mematool/model/member.py:251
 msgid "Invalid XMPP/Jabber/GTalk ID"
 msgstr "Ongülteg XMPP/Jabber/GTalk ID"
 
-#: mematool/model/member.py:262
+#: mematool/model/member.py:258
 msgid "Invalid Space-Key value"
 msgstr "Ongültegen Space-Schlessel Wärt"
 
-#: mematool/model/member.py:269
+#: mematool/model/member.py:265
 msgid "Invalid NPO-Member value"
 msgstr "Ongültegen ASBL-Member Wärt"
 
-#: mematool/model/member.py:276
+#: mematool/model/member.py:272
 msgid "Invalid nationality"
 msgstr "Ongülteg Nationalitéit"
 
@@ -403,10 +434,6 @@ msgstr "Iwwersiicht"
 #: mematool/templates/base.mako:43
 msgid "Mails"
 msgstr "Mails"
-
-#: mematool/templates/base.mako:45
-msgid "Profile"
-msgstr "Profil"
 
 #: mematool/templates/base.mako:46
 msgid "Logout"
@@ -530,139 +557,140 @@ msgid "Additional groups"
 msgstr "Zousätzlech Gruppen"
 
 #: mematool/templates/members/editMember.mako:57
-#: mematool/templates/profile/edit.mako:63
+#: mematool/templates/profile/edit.mako:65
 msgid "full member"
 msgstr "Aktiven Member"
 
 #: mematool/templates/members/editMember.mako:58
-#: mematool/templates/profile/edit.mako:64
+#: mematool/templates/profile/edit.mako:66
 msgid "locked member"
 msgstr "Gespaarten Member"
 
-#: mematool/templates/members/editMember.mako:63
-#: mematool/templates/profile/edit.mako:69
+#: mematool/templates/members/editMember.mako:84
+#: mematool/templates/profile/edit.mako:87
 msgid "Common name"
 msgstr "Virnumm"
 
-#: mematool/templates/members/editMember.mako:71
+#: mematool/templates/members/editMember.mako:92
 #: mematool/templates/members/viewAll.mako:20
 #: mematool/templates/members/viewDiff.mako:46
 #: mematool/templates/members/viewDiff.mako:139
 #: mematool/templates/payments/showOutstanding.mako:25
-#: mematool/templates/profile/edit.mako:77
+#: mematool/templates/profile/edit.mako:95
 msgid "Surname"
 msgstr "Familljennumm"
 
-#: mematool/templates/members/editMember.mako:79
+#: mematool/templates/members/editMember.mako:100
 #: mematool/templates/members/viewAll.mako:23
 #: mematool/templates/members/viewDiff.mako:54
 #: mematool/templates/members/viewDiff.mako:147
 #: mematool/templates/payments/showOutstanding.mako:28
-#: mematool/templates/profile/edit.mako:85
+#: mematool/templates/profile/edit.mako:103
 msgid "Given name"
 msgstr "Virnumm"
 
-#: mematool/templates/members/editMember.mako:87
+#: mematool/templates/members/editMember.mako:108
 msgid "Nationality (2 char iso-code)"
 msgstr "Nationalitéit (2 Charaktere ISO-Code)"
 
-#: mematool/templates/members/editMember.mako:95
-#: mematool/templates/profile/edit.mako:93
+#: mematool/templates/members/editMember.mako:116
+#: mematool/templates/profile/edit.mako:111
 msgid "Convention signer"
 msgstr "Member deen Conventioun ënnerschriwwen huet"
 
-#: mematool/templates/members/editMember.mako:103
+#: mematool/templates/members/editMember.mako:124
 #: mematool/templates/members/viewDiff.mako:62
 #: mematool/templates/members/viewDiff.mako:155
-#: mematool/templates/profile/edit.mako:101
+#: mematool/templates/profile/edit.mako:119
 msgid "Birth Date"
 msgstr "Gebuertsdatum"
 
-#: mematool/templates/members/editMember.mako:111
+#: mematool/templates/members/editMember.mako:132
 #: mematool/templates/members/viewDiff.mako:70
 #: mematool/templates/members/viewDiff.mako:163
-#: mematool/templates/profile/edit.mako:109
+#: mematool/templates/profile/edit.mako:127
 msgid "Address"
 msgstr "Adress"
 
-#: mematool/templates/members/editMember.mako:119
+#: mematool/templates/members/editMember.mako:140
 #: mematool/templates/members/viewDiff.mako:78
 #: mematool/templates/members/viewDiff.mako:171
-#: mematool/templates/profile/edit.mako:117
+#: mematool/templates/profile/edit.mako:135
 msgid "Phone"
 msgstr "Telefonsnummer"
 
-#: mematool/templates/members/editMember.mako:127
+#: mematool/templates/members/editMember.mako:148
 #: mematool/templates/members/viewDiff.mako:86
 #: mematool/templates/members/viewDiff.mako:179
-#: mematool/templates/profile/edit.mako:125
+#: mematool/templates/profile/edit.mako:143
 msgid "Mobile"
 msgstr "Handysnummer"
 
-#: mematool/templates/members/editMember.mako:135
+#: mematool/templates/members/editMember.mako:156
 #: mematool/templates/members/viewAll.mako:26
 #: mematool/templates/members/viewDiff.mako:94
 #: mematool/templates/members/viewDiff.mako:187
 #: mematool/templates/payments/showOutstanding.mako:31
-#: mematool/templates/profile/edit.mako:133
+#: mematool/templates/profile/edit.mako:151
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: mematool/templates/members/editMember.mako:143
+#: mematool/templates/members/editMember.mako:164
 #: mematool/templates/members/viewDiff.mako:102
 #: mematool/templates/members/viewDiff.mako:195
-#: mematool/templates/profile/edit.mako:141
+#: mematool/templates/profile/edit.mako:159
 msgid "XMPP/Jabber/GTalk ID"
 msgstr "XMPP/Jabber/GTalk ID"
 
-#: mematool/templates/members/editMember.mako:151
-#: mematool/templates/profile/edit.mako:149
+#: mematool/templates/members/editMember.mako:172
+#: mematool/templates/profile/edit.mako:167
 msgid "Login Shell"
 msgstr "Login Shell"
 
-#: mematool/templates/members/editMember.mako:159
-#: mematool/templates/profile/edit.mako:165
+#: mematool/templates/members/editMember.mako:180
+#: mematool/templates/profile/edit.mako:183
 msgid "Member since"
 msgstr "Member säit"
 
-#: mematool/templates/members/editMember.mako:167
+#: mematool/templates/members/editMember.mako:188
 msgid "Membership canceled"
 msgstr "Member ausgetrueden"
 
-#: mematool/templates/members/editMember.mako:175
-#: mematool/templates/profile/edit.mako:173
+#: mematool/templates/members/editMember.mako:196
+#: mematool/templates/profile/edit.mako:191
 msgid "PGP Key"
 msgstr "PGP Schlëssel"
 
-#: mematool/templates/members/editMember.mako:183
+#: mematool/templates/members/editMember.mako:204
 msgid "iButton UID"
 msgstr "iButton UID"
 
-#: mematool/templates/members/editMember.mako:191
+#: mematool/templates/members/editMember.mako:212
 msgid "Has space key"
 msgstr "Huet e Space Schlëssel"
 
-#: mematool/templates/members/editMember.mako:199
+#: mematool/templates/members/editMember.mako:220
 msgid "Is NPO member"
 msgstr "Ass en ASBL Member"
 
-#: mematool/templates/members/editMember.mako:207
-#: mematool/templates/profile/edit.mako:181
+#: mematool/templates/members/editMember.mako:228
+#: mematool/templates/profile/edit.mako:199
 msgid "SSH Public Key"
 msgstr "Ëffentlechen SSH Schlëssel"
 
-#: mematool/templates/members/editMember.mako:215
-#: mematool/templates/profile/edit.mako:189
+#: mematool/templates/members/editMember.mako:236
+#: mematool/templates/profile/edit.mako:207
 msgid "Password"
 msgstr "Passwuert"
 
-#: mematool/templates/members/editMember.mako:223
-#: mematool/templates/profile/edit.mako:197
+#: mematool/templates/members/editMember.mako:244
+#: mematool/templates/profile/edit.mako:215
 msgid "Repeat Password"
 msgstr "Passwuert widderhuelen"
 
-#: mematool/templates/members/editMember.mako:236
-#: mematool/templates/profile/edit.mako:204
+#: mematool/templates/members/editMember.mako:257
+#: mematool/templates/preferences/edit.mako:30
+#: mematool/templates/profile/edit.mako:222
 msgid "Submit"
 msgstr "Fortschécken"
 
@@ -786,19 +814,22 @@ msgid "payments"
 msgstr "Bezuelungen"
 
 #: mematool/templates/pendingMemberValidations.mako:3
-msgid ""
-"There are pending validation requests regarding member profile updates."
+msgid "There are pending validation requests regarding member profile updates."
 msgstr "Et gi Members Profiler déi iwwerpréift gi mussen."
+
+#: mematool/templates/preferences/edit.mako:23
+msgid "Language"
+msgstr ""
 
 #: mematool/templates/profile/edit.mako:32
 msgid "Your account is currently locked for validation"
 msgstr "Däin Account ass momentan gespaart well et muss validéiert ginn"
 
-#: mematool/templates/profile/edit.mako:157
+#: mematool/templates/profile/edit.mako:175
 msgid "Home directory"
 msgstr "Home Dossier"
 
-#: mematool/templates/profile/edit.mako:189
+#: mematool/templates/profile/edit.mako:207
 msgid "only ASCII chars"
 msgstr "nëmmen ASCII Zeechen"
 
@@ -809,3 +840,6 @@ msgstr "Schlëssel"
 #: mematool/templates/statistics/index.mako:10
 msgid "Value"
 msgstr "Wärt"
+
+#~ msgid "Invalid group names"
+#~ msgstr "Ongülteg Gruppe Nimm"
