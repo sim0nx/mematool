@@ -49,6 +49,8 @@ class BaseController(WSGIController):
     self.admins = re.sub(r' ', '', config.get('mematool.admins')).split(',')
     self.superadmins = re.sub(r' ', '', config.get('mematool.superadmins')).split(',')
     self.financeadmins = re.sub(r' ', '', config.get('mematool.financeadmins')).split(',')
+    self.default_language = config.get('mematool.default_language')
+    self.languages = re.sub(r' ', '', config.get('mematool.languages')).split(',')
 
     if self.isAdmin():
       session['pendingMemberValidations'] = self.pendingMemberValidations()
@@ -59,8 +61,10 @@ class BaseController(WSGIController):
     # WSGIController.__call__ dispatches to the Controller method
     # the request is routed to. This routing information is
     # available in environ['pylons.routes_dict']
-    if 'lang' in session:
-      set_lang(session['lang'])
+    if 'language' in session and session['language'] in self.languages:
+      set_lang(session['language'])
+    else:
+      set_lang(self.default_language)
 
     try:
       return WSGIController.__call__(self, environ, start_response)

@@ -23,11 +23,14 @@ from pylons.controllers.util import abort, redirect
 from pylons.i18n.translation import _
 from pylons.decorators.secure import https
 
-from mematool.lib.base import BaseController, render
+from mematool.lib.base import BaseController, render, Session
 from mematool.lib.syn2cat.auth.auth_ldap import LDAPAuthAdapter
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
+from mematool.model import Preferences
+
+from sqlalchemy import and_
 
 
 log = logging.getLogger(__name__)
@@ -73,8 +76,22 @@ class AuthController(BaseController):
       session['secret'] = encodeAES(request.params['password'])
       lmf = LdapModelFactory()
       session['groups'] = lmf.getUserGroupList(request.params['username'])
+
       # dummy call to set the variable
       self.isFinanceAdmin()
+
+      try:
+        uidNumber = lmf.getUser(session['identity']).uidNumber
+        language = Session.query(Preferences).filter(and_(Preferences.uidNumber == uidNumber, Preferences.key == 'language')).one()
+
+        if language.value in self.languages:
+          session['language'] = language.value
+        else:
+          session['language'] = self.default_language
+      except Exception as e:
+        print e
+        pass
+
       session.save()
 
       log.info(request.params['username'] + ' logged in')

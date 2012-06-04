@@ -49,11 +49,9 @@ class ProfileController(BaseController):
     super(ProfileController, self).__before__()
     self._sidebar()
 
-  def _require_auth(self):
-    return True
-
   def _sidebar(self):
     c.actions = list()
+    c.actions.append((_('Preferences'), 'preferences', 'edit'))
     c.actions.append((_('Payments'), 'payments', 'listPayments', session['identity']))
 
   def index(self):
@@ -216,7 +214,7 @@ class ProfileController(BaseController):
       redirect(url(controller='members', action='showAllMembers'))
 
     if request.params['lang'] in ('en', 'lb', 'de'):
-      session['lang'] = request.params['lang']
+      session['language'] = request.params['lang']
       session.save()
       set_lang(request.params['lang'])
 
