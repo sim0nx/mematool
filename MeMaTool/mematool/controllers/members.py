@@ -79,6 +79,7 @@ class MembersController(BaseController):
       c.mode = 'edit'
 
       c.member = member
+      c.groups = self.lmf.getUserGroupList(request.params['member_id'])
 
       if member.fullMember:
         c.member.full_member = 'checked'
