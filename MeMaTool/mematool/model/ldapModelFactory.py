@@ -88,10 +88,9 @@ class LdapModelFactory(BaseModelFactory):
 
     m.groups = self.getUserGroupList(uid)
 
-    # @TODO make this generic
-    if 'syn2cat_full_member' in m.groups:
+    if config.get('mematool.group_fullmember') in m.groups:
       m.fullMember = True
-    if 'syn2cat_locked_member' in m.groups:
+    if config.get('mematool.group_lockedmember') in m.groups:
       m.lockedMember = True
 
     return m
@@ -118,7 +117,7 @@ class LdapModelFactory(BaseModelFactory):
     ausers = []
 
     for u in users:
-      if not self.isUserInGroup(u, 'syn2cat_locked_member'):
+      if not self.isUserInGroup(u, config.get('mematool.group_lockedmember')):
         ausers.append(u)
 
     return ausers
@@ -242,8 +241,8 @@ class LdapModelFactory(BaseModelFactory):
 
     result = self.ldapcon.modify_s('uid=' + member.uid + ',' + self.cnf.get('ldap.basedn_users'), mod_attrs)
 
-    self.changeUserGroup(member.uid, 'syn2cat_full_member', member.fullMember)
-    self.changeUserGroup(member.uid, 'syn2cat_locked_member', member.lockedMember)
+    self.changeUserGroup(member.uid, config.get('mematool.group_fullmember'), member.fullMember)
+    self.changeUserGroup(member.uid, config.get('mematool.group_lockedmember'), member.lockedMember)
 
     return result
 
@@ -291,8 +290,8 @@ class LdapModelFactory(BaseModelFactory):
     dn = dn.encode('ascii', 'ignore')
     result = self.ldapcon.add_s(dn, mod_attrs)
 
-    self.changeUserGroup(member.uid, 'syn2cat_full_member', member.fullMember)
-    self.changeUserGroup(member.uid, 'syn2cat_locked_member', member.lockedMember)
+    self.changeUserGroup(member.uid, config.get('mematool.group_fullmember'), member.fullMember)
+    self.changeUserGroup(member.uid, config.get('mematool.group_lockedmember'), member.lockedMember)
 
     return result
 
