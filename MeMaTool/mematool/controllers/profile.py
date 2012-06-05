@@ -207,7 +207,7 @@ class ProfileController(BaseController):
     body += 'regards,\nMeMaTool'
 
     to = 'office@hackerspace.lu'
-    subject = 'syn2cat mematool - request for validation'
+    subject = config.get('mematool.name_prefix') + 'mematool - request for validation'
     self.sendMail(to, subject, body)
 
   def setLang(self):

@@ -346,7 +346,7 @@ class MembersController(BaseController):
     body += 'regards,\nMeMaTool'
 
     to = 'office@hackerspace.lu'
-    subject = 'syn2cat mematool - request for validation - ' + validation_string
+    subject = config.get('mematool.name_prefix') + ' mematool - request for validation - ' + validation_string
     self.sendMail(to, subject, body)
 
     # user e-mail
