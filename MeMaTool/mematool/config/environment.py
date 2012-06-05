@@ -19,10 +19,11 @@ def load_environment(global_conf, app_conf):
     
     # Pylons paths
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    templates = os.path.join(os.path.join(root, 'templates'), app_conf['mematool.theme'])
     paths = dict(root=root,
                  controllers=os.path.join(root, 'controllers'),
                  static_files=os.path.join(root, 'public'),
-                 templates=[os.path.join(root, 'templates')])
+                 templates=[templates])
 
     # Initialize config with the basic options
     config.init_app(global_conf, app_conf, package='mematool', paths=paths)
