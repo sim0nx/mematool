@@ -222,8 +222,11 @@ class BaseController(WSGIController):
 
     return 0
 
-  def sendMail(self, to_, subject, body, from_='syn2cat mematool <noreply@hackerspace.lu>'):
+  def sendMail(self, to_, subject, body, from_=''):
     msg = MIMEText(body)
+
+    if from_ == '':
+      from_ = config.get('mematool.mail_default_from')
 
     msg['Subject'] = subject
     msg['From'] = from_
