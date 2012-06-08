@@ -28,6 +28,7 @@ from mematool.model import TmpMember
 
 import urllib
 import hashlib
+import base64
 from binascii import b2a_base64, a2b_base64
 from mematool.lib.syn2cat import regex
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
@@ -65,6 +66,7 @@ class Member():
     'lockedMember',
     'spaceKey',
     'npoMember']
+  bin_vars = ['jpegPhoto']
 
   '''
   uid = ''   # uid
@@ -102,11 +104,14 @@ class Member():
       setattr(self, v, [])
     for v in self.bool_vars:
       setattr(self, v, False)
+    for v in self.bin_vars:
+      setattr(self, v, None)
 
     self.all_vars = []
     self.all_vars.extend(self.str_vars)
     self.all_vars.extend(self.list_vars)
     self.all_vars.extend(self.bool_vars)
+    self.all_vars.extend(self.bin_vars)
 
   def __str__(self):
     return "<Member('uidNumber=%s, uid=%s, validate=%s')>" % (self.uidNumber, self.uid, self.validate)
@@ -289,3 +294,12 @@ class Member():
     url += urllib.urlencode({'s':str(size)})
 
     return url
+
+  @property
+  def avatar(self):
+    try:
+      return base64.b64decode(self.jpegPhoto)
+    except:
+      import sys, traceback
+      traceback.print_exc(file=sys.stdout)
+      return None

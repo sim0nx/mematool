@@ -188,7 +188,8 @@ class LdapModelFactory(BaseModelFactory):
       if isinstance(a, bool):
         a = str(a).upper()
       else:
-        a = str(a.encode(encoding, 'ignore'))
+        if not encoding is None:
+          a = str(a.encode(encoding, 'ignore'))
 
       if oldmember and hasattr(oldmember, attribute) and not getattr(oldmember, attribute) is None and not getattr(oldmember, attribute) == '':
         if not a == getattr(oldmember, attribute):
@@ -315,6 +316,20 @@ class LdapModelFactory(BaseModelFactory):
       except:
         print sys.exc_info()[0]
         pass
+
+    return result
+
+  def updateAvatar(self, member, b64_jpg):
+    mod_attrs = []
+    om = self.getUser(member.uid)
+
+    member.jpegPhoto = b64_jpg
+    mod_attrs.append(self.prepareVolatileAttribute(member, om, 'jpegPhoto', encoding=None))
+
+    while None in mod_attrs:
+      mod_attrs.remove(None)
+
+    result = self.ldapcon.modify_s('uid=' + member.uid + ',' + self.cnf.get('ldap.basedn_users'), mod_attrs)
 
     return result
 

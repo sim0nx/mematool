@@ -37,6 +37,14 @@ def getFormVar(s, c, var):
       ${parent.all_messages()}
       <tr>
         <td class="table_title">
+          <a href="${url(controller='profile', action='editAvatar')}"><img src="${c.member.avatarUrl}" alt="${_('user profile image')}"></a>
+        </td>
+        <td>
+          &nbsp;
+        </td>
+      </tr>
+      <tr>
+        <td class="table_title">
           ${_('Username')}
         </td>
         <td>
