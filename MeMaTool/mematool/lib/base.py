@@ -235,3 +235,16 @@ class BaseController(WSGIController):
     s = smtplib.SMTP('localhost')
     s.sendmail(from_, [to_], msg.as_string())
     s.quit()
+
+  def avatarUrl(self, uid, size=20):
+    try:
+      member = self.lmf.getUser(uid)
+
+      if not member.jpegPhoto is None:
+        return url(controller='profile', action='getAvatar', member_id=uid)
+      else:
+        return member.getGravatar(size=size)
+    except:
+      pass
+
+    return ''
