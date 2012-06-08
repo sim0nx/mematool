@@ -35,6 +35,10 @@ from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
 from email.mime.text import MIMEText
+import PIL
+from PIL import Image
+import StringIO
+import base64
 
 
 class ProfileController(BaseController):
@@ -77,6 +81,7 @@ class ProfileController(BaseController):
         c.formDisabled = 'disabled'
 
       c.member = member
+      c.member.avatarUrl = self.avatarUrl(member.uid, size=180)
       c.groups = self.lmf.getUserGroupList(session['identity'])
 
       if member.fullMember:
@@ -218,3 +223,73 @@ class ProfileController(BaseController):
       set_lang(request.params['lang'])
 
     redirect(url(controller='members', action='showAllMembers'))
+
+  def _resizeImage(self, img):
+      try:
+        o_img = Image.open(img)
+        max_size = (240, 240)
+        o_img.thumbnail(max_size, Image.ANTIALIAS)
+
+        out = StringIO.StringIO()
+        o_img.save(out, format='jpeg', quality=75)
+
+        return base64.b64encode(out.getvalue())
+      except:
+        import sys, traceback
+        traceback.print_exc(file=sys.stdout)
+
+      return None
+
+  def editAvatar(self):
+    c.heading = _('Edit avatar')
+
+    try:
+      member = self.lmf.getUser(session['identity'])
+      member.avatarUrl = self.avatarUrl(member.uid, size=180)
+      c.member = member
+
+      return render('/profile/editAvatar.mako')
+
+    except LookupError:
+      print 'Edit :: No such user !'
+
+    return 'ERROR 4x0'
+
+  def doEditAvatar(self):
+    if not 'avatar' in request.POST or not len(request.POST['avatar'].value) > 0:
+      redirect(url(controller='profile', action='editAvatar'))
+
+    try:
+      img_param = request.POST['avatar'].file
+      img = self._resizeImage(img_param)
+      member = self.lmf.getUser(session['identity'])
+      self.lmf.updateAvatar(member, img)
+    except:
+      import sys, traceback
+      traceback.print_exc(file=sys.stdout)
+
+    redirect(url(controller='profile', action='editAvatar'))
+
+  def doDeleteAvatar(self):
+    try:
+      member = self.lmf.getUser(session['identity'])
+      self.lmf.updateAvatar(member, None)
+    except:
+      import sys, traceback
+      traceback.print_exc(file=sys.stdout)
+
+    redirect(url(controller='profile', action='editAvatar'))
+
+  def getAvatar(self):
+    if (not 'member_id' in request.params):
+      return '4x4 p0wer'
+
+    try:
+      member = self.lmf.getUser(request.params['member_id'])
+
+      if not member.jpegPhoto is None:
+        return member.avatar
+    except:
+      pass
+
+    return '4x4 p0wer'
