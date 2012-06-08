@@ -45,7 +45,7 @@
         %>
         <tr class="table_row"> 
           <td>${i}</td>
-          <td>${uid|n}</td>
+          <td><img src="${m.getGravatar()}" alt="${_('user profile image')}"> ${uid|n}</td>
           <td>${m.sn}</td>
           <td>${m.gn}</td>
           <td>${m.mail}</td>
