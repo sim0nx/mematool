@@ -26,6 +26,7 @@ from datetime import date
 from mematool.lib.base import Session
 from mematool.model import TmpMember
 
+import urllib
 import hashlib
 from binascii import b2a_base64, a2b_base64
 from mematool.lib.syn2cat import regex
@@ -276,3 +277,15 @@ class Member():
 
     raise InvalidParameterFormat(errors)
   ####################
+
+  def getGravatar(self, size=20):
+    mail = ''
+
+    if self.mail:
+      mail = self.mail
+
+    hashmail = hashlib.md5(mail.lower()).hexdigest()
+    url = "http://www.gravatar.com/avatar/" + hashmail + "?"
+    url += urllib.urlencode({'s':str(size)})
+
+    return url
