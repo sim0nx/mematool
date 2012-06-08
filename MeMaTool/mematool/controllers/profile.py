@@ -34,8 +34,6 @@ from mematool.lib.syn2cat.crypto import encodeAES
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
-from webob.exc import HTTPUnauthorized
-
 from email.mime.text import MIMEText
 
 
