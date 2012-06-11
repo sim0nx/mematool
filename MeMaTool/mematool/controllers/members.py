@@ -65,6 +65,7 @@ class MembersController(BaseController):
   def addMember(self):
     c.heading = _('Add member')
     c.mode = 'add'
+    c.groups = []
 
     return render('/members/editMember.mako')
 
