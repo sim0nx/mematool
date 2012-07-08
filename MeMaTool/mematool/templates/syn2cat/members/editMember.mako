@@ -29,7 +29,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
   ${parent.all_messages()}
   <tr>
     <td class="table_title">
-      ${_('Username')}
+      ${_('Username')} ${_('(3-20chars, alphanumeric only)')}
     </td>
     <td>
     % if c.mode is 'add':
