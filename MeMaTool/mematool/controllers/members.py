@@ -114,6 +114,8 @@ class MembersController(BaseController):
         for v in m.str_vars:
           setattr(m, v, request.params.get(v, ''))
 
+        m.uid = request.params['member_id']
+
         try:
           m.check()
         except InvalidParameterFormat as ipf:

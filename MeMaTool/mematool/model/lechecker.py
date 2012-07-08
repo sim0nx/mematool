@@ -90,7 +90,7 @@ class TypeChecker(object):
 
   @staticmethod
   def isParamBool(p):
-    if TypeChecker.isParamStr(p, 1, 1) and TypeChecker.isBool(p):
+    if TypeChecker.isParamStr(str(p), 1, 1) and TypeChecker.isBool(str(p)):
       return True
 
     return False
@@ -152,7 +152,7 @@ class ParamChecker(object):
   @staticmethod
   def checkUsername(fn, param=True, optional=False):
     return ParamChecker._baseCheckString(fn, _('Invalid username'), param=param,
-      max_len=64, optional=optional, regex=regex.username)
+      max_len=20, optional=optional, regex=regex.username)
 
   @staticmethod
   def checkString(fn, param=True, min_len=0, max_len=255, regex=None, optional=False):

@@ -160,6 +160,12 @@ class Member():
     checkOK = True
 
     try:
+      ParamChecker.checkUsername(self.uid, param=False)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid username'))
+
+    try:
       ParamChecker.checkString(self.sn, min_len=0, max_len=20, param=False)
     except InvalidParameterFormat as ipf:
       checkOK = False
