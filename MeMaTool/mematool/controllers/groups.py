@@ -52,9 +52,9 @@ class GroupsController(BaseController):
 
   def _sidebar(self):
     c.actions = list()
-    c.actions.append((_('Show all groups'), 'groups', 'listGroups'))
-    c.actions.append((_('Add Group'), 'groups', 'editGroup'))
-    c.actions.append((_('Members'), 'members', 'index'))
+    c.actions.append({'name' : _('Show all groups'), 'args' : {'controller' : 'groups', 'action' : 'listGroups'}})
+    c.actions.append({'name' : _('Add Group'), 'args' : {'controller' : 'groups', 'action' : 'editGroup'}})
+    c.actions.append({'name' : _('Members'), 'args' : {'controller' : 'members', 'action' : 'index'}})
 
   def index(self):
     if self.lmf.isUserInGroup(self.identity, 'office') or self.lmf.isUserInGroup(self.identity, 'sysops'):

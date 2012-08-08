@@ -10,23 +10,23 @@
         <th class="table_title">${_('Value')}</th>
       </tr>
       <tr class="table_row">
-        <td>All members</td>
+        <td>${_('All members')}</td>
         <td>${c.members}</td>
       </tr>
       <tr class="table_row">
-        <td>Active members</td>
+        <td>${_('Active members')}</td>
         <td>${c.activeMembers}</td>
       </tr>
       <tr class="table_row">
-        <td>Former  members</td>
+        <td>${_('Former members')}</td>
         <td>${c.formerMembers}</td>
       </tr>
       <tr class="table_row">
-        <td>Payments OK</td>
+        <td>${_('Payments OK')}</td>
         <td>${c.paymentsOk}</td>
       </tr>
       <tr class="table_row">
-        <td>Payments NOT OK</td>
+        <td>${_('Payments NOT OK')}</td>
         <td>${c.paymentsNotOk}</td>
       </tr>
     </table>

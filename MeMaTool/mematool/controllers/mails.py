@@ -36,6 +36,7 @@ from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 # Decorators
 from pylons.decorators import validate
 from pylons.decorators.rest import restrict
+from webhelpers.html.builder import literal
 
 import dateutil.parser
 import datetime
@@ -52,9 +53,9 @@ class MailsController(BaseController):
 
   def _sidebar(self):
     c.actions = list()
-    c.actions.append((_('Show all domains'), 'mails', 'listDomains'))
-    c.actions.append((_('Add domain'), 'mails', 'editDomain'))
-    c.actions.append((_('Add alias'), 'mails', 'editAlias'))
+    c.actions.append({'name' : _('Show all domains'), 'args' : {'controller' : 'mails', 'action' : 'listDomains'}})
+    c.actions.append({'name' : _('Add domain'), 'args' : {'controller' : 'mails', 'action' : 'editDomain'}})
+    c.actions.append({'name' : _('Add alias'), 'args' : {'controller' : 'mails', 'action' : 'editAlias'}})
 
   def index(self):
     if self.lmf.isUserInGroup(self.identity, 'office') or self.lmf.isUserInGroup(self.identity, 'sysops'):
@@ -214,7 +215,7 @@ class MailsController(BaseController):
         for m in alias.maildrop:
           if not maildrop == '':
             maildrop += '\n'
-          if not m == alias.dn_mail:
+          if not m == alias.dn_mail and not m in maildrop:
             maildrop += m
 
         c.maildrop = maildrop
@@ -227,6 +228,9 @@ class MailsController(BaseController):
       redirect(url(controller='mails', action='index'))
 
     c.heading = '%s alias' % (action)
+
+    onclick = literal("return confirm('Are you sure you want to delete \\'{0}\\'?')".format(request.params.get('alias')))
+    c.actions.append({'name' : _('Delete alias'), 'onclick' : onclick, 'args' : {'controller' : 'mails', 'action' : 'deleteAlias', 'alias' : request.params.get('alias')}})
 
     return render('/mails/editAlias.mako')
 

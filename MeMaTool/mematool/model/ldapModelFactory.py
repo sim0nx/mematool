@@ -296,6 +296,52 @@ class LdapModelFactory(BaseModelFactory):
 
     return result
 
+  def deleteUser(self, uid):
+    filter_ = '(uid=' + uid + ')'
+    attrs = ['*']
+    basedn = 'uid=' + str(uid) + ',' + str(self.cnf.get('ldap.basedn_users'))
+
+    result = self.ldapcon.search_s(basedn, ldap.SCOPE_SUBTREE, filter_, attrs)
+
+    if not result:
+      raise LookupError('No such user !')
+
+    # remove user from all groups
+    groups = self.getUserGroupList(uid)
+    for k in groups:
+      #print 'removing from group {0}'.format(k)
+      self.changeUserGroup(uid, k, False)
+
+    # try to auto-delete aliases
+    aliases = self.getMaildropList(uid)
+    for dn, attr in aliases.items():
+      if len(attr) > 1:
+        #print 'removing user {0} from alias {1}'.format(uid, dn)
+        self.deleteMaildrop(dn, uid)
+      else:
+        print 'can\'t remove user {0} from alias {1}'.format(uid, dn)
+
+    # finally, remove the user
+    result = self.ldapcon.delete_s(basedn)
+
+  def getUserList(self):
+    '''Get a list of all users belonging to the group "users" (gid-number = 100)
+    and having a uid-number >= 1000 and < 65000'''
+    filter = '(&(uid=*)(gidNumber=100))'
+    attrs = ['uid', 'uidNumber']
+    users = []
+
+    result = self.ldapcon.search_s(self.cnf.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs)
+
+    for dn, attr in result:
+      if int(attr['uidNumber'][0]) >= 1000 and int(attr['uidNumber'][0]) < 65000:
+        users.append(attr['uid'][0])
+
+    users.sort()
+
+    return users
+
+
   def changeUserGroup(self, uid, group, status):
     '''Change user/group membership'''
     '''@TODO check and fwd return value'''
@@ -590,6 +636,27 @@ class LdapModelFactory(BaseModelFactory):
 
     return aliases
 
+  def getMaildropList(self, uid):
+    '''This returns all aliases which have as maildrop the specified uid'''
+    filter_ = '(&(objectClass=mailAlias)(maildrop={0}))'.format(uid)
+    attrs = ['maildrop']
+    basedn = str(self.cnf.get('ldap.basedn'))
+    result = self.ldapcon.search_s(basedn, ldap.SCOPE_SUBTREE, filter_, attrs)
+
+    aliases = {}
+
+    if not result:
+      return aliases
+
+    for dn, attr in result:
+      if not dn in aliases:
+        aliases[dn] = []
+
+      for a in attr['maildrop']:
+        aliases[dn].append(a)
+
+    return aliases
+
   def addAlias(self, alias):
     try:
       oldalias = self.getAlias(alias.dn_mail)
@@ -692,7 +759,23 @@ class LdapModelFactory(BaseModelFactory):
       return True
 
     dn = alias.getDN(self.cnf.get('ldap.basedn')).encode('ascii', 'ignore')
+    print mod_attrs
+    print dn
+    from pylons import session
+    print session
+    
     result = self.ldapcon.modify_s(dn, mod_attrs)
+
+    if result is None:
+      return False
+
+    return True
+
+  def deleteMaildrop(self, alias, uid):
+    mod_attrs = []
+    mod_attrs.append((ldap.MOD_DELETE, 'maildrop', uid.encode('ascii', 'ignore')))
+
+    result = self.ldapcon.modify_s(alias, mod_attrs)
 
     if result is None:
       return False

@@ -57,8 +57,8 @@ class PaymentsController(BaseController):
 
   def _sidebar(self):
     c.actions = list()
-    c.actions.append((_('All payments'), 'payments', 'listPayments'))
-    c.actions.append((_('Outstanding payment'), 'payments', 'index'))
+    c.actions.append({'name' : _('All payments'), 'args' : {'controller' : 'payments', 'action' : 'listPayments'}})
+    c.actions.append({'name' : _('Outstanding payment'), 'args' : {'controller' : 'payments', 'action' : 'index'}})
 
   def index(self):
     if self.lmf.isUserInGroup(self.identity, 'office'):
@@ -319,6 +319,7 @@ class PaymentsController(BaseController):
       if (not 'member_id' in request.params):
         redirect(url(controller='members', action='index'))
       elif not self.isAdmin() and not request.params['member_id'] == self.identity or (request.params['member_id'] == self.identity and ParamChecker.checkInt('idPayment', param=True, optional=True)):
+        print 'checkPayment err0r::', str(self.isAdmin()), str(request.params['member_id']), str(self.identity), str(ParamChecker.checkInt('idPayment', param=True, optional=True))
         redirect(url(controller='error', action='forbidden'))
       else:
         formok = True

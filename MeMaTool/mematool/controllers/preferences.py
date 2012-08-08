@@ -49,8 +49,8 @@ class PreferencesController(BaseController):
 
   def _sidebar(self):
     c.actions = list()
-    c.actions.append((_('Profile'), 'profile', 'edit'))
-    c.actions.append((_('Payments'), 'payments', 'listPayments', session['identity']))
+    c.actions.append({'name' : _('Profile'), 'args' : {'controller' : 'profile', 'action' : 'edit'}})
+    c.actions.append({'name' : _('Payments'), 'args' : {'controller' : 'payments', 'action' : 'listPayments', 'uid' : session['identity']}})
 
   def index(self):
     return self.edit()

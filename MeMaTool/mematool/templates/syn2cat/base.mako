@@ -60,22 +60,14 @@
     <section id="main" class="span-24 prepend-top">
       
       <!-- sidebar !-->
-      % if hasattr(c, 'actions'):
+      % if hasattr(c, 'actions') and len(c.actions) > 0:
       <aside id="sidebar" class="span-4">
         <nav class="menu">
           <header class="sidebar-title">${_('Menu')}</header>
           <ul class="list-vertical">
-            % if len(c.actions) > 0:
-              % for k in c.actions:
-                % if len(k) == 4:
-            <li>${h.link_to(k[0], url(controller=k[1], action=k[2], member_id=k[3]))}</li>
-                % else:
-            <li>${h.link_to(k[0], url(controller=k[1], action=k[2]))}</li>
-                % endif
-              % endfor
-            % else:
-            <li>-</li>
-            % endif
+            % for l in c.actions:
+            <li>${h.link_to(l['name'], url(**l['args']), onclick=l.get('onclick', None))}</li>
+            % endfor
           </ul>
         </nav>
           

@@ -6,6 +6,7 @@
     <%include file="/pendingMemberValidations.mako" />
     <li><a href="${url(controller='members', action='exportList')}">${_('Export as CSV')}<img src="/images/icons/pencil.png"></a></li>
     <li><a href="${url(controller='members', action='exportList', listType='RCSL')}">${_('Export as RCSL CSV')}<img src="/images/icons/pencil.png"></a></li>
+    <li>${parent.error_messages()}</li>
     <li>
       <table class="table_content"> 
         ${parent.flash()}
@@ -26,9 +27,6 @@
             ${_('E-Mail')}
           </th>
           <th class="table_title">
-            ${_('PEAP')}
-          </th>
-          <th class="table_title">
             ${_('SSH')}
           </th>
           <th colspan="3" class="table_title">
@@ -38,7 +36,6 @@
         <% i = 0 %>
         % for m in c.members:
         <%
-          peapPossible = h.literal('<img src="/images/icons/notok.png">') if not m.sambaNTPassword  else h.literal('<img src="/images/icons/ok.png">')
           sshPublicKey = h.literal('<img src="/images/icons/notok.png">') if not m.sshPublicKey else h.literal('<img src="/images/icons/ok.png">')
           uid = '<font color="green"><b>' + m.uid + '</b></font>' if m.fullMember else '<font color="#0479FF">' + m.uid + '</font>'
           i += 1
@@ -49,10 +46,10 @@
           <td>${m.sn}</td>
           <td>${m.gn}</td>
           <td>${m.mail}</td>
-          <td>${peapPossible}</td>
           <td>${sshPublicKey}</td>
           <td><a href="${url(controller='members', action='editMember', member_id=m.uid)}"><img src="/images/icons/pencil.png"></a></td>
           <td><a href="${url(controller='payments', action='listPayments', member_id=m.uid)}"><img src="/images/icons/payment.png"></a></td>
+          <td><a href="${url(controller='members', action='deleteUser', member_id=m.uid)}" onClick="return confirm('Are you sure you want to delete \'${m.uid}\'?')"><img src="/images/icons/notok.png"></a></td>
           % if m.validate:
           <td><a href="${url(controller='members', action='viewDiff', member_id=m.uid)}">validation</a></td>
           % endif

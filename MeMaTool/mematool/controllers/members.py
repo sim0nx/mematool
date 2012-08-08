@@ -52,11 +52,11 @@ class MembersController(BaseController):
 
   def _sidebar(self):
     c.actions = list()
-    c.actions.append((_('Show all members'), 'members', 'showAllMembers'))
-    c.actions.append((_('Add member'), 'members', 'addMember'))
-    c.actions.append((_('Active members'), 'members', 'showActiveMembers'))
-    c.actions.append((_('Former members'), 'members', 'showFormerMembers'))
-    c.actions.append((_('Groups'), 'groups', 'index'))
+    c.actions.append({'name' : _('Show all members'), 'args' : {'controller' : 'members', 'action' : 'showAllMembers'}})
+    c.actions.append({'name' : _('Add member'), 'args' : {'controller' : 'members', 'action' : 'addMember'}})
+    c.actions.append({'name' : _('Active members'), 'args' : {'controller' : 'members', 'action' : 'showActiveMembers'}})
+    c.actions.append({'name' : _('Former members'), 'args' : {'controller' : 'members', 'action' : 'showFormerMembers'}})
+    c.actions.append({'name' : _('Groups'), 'args' : {'controller' : 'groups', 'action' : 'index'}})
 
   def index(self):
     return self.showAllMembers()
@@ -237,6 +237,8 @@ class MembersController(BaseController):
       return render('/members/viewAll.mako')
 
     except LookupError as e:
+      import sys, traceback
+      traceback.print_exc(file=sys.stdout)
       print 'Lookup error!'
       print e
       pass
@@ -380,3 +382,36 @@ class MembersController(BaseController):
       print 'No such user !'
 
     return 'ERROR 4x0'
+
+  @BaseController.needAdmin
+  def deleteUser(self):
+    try:
+      member_id = request.params.get('member_id')
+      self.lmf.deleteUser(member_id)
+
+      aliases = self.lmf.getMaildropList(member_id)
+      errors = ''
+      for dn, attr in aliases.items():
+        if errors == '':
+          errors = 'Could not auto-delete the following aliases:'
+
+        m = re.match(r'^mail=([^,]+),', dn)
+        if m:
+          alias = m.group(1)
+          url_ = url(controller='mails', action='editAlias', alias=alias)
+          errors += '\n<br/><a href="{0}" target="_blank">{1}</a>'.format(url_, alias)
+
+        if not errors == '':
+          if not 'errors' in session:
+            session['errors'] = []
+          session['errors'].append(literal(errors))
+
+      session['flash'] = _('User successfully deleted')
+      session.save()
+    except LookupError:
+      session['flash'] = _('Failed to delete user')
+      session.save()
+
+
+    # @TODO make much more noise !
+    redirect(url(controller='members', action='showAllMembers'))
