@@ -18,7 +18,7 @@
     <li><table class="table_content">
       ${parent.flash()}
       <tr>
-        <th class="table_title">${_('Date')}</th>
+        <th class="table_title">${_('Month')}</th>
         <th class="table_title">${_('Validated')}</th>
         <th class="table_title">${_('Status')}</th>
         <th class="table_title">${_('Tools')}</th>

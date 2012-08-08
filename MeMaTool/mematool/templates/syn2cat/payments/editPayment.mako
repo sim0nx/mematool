@@ -29,8 +29,8 @@ ${h.form(url(controller='payments', action='savePayment'), method='post', name='
 <table class="table_content" width="95%">
   ${parent.all_messages()}
         <tr>
-                <td class="table_title"><label for="date">${_('Date payed')}</label></td>
-    <td>${h.text('date', value=getFormVar(session, c, 'date'), class_='text')}(YYYY-MM-DD)</td>
+                <td class="table_title"><label for="date">${_('Month payed')}</label></td>
+    <td>${h.text('date', value=getFormVar(session, c, 'date'), class_='text')}(YYYY-MM-01)</td>
         </tr>
   <tr>
                 <td class="table_title"><label for="Status">${_('Status')}</label></td>
