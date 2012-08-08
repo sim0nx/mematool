@@ -204,7 +204,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
       ${_('iButton UID')}
     </td>
     <td>
-      ${h.text('iButtonUID', value=getFormVar(session, c, 'iButtonUID'), class_='text')}
+      ${h.text('iButtonUID', value=getFormVar(session, c, 'iButtonUID'), class_='text', autocomplete='off')}
     </td>
   </tr>
   <tr>
@@ -236,7 +236,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
       ${_('Password')} (min 8)
     </td>
     <td>
-      ${h.password('userPassword', value='', class_='text')}
+      ${h.password('userPassword', value='', class_='text', autocomplete='off')}
     </td>
   </tr>
   <tr>
@@ -244,7 +244,7 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
       ${_('Repeat Password')} (min 8)
     </td>
     <td>
-      ${h.password('userPassword2', value='', class_='text')}
+      ${h.password('userPassword2', value='', class_='text', autocomplete='off')}
     </td>
   </tr>
 </table>
