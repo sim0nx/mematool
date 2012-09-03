@@ -214,7 +214,7 @@ class MailsController(BaseController):
         for m in alias.maildrop:
           if not maildrop == '':
             maildrop += '\n'
-          if not m == alias.dn_mail:
+          if not m == alias.dn_mail and not m in maildrop:
             maildrop += m
 
         c.maildrop = maildrop
