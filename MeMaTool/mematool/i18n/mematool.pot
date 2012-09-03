@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MeMaTool 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-09-03 22:58+0200\n"
+"POT-Creation-Date: 2012-09-04 01:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -141,10 +141,12 @@ msgid "Add member"
 msgstr ""
 
 #: mematool/controllers/members.py:57
+#: mematool/templates/syn2cat/statistics/index.mako:17
 msgid "Active members"
 msgstr ""
 
 #: mematool/controllers/members.py:58
+#: mematool/templates/syn2cat/statistics/index.mako:21
 msgid "Former members"
 msgstr ""
 
@@ -161,6 +163,7 @@ msgid "Member details successfully edited"
 msgstr ""
 
 #: mematool/controllers/members.py:218
+#: mematool/templates/syn2cat/statistics/index.mako:13
 msgid "All members"
 msgstr ""
 
@@ -869,5 +872,13 @@ msgstr ""
 
 #: mematool/templates/syn2cat/statistics/index.mako:10
 msgid "Value"
+msgstr ""
+
+#: mematool/templates/syn2cat/statistics/index.mako:25
+msgid "Payments OK"
+msgstr ""
+
+#: mematool/templates/syn2cat/statistics/index.mako:29
+msgid "Payments NOT OK"
 msgstr ""
 

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mematool\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-09-03 22:58+0200\n"
+"POT-Creation-Date: 2012-09-04 01:19+0200\n"
 "PO-Revision-Date: 2012-09-03 20:55+0000\n"
 "Last-Translator: sim0n <sim0n@trypill.org>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/mematool/language/"
@@ -145,10 +145,12 @@ msgid "Add member"
 msgstr "Mitglied hinzufügen"
 
 #: mematool/controllers/members.py:57
+#: mematool/templates/syn2cat/statistics/index.mako:17
 msgid "Active members"
 msgstr "Aktive Mitglieder"
 
 #: mematool/controllers/members.py:58
+#: mematool/templates/syn2cat/statistics/index.mako:21
 msgid "Former members"
 msgstr "Ex-Mitglieder"
 
@@ -165,6 +167,7 @@ msgid "Member details successfully edited"
 msgstr "Mitglied Profil erfolgreich bearbeitet"
 
 #: mematool/controllers/members.py:218
+#: mematool/templates/syn2cat/statistics/index.mako:13
 msgid "All members"
 msgstr "Alle Mitglieder"
 
@@ -878,3 +881,13 @@ msgstr "Schlüssel"
 #: mematool/templates/syn2cat/statistics/index.mako:10
 msgid "Value"
 msgstr "Wert"
+
+#: mematool/templates/syn2cat/statistics/index.mako:25
+#, fuzzy
+msgid "Payments OK"
+msgstr "Zahlungen"
+
+#: mematool/templates/syn2cat/statistics/index.mako:29
+#, fuzzy
+msgid "Payments NOT OK"
+msgstr "Zahlungen"
