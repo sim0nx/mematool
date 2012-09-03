@@ -692,6 +692,11 @@ class LdapModelFactory(BaseModelFactory):
       return True
 
     dn = alias.getDN(self.cnf.get('ldap.basedn')).encode('ascii', 'ignore')
+    print mod_attrs
+    print dn
+    from pylons import session
+    print session
+    
     result = self.ldapcon.modify_s(dn, mod_attrs)
 
     if result is None:
