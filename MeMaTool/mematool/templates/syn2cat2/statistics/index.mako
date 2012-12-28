@@ -1,5 +1,7 @@
 <%inherit file="/base.mako" />
 
+<h3>${c.heading}</h3>
+
 <%include file="/pendingMemberValidations.mako" />
 <table class="table table-striped"> 
   <tr>
