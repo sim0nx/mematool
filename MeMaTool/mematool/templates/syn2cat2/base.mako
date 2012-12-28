@@ -5,11 +5,13 @@
   <meta charset="UTF-8">
   <!-- Stylesheets !-->
   <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen" type="text/css"/>
+  <link href="/css/mematool_bootstrap_custom.css" rel="stylesheet" media="screen" type="text/css"/>
   <!-- Website title !-->
   <title>syn2cat MeMaTool</title>
 </head>
 <body>
 
+<div id="wrap">
   <div class="container-fluid offset3">
     <div class="row-fluid" style="margin: 0 auto;">
       <div class="span10">
@@ -28,24 +30,23 @@
                 </a>
                 <div class="nav-collapse collapse navbar-inverse-collapse">
                   <div class="nav-collapse collapse">
+                    <ul class="nav">
                     % if session.has_key('identity'):
-                    <ul class="nav">
-                      <li><a href="#">${_('Dashboard')}</a></li>
-                        % if session['isFinanceAdmin'] or session['isAdmin']:
-                      <li>${h.link_to(_('Members'),url(controller='members', action='showAllMembers'))}</li>
-                        % endif
-                      <li>${h.link_to(_('Payments'),url(controller='payments', action='index'))}</li>
-                        % if session['isFinanceAdmin'] or session['isAdmin']:
-                      <li>${h.link_to(_('Statistics'),url(controller='statistics', action='index'))}</li>
-                      <li>${h.link_to(_('Mails'),url(controller='mails', action='index'))}</li>
-                        % endif
-                      <li>${h.link_to(_('Profile'),url(controller='profile', action='index'))}</li>
-                      <li>${h.link_to(_('Logout'),url(controller='auth', action='logout',id=None))}</li>
-                      % else:
-                      <li><a href="${url(controller='auth', action='login')}">Login</a></li>
-                    </ul>
+                      % if session['isFinanceAdmin'] or session['isAdmin']:
+                      <li class="">${h.link_to(_('Members'),url(controller='members', action='showAllMembers'))}</li>
+                      % endif
+                      <li class="">${h.link_to(_('Payments'),url(controller='payments', action='index'))}</li>
+                      % if session['isFinanceAdmin'] or session['isAdmin']:
+                      <li class="">${h.link_to(_('Statistics'),url(controller='statistics', action='index'))}</li>
+                      <li class="">${h.link_to(_('Mails'),url(controller='mails', action='index'))}</li>
+                      % endif
+                      <li class="">${h.link_to(_('Profile'),url(controller='profile', action='index'))}</li>
+                      <li class="">${h.link_to(_('Logout'),url(controller='auth', action='logout',id=None))}</li>
+                    % else:
+                      <li class=""><a href="${url(controller='auth', action='login')}">Login</a></li>
                     % endif
-                    <ul class="nav">
+                    </ul>
+                    <ul class="nav pull-right">
                       <li><a href="/profile/setLang?lang=en"><img src="/images/icons/flags/en.png" alt="en"/></a></li>
                       <li><a href="/profile/setLang?lang=lb"><img src="/images/icons/flags/lu.png" alt="lb"/></a></li>
                       <li><a href="/profile/setLang?lang=de"><img src="/images/icons/flags/de.png" alt="de"/></a></li>
@@ -86,6 +87,20 @@
       </div>
     </div>
   </div>
+  <div id="push"></div>
+</div>
+
+  <!-- footer !-->
+<div id="footer">
+  <div class="container-fluid offset3">
+    <div class="row-fluid" style="margin: 0 auto;">
+      <div class="span10">
+        MeMaTool (c) 2010-2012 Georges Toth
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- footer !-->
 </body>
 </html>
 
