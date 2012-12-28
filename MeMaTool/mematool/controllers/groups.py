@@ -50,7 +50,7 @@ class GroupsController(BaseController):
     super(GroupsController, self).__before__()
 
   def _sidebar(self):
-    super(MembersController, self)._sidebar()
+    super(GroupsController, self)._sidebar()
 
     c.actions.append({'name' : _('Show all groups'), 'args' : {'controller' : 'groups', 'action' : 'listGroups'}})
     c.actions.append({'name' : _('Add Group'), 'args' : {'controller' : 'groups', 'action' : 'editGroup'}})
