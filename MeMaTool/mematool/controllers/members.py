@@ -48,10 +48,10 @@ class MembersController(BaseController):
   @BaseController.needAdmin
   def __before__(self):
     super(MembersController, self).__before__()
-    self._sidebar()
 
   def _sidebar(self):
-    c.actions = list()
+    super(MembersController, self)._sidebar()
+
     c.actions.append({'name' : _('Show all members'), 'args' : {'controller' : 'members', 'action' : 'showAllMembers'}})
     c.actions.append({'name' : _('Add member'), 'args' : {'controller' : 'members', 'action' : 'addMember'}})
     c.actions.append({'name' : _('Active members'), 'args' : {'controller' : 'members', 'action' : 'showActiveMembers'}})

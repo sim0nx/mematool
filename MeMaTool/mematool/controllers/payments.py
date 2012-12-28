@@ -53,15 +53,15 @@ class PaymentsController(BaseController):
 
   def __before__(self, action, **param):
     super(PaymentsController, self).__before__()
-    self._sidebar()
 
   def _sidebar(self):
-    c.actions = list()
+    super(PaymentsController, self)._sidebar()
+
     c.actions.append({'name' : _('All payments'), 'args' : {'controller' : 'payments', 'action' : 'listPayments'}})
     c.actions.append({'name' : _('Outstanding payment'), 'args' : {'controller' : 'payments', 'action' : 'index'}})
 
   def index(self):
-    if self.lmf.isUserInGroup(self.identity, 'office'):
+    if self.isAdmin() or self.lmf.isUserInGroup(self.identity, 'office'):
       return self.showOutstanding()
 
     return redirect(url(controller='payments', action='listPayments', member_id=self.identity))
@@ -199,7 +199,7 @@ class PaymentsController(BaseController):
 
   def listPayments(self):
     """ Show a specific user's payments """
-    if (not 'member_id' in request.params):
+    if not 'member_id' in request.params:
       if not self.isAdmin() and not self.isFinanceAdmin():
         redirect(url(controller='error', action='forbidden'))
       else:
@@ -263,7 +263,7 @@ class PaymentsController(BaseController):
     # but only that the call sets a session variable
     self.isFinanceAdmin()
 
-    c.actions.append(('Add payment', 'payments', 'editPayment', request.params['member_id']))
+    c.actions.append({'name' : _('Add payment'), 'args' : {'controller' : 'payments', 'action' : 'editPayment', 'member_id' : request.params.get('member_id')}})
 
     return render('/payments/listPayments.mako')
 
@@ -309,7 +309,7 @@ class PaymentsController(BaseController):
       redirect(url(controller='members', action='index'))
 
     c.heading = _('%s payment for user %s') % (action, c.member_id)
-    c.actions.append(('List payments', 'payments', 'listPayments', request.params['member_id']))
+    c.actions.append({'name' : _('List payments'), 'args' : {'controller' : 'payments', 'action' : 'listPayments', 'member_id' : request.params.get('member_id')}})
 
     return render('/payments/editPayment.mako')
 

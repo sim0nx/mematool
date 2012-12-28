@@ -49,12 +49,12 @@ class ProfileController(BaseController):
 
   def __before__(self):
     super(ProfileController, self).__before__()
-    self._sidebar()
 
   def _sidebar(self):
-    c.actions = list()
+    super(ProfileController, self)._sidebar()
+
     c.actions.append({'name' : _('Preferences'), 'args' : {'controller' : 'preferences', 'action' : 'edit'}})
-    c.actions.append({'name' : _('Payments'), 'args' : {'controller' : 'payments', 'action' : 'listPayments', 'uid' : session['identity']}})
+    c.actions.append({'name' : _('Payments'), 'args' : {'controller' : 'payments', 'action' : 'listPayments', 'member_id' : session['identity']}})
 
   def index(self):
     return self.edit()

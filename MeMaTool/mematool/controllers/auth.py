@@ -51,7 +51,7 @@ class AuthController(BaseController):
     if self.identity is not None:
       redirect(url(controller='members', action='showAllMembers'))
 
-    c.heading = 'MeMaTool'
+    c.heading = 'MeMatool Login'
 
     return render('/auth/login.mako')
 

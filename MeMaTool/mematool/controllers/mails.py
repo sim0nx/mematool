@@ -49,10 +49,10 @@ class MailsController(BaseController):
 
   def __before__(self, action, **param):
     super(MailsController, self).__before__()
-    self._sidebar()
 
   def _sidebar(self):
-    c.actions = list()
+    super(MailsController, self)._sidebar()
+
     c.actions.append({'name' : _('Show all domains'), 'args' : {'controller' : 'mails', 'action' : 'listDomains'}})
     c.actions.append({'name' : _('Add domain'), 'args' : {'controller' : 'mails', 'action' : 'editDomain'}})
     c.actions.append({'name' : _('Add alias'), 'args' : {'controller' : 'mails', 'action' : 'editAlias'}})

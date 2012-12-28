@@ -22,7 +22,7 @@ Provides the BaseController class for subclassing.
 from pylons.controllers import WSGIController
 from pylons.controllers.util import abort, redirect
 from pylons.templating import render_mako as render
-from pylons import session, request, url, config
+from pylons import session, request, url, config, tmpl_context as c
 from pylons.i18n.translation import set_lang
 import logging
 
@@ -89,6 +89,8 @@ class BaseController(WSGIController):
         self.log.debug("setting session['after_login'] to %r", referer)
         session.save()
         redirect(url(controller='auth', action='login'))
+
+    self._sidebar()
 
   def _require_auth(self):
     return True
@@ -248,3 +250,6 @@ class BaseController(WSGIController):
       pass
 
     return ''
+
+  def _sidebar(self):
+    c.actions = []
