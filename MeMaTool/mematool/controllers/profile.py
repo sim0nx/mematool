@@ -68,10 +68,9 @@ class ProfileController(BaseController):
 
       if member.validate:
         tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
-        member.cn = tm.gn + ' ' + tm.sn
+        member.cn = '{0} {1}'.format(tm.gn, tm.sn)
         member.givenName = tm.gn
         member.sn = tm.sn
-        member.birthDate = tm.birthDate
         member.homePostalAddress = tm.homePostalAddress
         member.homePhone = tm.phone
         member.mobile = tm.mobile
@@ -118,7 +117,7 @@ class ProfileController(BaseController):
         formok = False
         errors += ipf.message
 
-      if 'userPassword' in request.params and len(request.params['userPassword']) > 0:
+      if not request.params.get('userPassword', '') == '' and request.params['userPassword'] == request.params['userPassword2']:
         try:
           ParamChecker.checkPassword('userPassword', 'userPassword2')
         except InvalidParameterFormat as ipf:
@@ -152,7 +151,6 @@ class ProfileController(BaseController):
 
       if request.params['sn'] != m.sn or\
         request.params['givenName'] != m.givenName or\
-        request.params['birthDate'] != m.birthDate or\
         request.params['homePostalAddress'] != m.homePostalAddress or\
         ('homePhone' in request.params and len(request.params['homePhone']) > 0 and request.params['homePhone'] != m.homePhone) or\
         request.params['mobile'] != m.mobile or\
@@ -164,15 +162,14 @@ class ProfileController(BaseController):
         tm = TmpMember(m.uidNumber)
         tm.sn = str(request.params['sn'].encode('utf-8'))
         tm.gn = str(request.params['givenName'].encode('utf-8'))
-        tm.birthDate = request.params['birthDate']
         tm.homePostalAddress = str(request.params['homePostalAddress'].encode('utf-8'))
 
-        if 'homePhone' not in request.params or (request.params['homePhone'] == '' and not m.homePhone is ''):
+        if request.params.get('homePhone', '') == '' and not m.homePhone == '':
           tm.phone = '>>REMOVE<<'
         else:
           tm.phone = request.params['homePhone']
 
-        if 'xmppID' not in request.params or (request.params['xmppID'] == '' and not m.xmppID is ''):
+        if request.params.get('xmppID', '') == '' and not m.xmppID == '':
           tm.xmppID = 'removed'
         else:
           tm.xmppID = request.params['xmppID']
@@ -191,7 +188,7 @@ class ProfileController(BaseController):
         session['flash'] = _('Nothing to save!')
         session['flash_class'] = 'info'
 
-      if 'userPassword' in request.params and 'userPassword2' in request.params and request.params['userPassword'] != '' and request.params['userPassword'] == request.params['userPassword2']:
+      if not request.params.get('userPassword', '') == '' and request.params['userPassword'] == request.params['userPassword2']:
         m.setPassword(request.params['userPassword'])
         self.lmf.saveMember(m, is_admin=False)
         session['secret'] = encodeAES(request.params['userPassword'])

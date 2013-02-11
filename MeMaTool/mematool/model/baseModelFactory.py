@@ -40,7 +40,7 @@ class BaseModelFactory(object):
     pass
 
   def getUsers(self):
-    '''Return a list of all member objects'''
+    '''Return a list of all user objects'''
     ul = self.getUserList()
     users = []
 

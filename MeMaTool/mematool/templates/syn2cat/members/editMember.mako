@@ -121,10 +121,10 @@ ${h.form(url(controller='members', action='doEditMember'), method='post', name='
   </tr>
   <tr>
     <td class="table_title">
-      ${_('Birth Date')} (YYYY-MM-DD)
+      ${_('Is minor')} (YYYY-MM-DD)
     </td>
     <td>
-      ${h.text('birthDate', value=getFormVar(session, c, 'birthDate'), class_='text')}
+      ${h.checkbox('isMinor', value='1', checked=getFormVar(session, c, 'isMinor'), class_='text')}
     </td>
   </tr>
   <tr>

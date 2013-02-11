@@ -73,7 +73,7 @@ class GroupsController(BaseController):
   @BaseController.needGroup('superadmins')
   def editGroup(self):
     # vary form depending on mode (do that over ajax)
-    if not 'gid' in request.params or request.params['gid'] == '':
+    if request.params.get('gid', '') == '':
       c.group = Group()
       action = 'Adding'
       c.gid = ''
@@ -100,13 +100,13 @@ class GroupsController(BaseController):
         print 'No such group!'
         redirect(url(controller='groups', action='index'))
 
-    c.heading = '%s group' % (action)
+    c.heading = '{0} group'.format(action)
 
     return render('/groups/editGroup.mako')
 
   def checkEdit(f):
     def new_f(self):
-      if (not 'gid' in request.params):
+      if not 'gid' in request.params:
         redirect(url(controller='groups', action='index'))
       else:
         formok = True

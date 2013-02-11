@@ -78,7 +78,7 @@ class LdapModelFactory(BaseModelFactory):
 
         if k == 'sambaSID' and v == '':
           v = None
-        elif k == 'spaceKey' or k == 'npoMember':
+        elif k in ['spaceKey', 'npoMember', 'isMinor']:
           if v.lower() == 'true':
             v = True
           else:
@@ -88,9 +88,9 @@ class LdapModelFactory(BaseModelFactory):
 
     m.groups = self.getUserGroupList(uid)
 
-    if config.get('mematool.group_fullmember') in m.groups:
+    if self.cnf.get('mematool.group_fullmember') in m.groups:
       m.fullMember = True
-    if config.get('mematool.group_lockedmember') in m.groups:
+    if self.cnf.get('mematool.group_lockedmember') in m.groups:
       m.lockedMember = True
 
     return m
@@ -117,7 +117,7 @@ class LdapModelFactory(BaseModelFactory):
     ausers = []
 
     for u in users:
-      if not self.isUserInGroup(u, config.get('mematool.group_lockedmember')):
+      if not self.isUserInGroup(u, self.cnf.get('mematool.group_lockedmember')):
         ausers.append(u)
 
     return ausers
@@ -220,7 +220,6 @@ class LdapModelFactory(BaseModelFactory):
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'gidNumber'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'loginShell'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homeDirectory'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'birthDate'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'arrivalDate'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'leavingDate'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'sshPublicKey'))
@@ -231,6 +230,7 @@ class LdapModelFactory(BaseModelFactory):
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'spaceKey'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'npoMember'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'nationality'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'isMinor'))
 
     if member.userPassword and member.userPassword != '':
       mod_attrs.append((ldap.MOD_REPLACE, 'userPassword', str(member.userPassword)))
@@ -242,8 +242,8 @@ class LdapModelFactory(BaseModelFactory):
 
     result = self.ldapcon.modify_s('uid=' + member.uid + ',' + self.cnf.get('ldap.basedn_users'), mod_attrs)
 
-    self.changeUserGroup(member.uid, config.get('mematool.group_fullmember'), member.fullMember)
-    self.changeUserGroup(member.uid, config.get('mematool.group_lockedmember'), member.lockedMember)
+    self.changeUserGroup(member.uid, self.cnf.get('mematool.group_fullmember'), member.fullMember)
+    self.changeUserGroup(member.uid, self.cnf.get('mematool.group_lockedmember'), member.lockedMember)
 
     return result
 
@@ -268,7 +268,6 @@ class LdapModelFactory(BaseModelFactory):
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'gidNumber'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'loginShell'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'homeDirectory'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'birthDate'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'arrivalDate'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'leavingDate'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sshPublicKey'))
@@ -283,6 +282,7 @@ class LdapModelFactory(BaseModelFactory):
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'uidNumber'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sambaSID'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sambaNTPassword'))
+    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'isMinor'))
 
     while None in mod_attrs:
       mod_attrs.remove(None)
@@ -291,8 +291,8 @@ class LdapModelFactory(BaseModelFactory):
     dn = dn.encode('ascii', 'ignore')
     result = self.ldapcon.add_s(dn, mod_attrs)
 
-    self.changeUserGroup(member.uid, config.get('mematool.group_fullmember'), member.fullMember)
-    self.changeUserGroup(member.uid, config.get('mematool.group_lockedmember'), member.lockedMember)
+    self.changeUserGroup(member.uid, self.cnf.get('mematool.group_fullmember'), member.fullMember)
+    self.changeUserGroup(member.uid, self.cnf.get('mematool.group_lockedmember'), member.lockedMember)
 
     return result
 
@@ -323,24 +323,6 @@ class LdapModelFactory(BaseModelFactory):
 
     # finally, remove the user
     result = self.ldapcon.delete_s(basedn)
-
-  def getUserList(self):
-    '''Get a list of all users belonging to the group "users" (gid-number = 100)
-    and having a uid-number >= 1000 and < 65000'''
-    filter = '(&(uid=*)(gidNumber=100))'
-    attrs = ['uid', 'uidNumber']
-    users = []
-
-    result = self.ldapcon.search_s(self.cnf.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs)
-
-    for dn, attr in result:
-      if int(attr['uidNumber'][0]) >= 1000 and int(attr['uidNumber'][0]) < 65000:
-        users.append(attr['uid'][0])
-
-    users.sort()
-
-    return users
-
 
   def changeUserGroup(self, uid, group, status):
     '''Change user/group membership'''
@@ -696,6 +678,7 @@ class LdapModelFactory(BaseModelFactory):
     return False
 
   def updateAlias(self, alias):
+    # @FIXME https://github.com/sim0nx/mematool/issues/1
     oldalias = self.getAlias(alias.dn_mail)
     mod_attrs = []
 

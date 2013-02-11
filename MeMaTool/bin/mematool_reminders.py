@@ -124,7 +124,6 @@ def getOutstanding(lmf):
       ''' Don't care if there is no payment '''
       pass
 
-
     m = lmf.getUser(uid)
 
     if last_payment:
@@ -157,9 +156,9 @@ config_global = ConfigParser.RawConfigParser()
 config_global.read('/home/sim0n/MeMaTool/MeMaTool/production.ini')
 cnf = {}
 cnf['mematool'] = {}
-cnf['ldap.basedn_users'] = config_global.get('app:main', 'ldap.basedn_users')
-cnf['ldap.basedn_groups'] = config_global.get('app:main', 'ldap.basedn_groups')
-cnf['ldap.server'] = config_global.get('app:main', 'ldap.server')
+
+for k, v in config_global.items('app:main'):
+  cnf[k] = v
 
 db_url = config_global.get('app:main', 'sqlalchemy.url')
 __all__ = ['Session']

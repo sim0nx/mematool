@@ -59,14 +59,6 @@ ${_('Please carefully review the changes and accept only valid data.')}
         </tr>
         <tr>
           <td class="table_title">
-            ${_('Birth Date')} (YYYY-MM-DD)
-          </td>
-          <td>
-            ${c.member.birthDate}
-          </td>
-        </tr>
-        <tr>
-          <td class="table_title">
             ${_('Address')}
           </td>
           <td>
@@ -148,14 +140,6 @@ ${_('Please carefully review the changes and accept only valid data.')}
           </td>
           <td>
             ${c.tmpmember.gn}
-          </td>
-        </tr>
-        <tr>
-          <td class="table_title">
-            ${_('Birth Date')} (YYYY-MM-DD)
-          </td>
-          <td>
-            ${c.tmpmember.birthDate}
           </td>
         </tr>
         <tr>

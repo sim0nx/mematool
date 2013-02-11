@@ -123,14 +123,6 @@ def getFormVar(s, c, var):
       </tr>
       <tr>
         <td class="table_title">
-          ${_('Birth Date')} (YYYY-MM-DD)
-        </td>
-        <td>
-          <input type="text" name="birthDate" value="${getFormVar(session, c, 'birthDate')}" class="text" ${c.formDisabled}>
-        </td>
-      </tr>
-      <tr>
-        <td class="table_title">
           ${_('Address')}
         </td>
         <td>
