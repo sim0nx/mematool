@@ -696,6 +696,7 @@ class LdapModelFactory(BaseModelFactory):
     return False
 
   def updateAlias(self, alias):
+    # @FIXME https://github.com/sim0nx/mematool/issues/1
     oldalias = self.getAlias(alias.dn_mail)
     mod_attrs = []
 
