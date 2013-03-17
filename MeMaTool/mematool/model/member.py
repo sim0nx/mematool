@@ -56,7 +56,6 @@ class Member():
     'gidNumber',
     'loginShell',
     'hDirectory',
-    'birthDate',
     'homePostalAddress',
     'arrivalDate',
     'leavingDate',
@@ -65,7 +64,8 @@ class Member():
   bool_vars = ['fullMember',
     'lockedMember',
     'spaceKey',
-    'npoMember']
+    'npoMember',
+    'isMinor']
   bin_vars = ['jpegPhoto']
 
   '''
@@ -88,13 +88,13 @@ class Member():
   gidNumber = '' # group id (gidNumber)
   loginShell = '' # login shell
   homeDirectory = '' # homeDirectory
-  birthDate = '' # birthDate
   homePostalAddress = '' # homePostalAddress
   arrivalDate = '' # member since
   leavingDate = '' # membership canceled
   groups = [] # additional user groups
   fullMember = False
   lockedMember = False
+  isMinor = False
   '''
 
   def __init__(self):
@@ -178,16 +178,17 @@ class Member():
       errors.append(_('Invalid given name'))
 
     try:
-      ParamChecker.checkDate(self.birthDate, param=False)
-    except InvalidParameterFormat as ipf:
-      checkOK = False
-      errors.append(_('Invalid birth date'))
-
-    try:
       ParamChecker.checkString(self.homePostalAddress, min_len=0, max_len=255, param=False)
     except InvalidParameterFormat as ipf:
       checkOK = False
       errors.append(_('Invalid address'))
+
+    '''optional'''
+    try:
+      ParamChecker.checkBool(self.isMinor, param=False, optional=True)
+    except InvalidParameterFormat as ipf:
+      checkOK = False
+      errors.append(_('Invalid selection for "is minor"'))
 
     '''optional'''
     try:
@@ -196,8 +197,9 @@ class Member():
       checkOK = False
       errors.append(ipf.message)
 
+    '''optional'''
     try:
-      ParamChecker.checkPhone(self.mobile, param=False)
+      ParamChecker.checkPhone(self.mobile, param=False, optional=True)
     except InvalidParameterFormat as ipf:
       checkOK = False
       errors.append(_('Invalid mobile number'))
@@ -248,9 +250,8 @@ class Member():
       checkOK = False
       errors.append(ipf.message)
 
-    '''optional'''
     try:
-      ParamChecker.checkUsername(self.conventionSigner, param=False, optional=True)
+      ParamChecker.checkUsername(self.conventionSigner, param=False)
     except InvalidParameterFormat as ipf:
       checkOK = False
       errors.append(_('Invalid convention signer'))
@@ -276,9 +277,8 @@ class Member():
       checkOK = False
       errors.append(_('Invalid NPO-Member value'))
 
-    '''optional'''
     try:
-      ParamChecker.checkCountryCode(self.nationality, param=False, optional=True)
+      ParamChecker.checkCountryCode(self.nationality, param=False)
     except InvalidParameterFormat as ipf:
       checkOK = False
       errors.append(_('Invalid nationality'))

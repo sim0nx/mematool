@@ -195,6 +195,11 @@ class MembersController(BaseController):
       else:
         member.npoMember = False
 
+      if 'isMinor' in request.params:
+        member.isMinor = True
+      else:
+        member.isMinor = False
+
       member.nationality = member.nationality.upper()
 
       if request.params['mode'] == 'edit':
@@ -294,7 +299,6 @@ class MembersController(BaseController):
         member.cn = tm.gn + ' ' + tm.sn
         member.givenName = tm.gn
         member.sn = tm.sn
-        member.birthDate = tm.birthDate
         member.homePostalAddress = tm.homePostalAddress
         member.homePhone = tm.phone
         member.mobile = tm.mobile

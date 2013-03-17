@@ -78,7 +78,7 @@ class LdapModelFactory(BaseModelFactory):
 
         if k == 'sambaSID' and v == '':
           v = None
-        elif k == 'spaceKey' or k == 'npoMember':
+        elif k in ['spaceKey', 'npoMember', 'isMinor']:
           if v.lower() == 'true':
             v = True
           else:
@@ -220,7 +220,6 @@ class LdapModelFactory(BaseModelFactory):
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'gidNumber'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'loginShell'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homeDirectory'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'birthDate'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'arrivalDate'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'leavingDate'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'sshPublicKey'))
@@ -231,6 +230,7 @@ class LdapModelFactory(BaseModelFactory):
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'spaceKey'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'npoMember'))
       mod_attrs.append(self.prepareVolatileAttribute(member, om, 'nationality'))
+      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'isMinor'))
 
     if member.userPassword and member.userPassword != '':
       mod_attrs.append((ldap.MOD_REPLACE, 'userPassword', str(member.userPassword)))
@@ -268,7 +268,6 @@ class LdapModelFactory(BaseModelFactory):
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'gidNumber'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'loginShell'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'homeDirectory'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'birthDate'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'arrivalDate'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'leavingDate'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sshPublicKey'))
@@ -283,6 +282,7 @@ class LdapModelFactory(BaseModelFactory):
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'uidNumber'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sambaSID'))
     mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sambaNTPassword'))
+    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'isMinor'))
 
     while None in mod_attrs:
       mod_attrs.remove(None)

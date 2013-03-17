@@ -30,7 +30,6 @@ class TmpMember(Base):
   id = Column(Integer, primary_key=True)
   gn = Column(Unicode(60))
   sn = Column(Unicode(60))
-  birthDate = Column(Unicode(10))
   homePostalAddress = Column(Unicode(255))
   phone = Column(Unicode(30))
   mobile = Column(Unicode(30))
@@ -41,4 +40,4 @@ class TmpMember(Base):
     self.id = uidNumber
 
   def __str__(self):
-    return "<TmpMember('id=%d, gn=%s', sn=%s, birthDate=%s, homePostalAddress=%s, phone=%s, mobile=%s, mail=%s, xmppID=%s)>" % (self.id, self.gn, self.sn, self.birthDate, self.homePostalAddress, self.phone, self.mobile, self.mail, self.xmppID)
+    return "<TmpMember('id=%d, gn=%s', sn=%s, homePostalAddress=%s, phone=%s, mobile=%s, mail=%s, xmppID=%s)>" % (self.id, self.gn, self.sn, self.homePostalAddress, self.phone, self.mobile, self.mail, self.xmppID)

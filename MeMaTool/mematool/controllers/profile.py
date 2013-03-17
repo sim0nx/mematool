@@ -71,7 +71,6 @@ class ProfileController(BaseController):
         member.cn = tm.gn + ' ' + tm.sn
         member.givenName = tm.gn
         member.sn = tm.sn
-        member.birthDate = tm.birthDate
         member.homePostalAddress = tm.homePostalAddress
         member.homePhone = tm.phone
         member.mobile = tm.mobile
@@ -152,7 +151,6 @@ class ProfileController(BaseController):
 
       if request.params['sn'] != m.sn or\
         request.params['givenName'] != m.givenName or\
-        request.params['birthDate'] != m.birthDate or\
         request.params['homePostalAddress'] != m.homePostalAddress or\
         ('homePhone' in request.params and len(request.params['homePhone']) > 0 and request.params['homePhone'] != m.homePhone) or\
         request.params['mobile'] != m.mobile or\
@@ -164,7 +162,6 @@ class ProfileController(BaseController):
         tm = TmpMember(m.uidNumber)
         tm.sn = str(request.params['sn'].encode('utf-8'))
         tm.gn = str(request.params['givenName'].encode('utf-8'))
-        tm.birthDate = request.params['birthDate']
         tm.homePostalAddress = str(request.params['homePostalAddress'].encode('utf-8'))
 
         if 'homePhone' not in request.params or (request.params['homePhone'] == '' and not m.homePhone is ''):

@@ -10,11 +10,11 @@ def getFormVar(s, c, var):
     if var in vars(c.member):
       return vars(c.member)[var]
 
-  if var is 'gidNumber':
+  if var == 'gidNumber':
     return 100
-  elif var is 'loginShell':
+  elif var == 'loginShell':
     return '/bin/false'
-  elif var is 'homeDirectory':
+  elif var == 'homeDirectory':
     return '/home/'
 
   return ''
@@ -101,9 +101,9 @@ def getFormVar(s, c, var):
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label">${_('Birth Date')} (YYYY-MM-DD)</label>
+    <label class="control-label">${_('Is minor')}</label>
     <div class="controls">
-    ${h.text('birthDate', value=getFormVar(session, c, 'birthDate'), class_='text')}
+    ${h.checkbox('isMinor', value='1', checked=getFormVar(session, c, 'isMinor'), class_='text')}
     </div>
   </div>
   <div class="control-group">
