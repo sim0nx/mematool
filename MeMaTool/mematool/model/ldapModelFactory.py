@@ -324,24 +324,6 @@ class LdapModelFactory(BaseModelFactory):
     # finally, remove the user
     result = self.ldapcon.delete_s(basedn)
 
-  def getUserList(self):
-    '''Get a list of all users belonging to the group "users" (gid-number = 100)
-    and having a uid-number >= 1000 and < 65000'''
-    filter = '(&(uid=*)(gidNumber=100))'
-    attrs = ['uid', 'uidNumber']
-    users = []
-
-    result = self.ldapcon.search_s(self.cnf.get('ldap.basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs)
-
-    for dn, attr in result:
-      if int(attr['uidNumber'][0]) >= 1000 and int(attr['uidNumber'][0]) < 65000:
-        users.append(attr['uid'][0])
-
-    users.sort()
-
-    return users
-
-
   def changeUserGroup(self, uid, group, status):
     '''Change user/group membership'''
     '''@TODO check and fwd return value'''

@@ -162,7 +162,7 @@ class PaymentsController(BaseController):
     """ Show which users still need to pay their membership fees and if a reminder has already been sent """
 
     showAll = False
-    if 'showAll' in request.params and request.params['showAll'] == '1':
+    if request.params.get('showAll', '') == '1':
       showAll = True
 
     activeMembers = self.lmf.getActiveMemberList()
@@ -269,7 +269,7 @@ class PaymentsController(BaseController):
 
   def editPayment(self):
     """ Add or edit a payment to/of a specific user """
-    if not 'member_id' in request.params or request.params['member_id'] == '':
+    if request.params.get('member_id', '') == '':
       redirect(url(controller='members', action='index'))
     elif not self.isAdmin() and not request.params['member_id'] == self.identity:
       redirect(url(controller='error', action='forbidden'))
@@ -280,7 +280,7 @@ class PaymentsController(BaseController):
     c.status_2 = False
 
     # vary form depending on mode (do that over ajax)
-    if not 'idPayment' in request.params or request.params['idPayment'] == '0':
+    if request.params.get('idPayment', '0') == '0':
       c.payment = Payment()
       action = 'Adding'
 
@@ -316,7 +316,7 @@ class PaymentsController(BaseController):
   def checkPayment(f):
     def new_f(self):
       # @TODO request.params may contain multiple values per key... test & fix
-      if (not 'member_id' in request.params):
+      if not 'member_id' in request.params:
         redirect(url(controller='members', action='index'))
       elif not self.isAdmin() and not request.params['member_id'] == self.identity or (request.params['member_id'] == self.identity and ParamChecker.checkInt('idPayment', param=True, optional=True)):
         print 'checkPayment err0r::', str(self.isAdmin()), str(request.params['member_id']), str(self.identity), str(ParamChecker.checkInt('idPayment', param=True, optional=True))

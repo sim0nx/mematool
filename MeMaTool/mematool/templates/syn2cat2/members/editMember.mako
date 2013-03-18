@@ -46,28 +46,8 @@ def getFormVar(s, c, var):
     <label class="control-label">${_('Additional groups')}</label>
     <div class="controls">
       ${h.checkbox('full_member', value='1', checked=getFormVar(session, c, 'full_member'), class_='text')}${_('full member')}<br>
-      ${h.checkbox('locked_member', value='1', checked=getFormVar(session, c, 'locked_member'), class_='text')}${_('locked member')}
-
-        <%
-          i = 0
-          first = True
-        %>
-        % if len(c.groups) > 0:
-        <br><br>
-          % for g in c.groups:
-            % if i == 4:
-        <br>
-              <% i = 0 %>
-            % endif
-            % if first:
-            <% first = False %>
-            % else:
-        ,
-            % endif
-        ${g}
-            <% i += 1 %>
-          % endfor
-        % endif
+      ${h.checkbox('locked_member', value='1', checked=getFormVar(session, c, 'locked_member'), class_='text')}${_('locked member')}<br><br>
+      ${', '.join(c.member.groups)}
     </div>
   </div>
   <div class="control-group">

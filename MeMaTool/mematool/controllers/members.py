@@ -80,7 +80,6 @@ class MembersController(BaseController):
       c.mode = 'edit'
 
       c.member = member
-      c.groups = self.lmf.getUserGroupList(request.params['member_id'])
 
       if member.fullMember:
         c.member.full_member = 'checked'
@@ -122,8 +121,7 @@ class MembersController(BaseController):
           formok = False
           errors += ipf.message
 
-        if (request.params['mode'] == 'add') or\
-          ('userPassword' in request.params and len(request.params['userPassword']) > 0):
+        if request.params['mode'] == 'add' or not request.params.get('userPassword', '') == '':
           try:
             ParamChecker.checkPassword('userPassword', 'userPassword2')
           except InvalidParameterFormat as ipf:
@@ -156,7 +154,6 @@ class MembersController(BaseController):
   def doEditMember(self):
     try:
       if request.params['mode'] == 'edit':
-        #member = Member(request.params['member_id'])
         member = self.lmf.getUser(request.params['member_id'])
       else:
         member = Member()
@@ -167,12 +164,11 @@ class MembersController(BaseController):
           setattr(member, v, request.params.get(v).lstrip(' ').rstrip(' '))
 
       # @TODO review: for now we don't allow custom GIDs
-      #member.gidNumber = request.params['gidNumber']
       member.gidNumber = '100'
       member.cn = member.givenName + ' ' + member.sn
       member.homeDirectory = '/home/' + request.params['member_id']
 
-      if 'userPassword' in request.params and 'userPassword2' in request.params and request.params['userPassword'] != '' and request.params['userPassword'] == request.params['userPassword2']:
+      if not request.params.get('userPassword', '') == '' and request.params['userPassword'] == request.params['userPassword2']:
         member.setPassword(request.params['userPassword'])
 
       if 'full_member' in request.params:
@@ -227,10 +223,8 @@ class MembersController(BaseController):
 
       # make sure to clean out some vars
       for m in members:
-        if m.sambaNTPassword != '':
-          m.sambaNTPassword = '******'
-        if m.userPassword != '':
-          m.userPassword = '******'
+        m.sambaNTPassword = '******'
+        m.userPassword = '******'
 
         if _filter == 'active' and not m.lockedMember:
           c.members.append(m)
@@ -259,10 +253,8 @@ class MembersController(BaseController):
 
       # make sure to clean out some vars
       for m in members:
-        if m.sambaNTPassword != '':
-          m.sambaNTPassword = '******'
-        if m.userPassword != '':
-          m.userPassword = '******'
+        m.sambaNTPassword = '******'
+        m.userPassword = '******'
 
         if not m.lockedMember:
           c.members.append(m)
@@ -296,7 +288,7 @@ class MembersController(BaseController):
 
       if member.validate:
         tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
-        member.cn = tm.gn + ' ' + tm.sn
+        member.cn = '{0} {1}'.format(tm.gn, tm.sn)
         member.givenName = tm.gn
         member.sn = tm.sn
         member.homePostalAddress = tm.homePostalAddress
@@ -367,7 +359,7 @@ class MembersController(BaseController):
     self.sendMail(member_mail, subject, body)
 
   def viewDiff(self):
-    if (not 'member_id' in request.params):
+    if not 'member_id' in request.params:
       redirect(url(controller='members', action='showAllMembers'))
 
     try:
