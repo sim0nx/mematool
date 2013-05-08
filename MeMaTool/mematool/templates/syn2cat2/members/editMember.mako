@@ -27,14 +27,14 @@ def getFormVar(s, c, var):
   <div class="control-group">
     <label class="control-label">${_('Username')} ${_('(3-20chars, lowercase, alphanumeric only)')}</label>
     <div class="controls">
-    % if c.mode is 'add':
+    % if c.mode == 'add':
     ${h.text('member_id', value=getFormVar(session, c, 'member_id'), class_='text')}
     % else:
     ${c.member.uid}
     % endif
     </div>
   </div>
-  % if c.mode is 'edit':
+  % if c.mode == 'edit':
   <div class="control-group">
     <label class="control-label">${_('User ID')}</label>
     <div class="controls">
@@ -47,7 +47,9 @@ def getFormVar(s, c, var):
     <div class="controls">
       ${h.checkbox('full_member', value='1', checked=getFormVar(session, c, 'full_member'), class_='text')}${_('full member')}<br>
       ${h.checkbox('locked_member', value='1', checked=getFormVar(session, c, 'locked_member'), class_='text')}${_('locked member')}<br><br>
+      % if c.mode == 'edit':
       ${', '.join(c.member.groups)}
+      % endif
     </div>
   </div>
   <div class="control-group">
@@ -183,7 +185,7 @@ def getFormVar(s, c, var):
     </div>
   </div>
 
-% if c.mode is 'edit':
+% if c.mode == 'edit':
 ${h.hidden('member_id', value=c.member.uid)}
 % endif
 ${h.hidden('mode', value=c.mode)}
