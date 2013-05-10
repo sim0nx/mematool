@@ -155,7 +155,7 @@ def getFormVar(s, c, var):
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label">${_('Is NPO member')}</label>
+    <label class="control-label">${_('Export to RCSL')}</label>
     <div class="controls">
     ${h.checkbox('npoMember', value='1', checked=getFormVar(session, c, 'npoMember'), class_='text')}
     </div>
