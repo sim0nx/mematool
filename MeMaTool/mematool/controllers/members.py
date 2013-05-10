@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -288,7 +289,7 @@ class MembersController(BaseController):
 
       if member.validate:
         tm = Session.query(TmpMember).filter(TmpMember.id == member.uidNumber).first()
-        member.cn = '{0} {1}'.format(tm.gn, tm.sn)
+        member.cn = u'{0} {1}'.format(tm.gn, tm.sn)
         member.givenName = tm.gn
         member.sn = tm.sn
         member.homePostalAddress = tm.homePostalAddress
