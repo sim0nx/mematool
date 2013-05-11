@@ -32,8 +32,8 @@ ${h.end_form()}
     <tr class="table_row">
       <td>${i}</td>
       <td><a href="${url(controller='members', action='editMember', member_id=m.uid)}">${m.uid}</a></td>
-      <td>${m.sn}</td>
-      <td>${m.gn}</td>
+      <td>${m.sn.decode('utf-8')}</td>
+      <td>${m.gn.decode('utf-8')}</td>
       <td>${m.mail}</td>
       <td>${paymentGood}</td>
       <td><a href="${url(controller='payments', action='listPayments', member_id=m.uid)}">${_('payments')}</a></td>

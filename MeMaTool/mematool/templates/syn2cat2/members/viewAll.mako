@@ -29,8 +29,8 @@ ${parent.error_messages()}
   <tr class="table_row"> 
     <td>${i}</td>
     <td><img src="${m.getGravatar()}" alt="${_('user profile image')}"> ${uid|n}</td>
-    <td>${m.sn}</td>
-    <td>${m.gn}</td>
+    <td>${m.sn.decode('utf-8')}</td>
+    <td>${m.gn.decode('utf-8')}</td>
     <td>${m.mail}</td>
     <td>${sshPublicKey}</td>
     <td><a href="${url(controller='members', action='editMember', member_id=m.uid)}"><img src="/images/icons/pencil.png"></a></td>
