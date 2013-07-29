@@ -293,7 +293,13 @@ class MembersController(BaseController):
         member.givenName = tm.gn
         member.sn = tm.sn
         member.homePostalAddress = tm.homePostalAddress
-        member.homePhone = tm.phone
+
+        # @FIXME fix this nasty workaround
+        if not tm.phone == '>>REMOVE<<':
+          member.homePhone = tm.phone
+        else:
+          member.homePhone = ''
+
         member.mobile = tm.mobile
         member.mail = tm.mail
         member.xmppID = tm.xmppID

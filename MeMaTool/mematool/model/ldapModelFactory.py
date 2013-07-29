@@ -193,6 +193,8 @@ class LdapModelFactory(BaseModelFactory):
           a = str(a.encode(encoding, 'ignore'))
 
       if oldmember and hasattr(oldmember, attribute) and not getattr(oldmember, attribute) is None and not getattr(oldmember, attribute) == '':
+        # @FIXME UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal
+        #   if not a == getattr(oldmember, attribute):
         if not a == getattr(oldmember, attribute):
           retVal = (ldap.MOD_REPLACE, attribute, a)
       else:
