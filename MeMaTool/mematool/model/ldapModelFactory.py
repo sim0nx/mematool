@@ -54,9 +54,17 @@ class LdapModelFactory(BaseModelFactory):
       self.ldapcon = self.cnf['mematool']['ldapcon']
 
   def close(self):
+    '''Close LDAP connection'''
     self.ldapcon = None
 
   def getUser(self, uid):
+    '''
+    Return a Member object populated with it's attributes loaded from LDAP
+    
+    :param uid: LDAP UID
+    :type uid: string
+    :returns: Member
+    '''
     filter_ = '(uid=' + uid + ')'
     attrs = ['*']
     basedn = 'uid=' + str(uid) + ',' + str(self.cnf.get('ldap.basedn_users'))
