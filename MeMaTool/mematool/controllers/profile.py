@@ -164,6 +164,7 @@ class ProfileController(BaseController):
         tm.gn = str(request.params['givenName'].encode('utf-8'))
         tm.homePostalAddress = str(request.params['homePostalAddress'].encode('utf-8'))
 
+        # @TODO make this more consistent
         if request.params.get('homePhone', '') == '' and not m.homePhone == '':
           tm.phone = '>>REMOVE<<'
         else:
