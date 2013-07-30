@@ -28,7 +28,7 @@ from mematool.lib.base import BaseController, render, Session
 from mematool.model import Payment
 
 from mematool.model.ldapModelFactory import LdapModelFactory
-from mematool.model.lechecker import ParamChecker
+from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import and_, or_
 from datetime import date, datetime
@@ -277,10 +277,13 @@ class PaymentsController(BaseController):
       c.payment = Payment()
       action = 'Adding'
 
-      if 'year' in request.params and 'month' in request.params and\
-        IsInt(request.params['year']) and int(request.params['year']) > 1970 and int(request.params['year']) < 2222 and\
-        IsInt(request.params['month']) and int(request.params['month']) >= 1 and int(request.params['month']) <= 12:
+      try:
+        ParamChecker.checkYear('year', param=True)
+        ParamChecker.checkMonth('month', param=True)
         c.date = str(date(int(request.params['year']), int(request.params['month']), 1))
+      except:
+        '''Don't care ... just let the user enter a new date'''
+        pass
 
     elif not request.params['idPayment'] == '' and IsInt(request.params['idPayment']) and int(request.params['idPayment']) > 0:
       action = 'Editing'
