@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -18,24 +19,20 @@
 
 import logging
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import request, session, tmpl_context as c, url
 from pylons.controllers.util import redirect
 from pylons import config
 from pylons.i18n.translation import _, set_lang
 
 from mematool.lib.base import BaseController, render, Session
-from mematool.model import Member, TmpMember
+from mematool.model import TmpMember
 
 log = logging.getLogger(__name__)
 
-import re
-from mematool.lib.syn2cat import regex
 from mematool.lib.syn2cat.crypto import encodeAES
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
-from email.mime.text import MIMEText
-import PIL
 from PIL import Image
 import StringIO
 import base64

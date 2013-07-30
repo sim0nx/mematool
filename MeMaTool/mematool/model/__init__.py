@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -20,14 +21,10 @@
 from mematool.model.meta import Session, metadata, Base
 
 
-from mematool.model.tmpmember import TmpMember
 from mematool.model.member import Member
-from mematool.model.payment import Payment
-from mematool.model.group import Group
-from mematool.model.paymentmethod import Paymentmethod
 from mematool.model.domain import Domain
 from mematool.model.alias import Alias
-from mematool.model.preferences import Preferences
+from mematool.model.dbmodel import Group, Preferences, TmpMember, Payment, Paymentmethod
 
 
 def init_model(engine):

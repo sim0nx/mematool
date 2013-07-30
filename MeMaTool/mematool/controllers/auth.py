@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -18,8 +19,8 @@
 
 import logging
 
-from pylons import request, response, session, tmpl_context as c, url
-from pylons.controllers.util import abort, redirect
+from pylons import request, session, tmpl_context as c, url
+from pylons.controllers.util import redirect
 from pylons.i18n.translation import _
 from pylons.decorators.secure import https
 
@@ -27,7 +28,7 @@ from mematool.lib.base import BaseController, render, Session
 from mematool.lib.syn2cat.auth.auth_ldap import LDAPAuthAdapter
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
-from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
+from mematool.lib.syn2cat.crypto import encodeAES
 from mematool.model import Preferences
 
 from sqlalchemy import and_

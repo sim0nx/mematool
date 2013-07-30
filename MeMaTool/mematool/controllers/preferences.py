@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -18,22 +19,19 @@
 
 import logging
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import request, session, tmpl_context as c, url
 from pylons.controllers.util import redirect
-from pylons import config
-from pylons.i18n.translation import _, set_lang
+from pylons.i18n.translation import _
 from sqlalchemy import and_
 from sqlalchemy.orm.exc import NoResultFound
 
-from datetime import date, datetime
+from datetime import datetime
 
 from mematool.lib.base import BaseController, render, Session
 from mematool.model import Preferences
 
 log = logging.getLogger(__name__)
 
-import re
-from mematool.lib.syn2cat import regex
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
@@ -89,7 +87,6 @@ class PreferencesController(BaseController):
       try:
         ParamChecker.checkString('language', min_len=2, max_len=2)
       except InvalidParameterFormat:
-        checkOK = False
         errors.append(_('Invalid language'))
 
       if not formok:

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # MeMaTool (c) 2010 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -23,7 +24,7 @@
 
 import ldap
 from pylons import config, session
-from mematool.lib.syn2cat.crypto import encodeAES, decodeAES
+from mematool.lib.syn2cat.crypto import decodeAES
 
 class InvalidCredentials(Exception):
   pass

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -19,26 +20,18 @@
 import logging
 log = logging.getLogger(__name__)
 
-from pylons import request, response, session, tmpl_context as c, url, config
+from pylons import request, session, tmpl_context as c, url
 from pylons.controllers.util import redirect
 from pylons.i18n.translation import _
 
 from mematool.lib.base import BaseController, render
 
-import re
-from mematool.lib.syn2cat import regex
-
-from datetime import date
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model import Group
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 
 # Decorators
-from pylons.decorators import validate
 from pylons.decorators.rest import restrict
-
-import dateutil.parser
-import datetime
 
 
 class GroupsController(BaseController):
