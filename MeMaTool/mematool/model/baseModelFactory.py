@@ -19,13 +19,9 @@
 
 import logging
 
-from pylons import config
-from pylons.i18n.translation import _
-
 from mematool.lib.base import Session
 from sqlalchemy.orm.exc import NoResultFound
-from mematool.model import Member
-from mematool.model import Group
+from mematool.model.dbmodel import Group
 
 log = logging.getLogger(__name__)
 
@@ -90,14 +86,14 @@ class BaseModelFactory(object):
     pass
 
   def getManagedGroupList(self):
+    ret = []
+    
     try:
-      g = Session.query(Group).order_by(Group.gid).all()
-
-      return g
+      ret = Session.query(Group).order_by(Group.gid).all()
     except:
       pass
 
-    return []
+    return ret
 
   def getGroupMembers(self, group):
     pass
