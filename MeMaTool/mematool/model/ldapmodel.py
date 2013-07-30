@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -20,16 +21,14 @@
 
 
 from pylons.i18n.translation import _
-from mematool.model.meta import Base
 
-from datetime import date
 from mematool.lib.base import Session
 from mematool.model import TmpMember
 
 import urllib
 import hashlib
 import base64
-from binascii import b2a_base64, a2b_base64
+from binascii import b2a_base64
 from mematool.lib.syn2cat import regex
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 import os
@@ -309,3 +308,77 @@ class Member():
       import sys, traceback
       traceback.print_exc(file=sys.stdout)
       return None
+
+
+class Domain(object):
+  str_vars = ['dc']
+
+  def __repr__(self):
+    return "<Domain('dc=%s')>" % (self.dc)
+
+  def __init__(self):
+    for v in self.str_vars:
+      setattr(self, v, '')
+
+    self.all_vars = []
+    self.all_vars.extend(self.str_vars)
+
+  def __eq__(self, om):
+    equal = True
+
+    for v in self.all_vars:
+      if not getattr(self, v) == getattr(om, v):
+        equal = False
+        break
+
+    return equal
+
+  def __ne__(self, om):
+    return not self == om
+
+
+class Alias(object):
+  str_vars = ['dn_mail']
+  list_vars = ['mail', 'maildrop']
+
+  def __repr__(self):
+    return "<Alias('dn_mail=%s')>" % (self.dn_mail)
+
+  def __init__(self):
+    for v in self.str_vars:
+      setattr(self, v, '')
+    for v in self.list_vars:
+      setattr(self, v, [])
+
+    self.all_vars = []
+    self.all_vars.extend(self.str_vars)
+    self.all_vars.extend(self.list_vars)
+
+  def __eq__(self, om):
+    equal = True
+
+    if om is None:
+      return False
+
+    for v in self.all_vars:
+      if not getattr(self, v) == getattr(om, v):
+        equal = False
+        break
+
+    return equal
+
+  def __ne__(self, om):
+    return not self == om
+
+  @property
+  def domain(self):
+    if not self.dn_mail == '':
+      return self.dn_mail.split('@')[1]
+
+    return None
+
+  def getDN(self, basedn):
+    if not self.dn_mail == '':
+      return 'mail=' + self.dn_mail + ',dc=' + self.domain + ',' + basedn
+
+    raise Exception('Uninitialized object')
