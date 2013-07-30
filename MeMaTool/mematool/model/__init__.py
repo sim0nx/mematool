@@ -20,10 +20,7 @@
 """The application's model objects"""
 from mematool.model.meta import Session, metadata, Base
 
-
-from mematool.model.member import Member
-from mematool.model.domain import Domain
-from mematool.model.alias import Alias
+from mematool.model.ldapmodel import Member, Domain, Alias
 from mematool.model.dbmodel import Group, Preferences, TmpMember, Payment, Paymentmethod
 
 
