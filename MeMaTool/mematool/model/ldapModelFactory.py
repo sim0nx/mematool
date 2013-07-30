@@ -352,8 +352,9 @@ class LdapModelFactory(BaseModelFactory):
         result = self.ldapcon.modify_s('cn=' + group.encode('ascii', 'ignore') + ',' + self.cnf.get('ldap.basedn_groups'), mod_attrs)
       except (ldap.TYPE_OR_VALUE_EXISTS, ldap.NO_SUCH_ATTRIBUTE):
         pass
-      except:
-        print sys.exc_info()[0]
+      except Exception as e:
+        # @todo: implement better handling
+        print e
         pass
 
     return result

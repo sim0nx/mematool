@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -19,30 +20,22 @@
 import logging
 log = logging.getLogger(__name__)
 
-from pylons import request, response, session, tmpl_context as c, url, config
+from pylons import request, session, tmpl_context as c, url
 from pylons.controllers.util import redirect
 from pylons.i18n.translation import _
 
 from mematool.lib.base import BaseController, render, Session
-from mematool.lib.helpers import *
-from mematool.model import Payment, Member, Paymentmethod
-
-#from mematool.model.auth import Permission
-
-import re
-from mematool.lib.syn2cat import regex
+from mematool.model import Payment
 
 from mematool.model.ldapModelFactory import LdapModelFactory
-from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
+from mematool.model.lechecker import ParamChecker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import and_, or_
-from webob.exc import HTTPUnauthorized
 from datetime import date, datetime
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
 # Decorators
-from pylons.decorators import validate
 from pylons.decorators.rest import restrict
 
 

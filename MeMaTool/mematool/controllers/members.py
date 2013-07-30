@@ -29,11 +29,8 @@ from mematool.model import Member, TmpMember
 
 log = logging.getLogger(__name__)
 
-from mematool.lib.helpers import *
-
 from sqlalchemy.orm.exc import NoResultFound
 import re
-from mematool.lib.syn2cat import regex
 from mematool.model.ldapModelFactory import LdapModelFactory
 from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 

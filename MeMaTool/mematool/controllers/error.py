@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2012 Georges Toth <georges _at_ trypill _dot_ org>
 #
@@ -18,9 +19,8 @@
 
 import cgi
 
-from paste.urlparser import PkgResourcesParser
-from pylons import request, url
-from pylons.controllers.util import forward, redirect
+from pylons import url
+from pylons.controllers.util import redirect
 from pylons.middleware import error_document_template
 from webhelpers.html.builder import literal
 
