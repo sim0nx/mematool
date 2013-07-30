@@ -20,7 +20,6 @@
 import logging
 
 from pylons import config
-from pylons.i18n.translation import _
 
 #from mematool.lib.base import Session
 #from sqlalchemy.orm.exc import NoResultFound
@@ -34,7 +33,6 @@ log = logging.getLogger(__name__)
 
 from mematool.lib.syn2cat.ldapConnector import LdapConnector
 import ldap
-import re
 
 
 class LdapModelFactory(BaseModelFactory):
@@ -83,17 +81,13 @@ class LdapModelFactory(BaseModelFactory):
           continue
 
         # @TODO handle multiple results
-        v = unicode(str(v[0]), 'utf-8')
+        v = v[0]
 
+        # @todo:  why again do we still need this ?
         if k == 'sambaSID' and v == '':
           v = None
-        elif k in ['spaceKey', 'npoMember', 'isMinor']:
-          if v.lower() == 'true':
-            v = True
-          else:
-            v = False
 
-        setattr(m, k, v)
+        m.set_property(k, v)
 
     m.groups = self.getUserGroupList(uid)
 
@@ -122,14 +116,14 @@ class LdapModelFactory(BaseModelFactory):
     return users
 
   def getActiveMemberList(self):
-    users = self.getUserList()
-    ausers = []
+    '''Get a list of members not belonging to the locked-members group'''
+    users = []
 
-    for u in users:
+    for u in self.getUserList():
       if not self.isUserInGroup(u, self.cnf.get('mematool.group_lockedmember')):
-        ausers.append(u)
+        users.append(u)
 
-    return ausers
+    return users
 
   def getUserGroupList(self, uid):
     '''Get a list of groups a user is a member of'''
@@ -221,27 +215,8 @@ class LdapModelFactory(BaseModelFactory):
     om = self.getUser(member.uid)
 
     if is_admin:
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'cn'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'sn'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'givenName'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homePostalAddress'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homePhone'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'mobile'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'mail'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'gidNumber'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'loginShell'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'homeDirectory'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'arrivalDate'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'leavingDate'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'sshPublicKey'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'pgpKey'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'iButtonUID'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'conventionSigner'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'xmppID'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'spaceKey'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'npoMember'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'nationality'))
-      mod_attrs.append(self.prepareVolatileAttribute(member, om, 'isMinor'))
+      for k in member.auto_update_vars:
+        mod_attrs.append(self.prepareVolatileAttribute(member, om, k))
 
     if member.userPassword and member.userPassword != '':
       mod_attrs.append((ldap.MOD_REPLACE, 'userPassword', str(member.userPassword)))
@@ -268,32 +243,12 @@ class LdapModelFactory(BaseModelFactory):
     mod_attrs.append(('objectclass', ['posixAccount', 'organizationalPerson', 'inetOrgPerson', 'shadowAccount', 'top', 'samsePerson', 'sambaSamAccount', 'ldapPublicKey', 'syn2catPerson']))
     mod_attrs.append(('ou', ['People']))
 
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'uid'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'cn'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sn'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'givenName'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'homePostalAddress'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'homePhone'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'mobile'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'mail'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'gidNumber'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'loginShell'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'homeDirectory'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'arrivalDate'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'leavingDate'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sshPublicKey'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'pgpKey'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'iButtonUID'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'conventionSigner'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'xmppID'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'spaceKey'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'npoMember'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'nationality'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'userPassword'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'uidNumber'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sambaSID'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'sambaNTPassword'))
-    mod_attrs.append(self.prepareVolatileAttribute(member, None, 'isMinor'))
+    for k in member.auto_update_vars:
+      mod_attrs.append(self.prepareVolatileAttribute(member, None, k))
+
+    for k in member.no_auto_update_vars:
+      if not k == 'jpegPhoto':
+        mod_attrs.append(self.prepareVolatileAttribute(member, None, k))
 
     while None in mod_attrs:
       mod_attrs.remove(None)
@@ -778,7 +733,7 @@ class LdapModelFactory(BaseModelFactory):
     return True
 
   def deleteAlias(self, alias):
-    '''Completely remove a alias'''
+    '''Completely remove an alias'''
 
     a = self.getAlias(alias)
     dn = a.getDN(self.cnf.get('ldap.basedn')).encode('ascii', 'ignore')
