@@ -76,8 +76,11 @@ class TypeChecker(object):
     return False
 
   @staticmethod
-  def isParamInt(p, min_val=0, min_len=0, max_len=4):
+  def isParamInt(p, min_val=0, min_len=0, max_len=4, max_val=None):
     if TypeChecker.isParamStr(p, min_len, max_len) and TypeChecker.isInt(p) and int(p) >= min_val:
+      if not max_val is None and not int(p) <= max_val:
+        return False
+
       return True
 
     return False
@@ -242,3 +245,18 @@ class ParamChecker(object):
   def checkInt(fn, param=True, min_len=1, max_len=999, optional=False):
     return ParamChecker._baseCheckInt(fn, _('Invalid Integer value'),
       min_len=min_len, max_len=max_len, param=param, optional=optional)
+
+  @staticmethod
+  def checkYear(fn, param=True, optional=False):
+    return ParamChecker._baseCheckInt(fn, _('Invalid year value'),
+      param=param, optional=optional, min_val=1970, max_val=2222)
+
+  @staticmethod
+  def checkMonth(fn, param=True, optional=False):
+    return ParamChecker._baseCheckInt(fn, _('Invalid month value'),
+      param=param, optional=optional, min_val=1, max_val=12)
+
+  @staticmethod
+  def checkDay(fn, param=True, optional=False):
+    return ParamChecker._baseCheckInt(fn, _('Invalid day value'),
+      param=param, optional=optional, min_val=1, max_val=31)
