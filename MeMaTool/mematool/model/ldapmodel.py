@@ -17,10 +17,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
-# -*- coding: utf-8 -*-
-
-
-from pylons.i18n.translation import _
 
 from mematool.lib.base import Session
 from mematool.model.dbmodel import TmpMember
@@ -34,7 +30,46 @@ from mematool.model.lechecker import ParamChecker, InvalidParameterFormat
 import os
 
 
-class Member():
+class BaseObject(object):
+  str_vars = []
+  list_vars = []
+  bool_vars = []
+  bin_vars = []
+
+  def __init__(self):
+    for v in self.str_vars:
+      setattr(self, v, '')
+    for v in self.list_vars:
+      setattr(self, v, [])
+    for v in self.bool_vars:
+      setattr(self, v, False)
+    for v in self.bin_vars:
+      setattr(self, v, None)
+
+    self.all_vars = []
+    self.all_vars.extend(self.str_vars)
+    self.all_vars.extend(self.list_vars)
+    self.all_vars.extend(self.bool_vars)
+    self.all_vars.extend(self.bin_vars)
+
+  def __eq__(self, om):
+    equal = True
+    
+    if om is None:
+      return False
+
+    for v in self.all_vars:
+      if not getattr(self, v) == getattr(om, v):
+        equal = False
+        break
+
+    return equal
+
+  def __ne__(self, om):
+    return not self == om
+
+
+class Member(BaseObject):
   # ldap
   str_vars = ['uid',
     'cn',
@@ -96,37 +131,8 @@ class Member():
   isMinor = False
   '''
 
-  def __init__(self):
-    for v in self.str_vars:
-      setattr(self, v, '')
-    for v in self.list_vars:
-      setattr(self, v, [])
-    for v in self.bool_vars:
-      setattr(self, v, False)
-    for v in self.bin_vars:
-      setattr(self, v, None)
-
-    self.all_vars = []
-    self.all_vars.extend(self.str_vars)
-    self.all_vars.extend(self.list_vars)
-    self.all_vars.extend(self.bool_vars)
-    self.all_vars.extend(self.bin_vars)
-
-  def __str__(self):
+  def __repr__(self):
     return "<Member('uidNumber=%s, uid=%s, validate=%s')>" % (self.uidNumber, self.uid, self.validate)
-
-  def __eq__(self, om):
-    equal = True
-
-    for v in self.all_vars:
-      if not getattr(self, v) == getattr(om, v):
-        equal = False
-        break
-
-    return equal
-
-  def __ne__(self, om):
-    return not self == om
 
   @property
   def validate(self):
@@ -310,65 +316,19 @@ class Member():
       return None
 
 
-class Domain(object):
+class Domain(BaseObject):
   str_vars = ['dc']
 
   def __repr__(self):
     return "<Domain('dc=%s')>" % (self.dc)
 
-  def __init__(self):
-    for v in self.str_vars:
-      setattr(self, v, '')
 
-    self.all_vars = []
-    self.all_vars.extend(self.str_vars)
-
-  def __eq__(self, om):
-    equal = True
-
-    for v in self.all_vars:
-      if not getattr(self, v) == getattr(om, v):
-        equal = False
-        break
-
-    return equal
-
-  def __ne__(self, om):
-    return not self == om
-
-
-class Alias(object):
+class Alias(BaseObject):
   str_vars = ['dn_mail']
   list_vars = ['mail', 'maildrop']
 
   def __repr__(self):
     return "<Alias('dn_mail=%s')>" % (self.dn_mail)
-
-  def __init__(self):
-    for v in self.str_vars:
-      setattr(self, v, '')
-    for v in self.list_vars:
-      setattr(self, v, [])
-
-    self.all_vars = []
-    self.all_vars.extend(self.str_vars)
-    self.all_vars.extend(self.list_vars)
-
-  def __eq__(self, om):
-    equal = True
-
-    if om is None:
-      return False
-
-    for v in self.all_vars:
-      if not getattr(self, v) == getattr(om, v):
-        equal = False
-        break
-
-    return equal
-
-  def __ne__(self, om):
-    return not self == om
 
   @property
   def domain(self):
