@@ -25,6 +25,7 @@ from pylons.controllers.util import redirect
 from pylons.i18n.translation import _
 
 from mematool.lib.base import BaseController, render, Session
+from mematool.lib.helpers import IsInt
 from mematool.model import Payment
 
 from mematool.model.ldapModelFactory import LdapModelFactory
@@ -286,6 +287,7 @@ class PaymentsController(BaseController):
         pass
 
     elif not request.params['idPayment'] == '' and IsInt(request.params['idPayment']) and int(request.params['idPayment']) > 0:
+      # @fixme convert IsInt to new class
       action = 'Editing'
       payment_q = Session.query(Payment).filter(Payment.id == int(request.params['idPayment']))
       try:
