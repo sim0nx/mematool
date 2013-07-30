@@ -35,16 +35,28 @@ class BaseObject(object):
   list_vars = []
   bool_vars = []
   bin_vars = []
+  no_auto_update_vars = []
 
   def __init__(self):
+    self.auto_update_vars = []
+
     for v in self.str_vars:
       setattr(self, v, '')
+      if not v in self.no_auto_update_vars:
+        self.auto_update_vars.append(v)
+
     for v in self.list_vars:
       setattr(self, v, [])
+
     for v in self.bool_vars:
       setattr(self, v, False)
+      if not v in self.no_auto_update_vars:
+        self.auto_update_vars.append(v)
+
     for v in self.bin_vars:
       setattr(self, v, None)
+      if not v in self.no_auto_update_vars:
+        self.auto_update_vars.append(v)
 
     self.all_vars = []
     self.all_vars.extend(self.str_vars)
@@ -68,6 +80,20 @@ class BaseObject(object):
   def __ne__(self, om):
     return not self == om
 
+  def set_property(self, key, value):
+    if key in self.bool_vars:
+      if value.lower() == 'true':
+        setattr(self, key, True)
+      else:
+        setattr(self, key, False)
+    elif key in self.bin_vars:
+      setattr(self, key, value)
+    elif not value is None and not isinstance(value, unicode):
+      value_ = unicode(str(value), 'utf-8')
+      setattr(self, key, value_)
+    else:
+      setattr(self, key, value)
+
 
 class Member(BaseObject):
   # ldap
@@ -89,18 +115,22 @@ class Member(BaseObject):
     'uidNumber',
     'gidNumber',
     'loginShell',
-    'hDirectory',
+    'homeDirectory',
     'homePostalAddress',
     'arrivalDate',
     'leavingDate',
     'nationality']
   list_vars = ['groups']
-  bool_vars = ['fullMember',
-    'lockedMember',
-    'spaceKey',
+  bool_vars = ['spaceKey',
     'npoMember',
     'isMinor']
   bin_vars = ['jpegPhoto']
+  no_auto_update_vars = ['userPassword',
+    'sambaNTPassword',
+    'sambaSID',
+    'uidNumber',
+    'uid',
+    'jpegPhoto']
 
   '''
   uid = ''   # uid
@@ -130,6 +160,11 @@ class Member(BaseObject):
   lockedMember = False
   isMinor = False
   '''
+
+  def __init__(self):
+    super(Member, self).__init__()
+    self.fullMember = False
+    self.lockedMember = False
 
   def __repr__(self):
     return "<Member('uidNumber=%s, uid=%s, validate=%s')>" % (self.uidNumber, self.uid, self.validate)
