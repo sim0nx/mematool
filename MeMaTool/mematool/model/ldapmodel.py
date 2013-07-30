@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
-
+from pylons.i18n.translation import _
 from mematool.lib.base import Session
 from mematool.model.dbmodel import TmpMember
 
