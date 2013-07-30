@@ -23,7 +23,7 @@
 from pylons.i18n.translation import _
 
 from mematool.lib.base import Session
-from mematool.model import TmpMember
+from mematool.model.dbmodel import TmpMember
 
 import urllib
 import hashlib

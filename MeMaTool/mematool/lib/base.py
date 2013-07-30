@@ -27,8 +27,7 @@ from pylons.i18n.translation import set_lang
 import logging
 
 from mematool.model.meta import Session
-from mematool.model import TmpMember
-from mematool.lib.helpers import *
+from mematool.model.dbmodel import TmpMember
 import re
 
 import smtplib
