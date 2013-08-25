@@ -1,3 +1,0 @@
-include mematool/config/deployment.ini_tmpl
-recursive-include mematool/public *
-recursive-include mematool/templates *

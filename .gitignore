@@ -1,0 +1,9 @@
+.project
+.pydevproject
+.settings
+babel
+babel_repo
+tmp/
+sessions/
+config/*.conf
+*.sqlite

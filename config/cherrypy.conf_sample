@@ -1,0 +1,12 @@
+[global]
+tools.encode.on = True
+tools.encode.encoding = 'utf-8'
+#environment = 'production'
+#log.screen = True
+
+tools.I18nTool.on = True
+tools.I18nTool.default = 'en_us'
+tools.I18nTool.mo_dir = 'i18n'
+tools.I18nTool.domain = 'mematool'
+
+tools.db.on = True

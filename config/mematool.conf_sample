@@ -1,0 +1,49 @@
+[mematool]
+authkey = random_auth_key_long_enough_rly
+admin_group = [group1,group2]
+admin_user = [user1]
+admin_finance = [user1,user2]
+vgroup_superadmin = [group1]
+group_fullmember = grp_full_member
+group_lockedmember = grp_locked_member
+
+mail_default_from = mematool <noreply@example.com>
+
+default_language = en
+languages = [en,de,lu]
+name_prefix = syn2cat
+
+debug=true
+
+[posix]
+default_gid = 100
+base_home = /home
+
+[db]
+protocol=sqlite
+username=
+password=
+host=127.0.0.1
+db=test.sqlite
+port=3306
+debug=false
+
+[mako]
+templateRoot=templates/syn2cat
+collectionsize=200
+outputencoding=utf-8
+
+[ldap]
+server=ldap://localhost
+basedn = dc=example,dc=com
+basedn_users = ou=People,dc=example,dc=com
+basedn_groups = ou=Group,dc=example,dc=com
+uid_filter = (uidNumber=*)
+uid_filter_attrs = uidNumber
+gid_filter = (gidNumber=*)
+gid_filter_attrs = gidNumber
+domain_filter = (objectClass=mailDomain)
+domain_filter_attrs = dc
+
+
+
