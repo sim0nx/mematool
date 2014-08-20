@@ -7,6 +7,9 @@ vgroup_superadmin = [group1]
 group_fullmember = grp_full_member
 group_lockedmember = grp_locked_member
 
+model_handler = ldap
+#model_handler = static
+
 mail_default_from = mematool <noreply@example.com>
 
 default_language = en

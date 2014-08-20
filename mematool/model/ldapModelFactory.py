@@ -18,8 +18,10 @@
 # along with MeMaTool.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-
 import ldap
+import cherrypy
+from mematool.helpers.ldapConnector import LdapConnector
+from mematool.helpers.crypto import decodeAES
 from mematool.model.baseModelFactory import BaseModelFactory
 from mematool.model.dbmodel import Group
 from mematool.model.ldapmodel import Member, Domain, Alias
@@ -31,9 +33,42 @@ log = logging.getLogger(__name__)
 
 
 class LdapModelFactory(BaseModelFactory):
-  def __init__(self, ldapcon):
+  def __init__(self):
     super(LdapModelFactory, self).__init__()
-    self.ldapcon = ldapcon
+
+    self.ldapcon_ = None
+
+  @property
+  def ldapcon(self):
+    if self.ldapcon_ is None:
+      username = cherrypy.session.get('username')
+      password = decodeAES(cherrypy.session.get('password'))
+      self.ldapcon_ = LdapConnector(username, password).get_connection()
+    else:
+      try:
+        self.ldapcon_.whoami_s()
+      except ldap.SERVER_DOWN:
+        #@todo make this cleaner refactor
+        username = cherrypy.session.get('username')
+        password = decodeAES(cherrypy.session.get('password'))
+        self.ldapcon_ = LdapConnector(username, password).get_connection()
+
+    return self.ldapcon_
+
+  @ldapcon.setter
+  def ldapcon(self, value):
+    self.ldapcon_ = value
+
+  def _search(dn, attrs=['*'], filter_='', scope=ldap.SCOPE_SUBTREE):
+    result = self.ldapcon.search_s(dn, scope, filter_, attrs)
+
+    if not result:
+      raise LookupError('Lookup failed')
+
+    return result
+
+  def authenticate(self, username, password):
+    ldap_connector = LdapConnector(username=username, password=password)
 
   def close(self):
     '''Close LDAP connection'''
@@ -48,10 +83,9 @@ class LdapModelFactory(BaseModelFactory):
     :returns: Member
     '''
     filter_ = '(uid=' + uid + ')'
-    attrs = ['*']
-    basedn = 'uid=' + str(uid) + ',' + str(Config.get('ldap', 'basedn_users'))
+    basedn = 'uid={0},{1}'.format(uid, Config.get('ldap', 'basedn_users'))
 
-    result = self.ldapcon.search_s(basedn, ldap.SCOPE_SUBTREE, filter_, attrs)
+    result = self._search(basedn, filter_=filter_)
 
     if not result:
       raise LookupError('No such user !')
@@ -84,11 +118,11 @@ class LdapModelFactory(BaseModelFactory):
   def getUserList(self):
     '''Get a list of all users belonging to the group "users" (gid-number = 100)
     and having a uid-number >= 1000 and < 65000'''
-    filter = '(&(uid=*)(gidNumber=100))'
+    filter_ = '(&(uid=*)(gidNumber=100))'
     attrs = ['uid', 'uidNumber']
     users = []
 
-    result = self.ldapcon.search_s(Config.get('ldap', 'basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs)
+    result = self._search(Config.get('ldap', 'basedn_users'), attrs, filter_)
 
     for dn, attr in result:
       if int(attr['uidNumber'][0]) >= 1000 and int(attr['uidNumber'][0]) < 65000:
@@ -98,23 +132,13 @@ class LdapModelFactory(BaseModelFactory):
 
     return users
 
-  def getActiveMemberList(self):
-    '''Get a list of members not belonging to the locked-members group'''
-    users = []
-
-    for u in self.getUserList():
-      if not self.isUserInGroup(u, Config.get('mematool', 'group_lockedmember')):
-        users.append(u)
-
-    return users
-
   def getUserGroupList(self, uid):
     '''Get a list of groups a user is a member of'''
-    filter = '(memberUid=' + uid + ')'
+    filter_ = '(memberUid=' + uid + ')'
     attrs = ['cn']
     groups = []
 
-    result = self.ldapcon.search_s(Config.get('ldap', 'basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
+    result = self._search(Config.get('ldap', 'basedn_groups'), attrs, filter_)
 
     for dn, attr in result:
       for key, value in attr.iteritems():
@@ -129,7 +153,7 @@ class LdapModelFactory(BaseModelFactory):
   def getHighestUidNumber(self):
     '''Get the highest used uid-number
     this is used when adding a new user'''
-    result = self.ldapcon.search_s(Config.get('ldap', 'basedn_users'), ldap.SCOPE_SUBTREE, Config.get('ldap', 'uid_filter'), [Config.get('ldap', 'uid_filter_attrs')])
+    result = self._search(Config.get('ldap', 'basedn_users'), [Config.get('ldap', 'uid_filter_attrs')], Config.get('ldap', 'uid_filter'))
 
     uidNumber = -1
 
@@ -144,10 +168,10 @@ class LdapModelFactory(BaseModelFactory):
 
   def getUidNumberFromUid(self, uid):
     '''Get a UID-number based on its UID'''
-    filter = '(uid=' + uid + ')'
+    filter_ = '(uid=' + uid + ')'
     attrs = ['uidNumber']
 
-    result = self.ldapcon.search_s(Config.get('ldap', 'basedn_users'), ldap.SCOPE_SUBTREE, filter, attrs)
+    result = self._search(Config.get('ldap', 'basedn_users'), attrs, filter_)
 
     if not result:
       raise LookupError('No such user !')
@@ -260,9 +284,9 @@ class LdapModelFactory(BaseModelFactory):
     attrs = ['*']
     basedn = 'uid=' + str(uid) + ',' + str(Config.get('ldap', 'basedn_users'))
 
-    result = self.ldapcon.search_s(basedn, ldap.SCOPE_SUBTREE, filter_, attrs)
-
-    if not result:
+    try:
+      result = self._search(basedn, attrs, filter_)
+    except LookupError:
       raise LookupError('No such user !')
 
     # remove user from all groups
@@ -323,10 +347,10 @@ class LdapModelFactory(BaseModelFactory):
 
   def getGroup(self, gid):
     ''' Get a specific group'''
-    filter = '(cn=' + gid + ')'
+    filter_ = '(cn=' + gid + ')'
     attrs = ['*']
 
-    result = self.ldapcon.search_s(Config.get('ldap', 'basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
+    result = self._search(Config.get('ldap', 'basedn_groups'), attrs, filter_)
 
     if not result:
       raise LookupError('No such group !')
@@ -349,10 +373,10 @@ class LdapModelFactory(BaseModelFactory):
 
   def getGroupList(self):
     '''Get a list of all groups'''
-    filter = '(cn=*)'
+    filter_ = '(cn=*)'
     attrs = ['cn', 'gidNumber']
 
-    result = self.ldapcon.search_s(Config.get('ldap', 'basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
+    result = self._search(Config.get('ldap', 'basedn_groups'), attrs, filter_)
     groups = []
 
     for dn, attr in result:
@@ -362,10 +386,10 @@ class LdapModelFactory(BaseModelFactory):
 
   def getGroupMembers(self, group):
     '''Get all members of a specific group'''
-    filter = '(cn=' + group + ')'
+    filter_ = '(cn=' + group + ')'
     attrs = ['memberUid']
 
-    result = self.ldapcon.search_s(Config.get('ldap', 'basedn_groups'), ldap.SCOPE_SUBTREE, filter, attrs)
+    result = self._search(Config.get('ldap', 'basedn_groups'), attrs, filter_)
 
     if not result:
       raise LookupError('No such group !')
@@ -426,7 +450,7 @@ class LdapModelFactory(BaseModelFactory):
   def getHighestGidNumber(self):
     '''Get the highest used gid-number
     this is used when adding a new group'''
-    result = self.ldapcon.search_s(Config.get('ldap', 'basedn_groups'), ldap.SCOPE_SUBTREE, Config.get('ldap', 'gid_filter'), [Config.get('ldap', 'gid_filter_attrs')])
+    result = self._search(Config.get('ldap', 'basedn_groups'), [Config.get('ldap', 'gid_filter_attrs')], Config.get('ldap', 'gid_filter'))
 
     gidNumber = -1
 
@@ -486,9 +510,9 @@ class LdapModelFactory(BaseModelFactory):
     attrs = ['*']
     basedn = 'dc=' + str(domain) + ',' + str(Config.get('ldap', 'basedn'))
 
-    result = self.ldapcon.search_s(basedn, ldap.SCOPE_BASE, filter_, attrs)
-
-    if not result:
+    try:
+      result = self._search(basedn, attrs, filter_, scope=ldap.SCOPE_BASE)
+    except LookupError:
       raise LookupError('No such domain !')
 
     d = Domain()
@@ -507,7 +531,7 @@ class LdapModelFactory(BaseModelFactory):
     return d
 
   def getDomainList(self):
-    result = self.ldapcon.search_s(Config.get('ldap', 'basedn'), ldap.SCOPE_SUBTREE, Config.get('ldap', 'domain_filter'), [Config.get('ldap', 'domain_filter_attrs')])
+    result = self._search(Config.get('ldap', 'basedn'), [Config.get('ldap', 'domain_filter_attrs')], Config.get('ldap', 'domain_filter'))
 
     domains = []
 
@@ -525,7 +549,7 @@ class LdapModelFactory(BaseModelFactory):
     filter_ = '(&(objectClass=mailAlias)(mail=' + str(alias) + '))'
     attrs = ['*']
     basedn = str(Config.get('ldap', 'basedn'))
-    result = self.ldapcon.search_s(basedn, ldap.SCOPE_SUBTREE, filter_, attrs)
+    result = self._search(basedn, attrs, filter_)
 
     if not result:
       raise LookupError('No such alias !')
@@ -566,7 +590,7 @@ class LdapModelFactory(BaseModelFactory):
     filter_ = 'objectClass=mailAlias'
     attrs = ['']
     basedn = 'dc=' + str(domain) + ',' + str(Config.get('ldap', 'basedn'))
-    result = self.ldapcon.search_s(basedn, ldap.SCOPE_SUBTREE, filter_, attrs)
+    result = self._search(basedn, attrs, filter_)
 
     aliases = []
 
@@ -583,7 +607,7 @@ class LdapModelFactory(BaseModelFactory):
     filter_ = '(&(objectClass=mailAlias)(maildrop={0}))'.format(uid)
     attrs = ['maildrop']
     basedn = str(Config.get('ldap', 'basedn'))
-    result = self.ldapcon.search_s(basedn, ldap.SCOPE_SUBTREE, filter_, attrs)
+    result = self._search(basedn, attrs, filter_)
 
     aliases = {}
 

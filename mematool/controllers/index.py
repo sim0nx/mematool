@@ -20,14 +20,10 @@
 import cherrypy
 from cherrypy._cperror import HTTPRedirect
 import logging
-from sqlalchemy import and_
 from mematool import Config
 from mematool.controllers import BaseController
-from mematool.helpers.ldapConnector import LdapConnector
-from mematool.model.dbmodel import Preferences
 from mematool.helpers.i18ntool import ugettext as _
-from mematool.helpers.lechecker import ParamChecker, InvalidParameterFormat
-from mematool.helpers.crypto import encodeAES
+from mematool.helpers.lechecker import InvalidParameterFormat
 import mematool.helpers.exceptions
 
 log = logging.getLogger(__name__)
@@ -65,55 +61,29 @@ class IndexController(BaseController):
   @cherrypy.expose
   def doLogin(self, username=None, password=None):
     try:
-      ParamChecker.checkUsername('username', param=True)
-      ParamChecker.checkPassword('password', 'password', param=True)
+      self.authenticate(username, password)
     except InvalidParameterFormat as ipf:
       return self.index(_('Invalid data'))
-
-    try:
-      ldap_connector = LdapConnector(username=username, password=password)
     except mematool.helpers.exceptions.InvalidCredentials:
       return self.index(_('Invalid credentials'))
     except mematool.helpers.exceptions.ServerError:
       return self.index(_('Server error, please retry later'))
 
-    old_session_language = self.session.get('language', '')
-
-    self.session.regenerate()
-    self.session['username'] = username
-    self.session['password'] = encodeAES(password)
-    self.set_ldapcon(ldap_connector.get_connection())
-    self.session['groups'] = self.mf.getUserGroupList(username)
-
     try:
-      user = self.mf.getUser(self.session['username'])
-    except:
+      self.initialize_session(username, password)
+    except Exception as e:
+      import sys, traceback
+      traceback.print_exc(file=sys.stdout)
+      self.detroy_session()
       return self.index(_('Server error, please retry later'))
 
-    self.session['user'] = user
-
-    if self.is_admin():
-      self.session['pendingMemberValidations'] = self.pendingMemberValidations()
-
-    uidNumber = user.uidNumber
-    language = self.db.query(Preferences).filter(and_(Preferences.uidNumber == uidNumber, Preferences.key == 'language')).one()
-
-    if language.value in self.languages:
-      self.session['language'] = language.value
-    elif not old_session_language == '':
-      self.session['language'] = old_session_language
-    else:
-      self.session['language'] = self.default_language
-
-    log.info(username + ' logged in')
-
-    if user.is_admin():
+    if self.session['user'].is_admin():
       raise HTTPRedirect('/members/index')
     else:
       raise HTTPRedirect('/profile/index')
 
   @cherrypy.expose
   def doLogout(self):
-    self.session.clear()
+    self.detroy_session()
     log.info('{0} logged out'.format(self.session.get('username')))
     return self.index(errorMsg='You logged out')

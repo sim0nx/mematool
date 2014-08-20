@@ -165,7 +165,7 @@ class Member(BaseObject):
     super(Member, self).__init__()
 
   def __repr__(self):
-    return "<Member('uidNumber=%s, uid=%s, validate=%s')>" % (self.uidNumber, self.uid, self.validate)
+    return '''<Member('uidNumber=%s, uid=%s, validate=%s')>'''.format(self.uidNumber, self.uid, self.validate)
 
   @property
   def validate(self):
@@ -263,7 +263,7 @@ class Member(BaseObject):
   def generateUserSID(self):
     #@TODO put in config file
     serverSambaSID = 'S-1-1-1'
-    self.sambaSID = serverSambaSID + '-' + str((int(self.uidNumber) * 2) + 1000)
+    self.sambaSID = '{0}-{1}'.format(serverSambaSID, ((int(self.uidNumber) * 2) + 1000))
 
   ####################
   # checker interface
@@ -402,13 +402,13 @@ class Member(BaseObject):
   ####################
 
   def getGravatar(self, size=20):
-    mail = ''
-
     if self.mail:
       mail = self.mail
+    else:
+      mail = ''
 
     hashmail = hashlib.md5(mail.lower()).hexdigest()
-    url = "http://www.gravatar.com/avatar/" + hashmail + "?"
+    url = 'http://www.gravatar.com/avatar/{0}?'.format(hashmail)
     url += urllib.urlencode({'s': str(size)})
 
     return url

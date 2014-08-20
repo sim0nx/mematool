@@ -27,27 +27,40 @@ log = logging.getLogger(__name__)
 
 
 class BaseModelFactory(object):
-  def __init__(self):
-    self.db = cherrypy.request.db
+  @property
+  def db(self):
+    return cherrypy.request.db
+
+  def authenticate(self, username, password):
+    raise NotImplemented()
 
   def getUser(self, uid, clear_credentials=False):
-    pass
+    raise NotImplemented()
 
   def getUserList(self):
-    pass
+    raise NotImplemented()
+
+  def getActiveMemberList(self):
+    '''Get a list of members not belonging to the locked-members group'''
+    users = []
+
+    for u in self.getUserList():
+      if not self.isUserInGroup(u, Config.get('mematool', 'group_lockedmember')):
+        users.append(u)
+
+    return users
 
   def getUsers(self, clear_credentials=False):
     '''Return a list of all user objects'''
-    ul = self.getUserList()
     users = []
 
-    for v in ul:
-      users.append(self.getUser(v))
+    for uid in self.getUserList():
+      users.append(self.getUser(uid))
 
     return users
 
   def getUserGroupList(self, uid):
-    pass
+    raise NotImplemented()
 
   def isUserInGroup(self, uid, gid):
     '''Is the specified user in the requested group ?'''
@@ -57,10 +70,10 @@ class BaseModelFactory(object):
     return False
 
   def getHighestUidNumber(self):
-    pass
+    raise NotImplemented()
 
   def getUidNumberFromUid(self, uid):
-    pass
+    raise NotImplemented()
 
   def saveMember(self, member, is_admin=True):
     '''Add or update a member object in LDAP'''
@@ -71,19 +84,19 @@ class BaseModelFactory(object):
       self._addMember(member)
 
   def _updateMember(self, member, is_admin=True):
-    pass
+    raise NotImplemented()
 
   def _addMember(self, member):
-    pass
+    raise NotImplemented()
 
   def changeUserGroup(self, uid, group, status):
-    pass
+    raise NotImplemented()
 
   def getGroup(self, gid):
-    pass
+    raise NotImplemented()
 
   def getGroupList(self):
-    pass
+    raise NotImplemented()
 
   def getManagedGroupList(self):
     ret = []
@@ -96,7 +109,7 @@ class BaseModelFactory(object):
     return ret
 
   def getGroupMembers(self, group):
-    pass
+    raise NotImplemented()
 
   def addGroup(self, gid):
     try:
@@ -142,45 +155,43 @@ class BaseModelFactory(object):
     return False
 
   def getHighestGidNumber(self):
-    pass
+    raise NotImplemented()
 
   def addDomain(self, domain):
-    pass
+    raise NotImplemented()
 
   def deleteDomain(self, domain):
-    pass
+    raise NotImplemented()
 
   def getDomain(self, domain):
-    pass
+    raise NotImplemented()
 
   def getDomainList(self):
-    pass
+    raise NotImplemented()
 
   def getDomains(self):
     '''Return a list of all domain objects'''
-    dl = self.getDomainList()
     domains = []
 
-    for v in dl:
-      domains.append(self.getDomain(v))
+    for domain in self.getDomainList():
+      domains.append(self.getDomain(domain))
 
     return domains
 
   def getAlias(self, alias):
-    pass
+    raise NotImplemented()
 
   def getAliasList(self, domain):
-    pass
+    raise NotImplemented()
 
   def getAliases(self, domain):
     '''Return a list of all alias objects'''
-    al = self.getAliasList(domain)
     aliases = []
 
-    for v in al:
-      aliases.append(self.getAlias(v))
+    for alias in self.getAliasList(domain):
+      aliases.append(self.getAlias(alias))
 
     return aliases
 
   def deleteAlias(self, alias):
-    pass
+    raise NotImplemented()

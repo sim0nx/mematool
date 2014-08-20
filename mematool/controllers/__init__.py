@@ -19,16 +19,20 @@
 
 import cherrypy
 from cherrypy._cperror import HTTPRedirect, HTTPError
+import logging
 from mako.lookup import TemplateLookup
-import ldap
 import smtplib
 from email.mime.text import MIMEText
+from sqlalchemy import and_
+from sqlalchemy.orm.exc import NoResultFound
 from mematool import Config
-from mematool.helpers.ldapConnector import LdapConnector
-from mematool.model.ldapModelFactory import LdapModelFactory
-from mematool.model.dbmodel import TmpMember
+from mematool.model.dbmodel import TmpMember, Preferences
 from mematool.helpers.crypto import decodeAES
 from mematool.helpers.i18ntool import ugettext as _
+from mematool.helpers.lechecker import ParamChecker
+from mematool.helpers.crypto import encodeAES
+
+log = logging.getLogger(__name__)
 
 
 class TemplateContext(object):
@@ -47,9 +51,9 @@ class BaseController(object):
                               encoding_errors='replace',
                               imports=['from mematool.helpers.i18ntool import ugettext as _'])
 
-    self.ldapcon = None
     self.sidebar = []
     self.languages = Config.get('mematool', 'languages', [])
+    self.default_language = Config.get('mematool', 'default_language', 'en')
     self._debug = Config.get_boolean('mematool', 'debug', False)
 
   def _sidebar(self):
@@ -78,6 +82,40 @@ class BaseController(object):
   def session(self):
     return cherrypy.session
 
+  def initialize_session(self, username, password):
+    '''call this method after successful login'''
+    old_session_language = self.session.get('language', '')
+
+    self.session.regenerate()
+    self.session['username'] = username
+    self.session['password'] = encodeAES(password)
+    self.session['groups'] = self.mf.getUserGroupList(username)
+
+    user = self.mf.getUser(self.session['username'])
+
+    self.session['user'] = user
+
+    if self.is_admin():
+      self.session['pendingMemberValidations'] = self.pendingMemberValidations()
+
+    try:
+      language = self.db.query(Preferences).filter(and_(Preferences.uidNumber == user.uidNumber, Preferences.key == 'language')).one()
+    except NoResultFound:
+      language = None
+
+    if language and language.value in self.languages:
+      self.session['language'] = language.value
+    elif not old_session_language == '':
+      self.session['language'] = old_session_language
+    else:
+      self.session['language'] = self.default_language
+
+    log.info(username + ' logged in')
+
+  def detroy_session(self):
+    self.session.clear()
+    self.session.regenerate()
+
   @property
   def db(self):
     return cherrypy.request.db
@@ -86,35 +124,21 @@ class BaseController(object):
   def request(self):
     return cherrypy.request
 
-  def set_ldapcon(self, ldapcon):
-    self.ldapcon = ldapcon
+  def authenticate(self, username, password):
+    ParamChecker.checkUsername('username', param=True)
+    ParamChecker.checkPassword('password', 'password', param=True)
 
-  def get_ldapcon(self):
-    #@todo: this is not enough ... ass a cherrypy before-handler
-    if self.session.get('username') is None or self.session.get('password') is None:
-      raise HTTPRedirect('/')
-
-    if self.ldapcon is None:
-      username = self.session.get('username')
-      password = decodeAES(self.session.get('password'))
-      self.ldapcon = LdapConnector(username, password).get_connection()
-    else:
-      try:
-        self.ldapcon.whoami_s()
-      except ldap.SERVER_DOWN:
-        #@todo make this cleaner refactor
-        username = self.session.get('username')
-        password = decodeAES(self.session.get('password'))
-        self.ldapcon = LdapConnector(username, password).get_connection()
-
-    return self.ldapcon
-
-  def get_ldapMF(self):
-    return LdapModelFactory(self.get_ldapcon())
+    self.mf.authenticate(username, password)
 
   @property
   def mf(self):
-    return self.get_ldapMF()
+    module_ = 'mematool.model.{0}ModelFactory'.format(Config.get('mematool', 'model_handler'))
+    class_ = '{0}ModelFactory'.format(Config.get('mematool', 'model_handler').title())
+
+    t_mod = __import__(module_, fromlist=[module_])
+    t_class = getattr(t_mod, class_)
+
+    return t_class()
 
   def is_in_group(self, group):
     if not group == '' and 'user' in self.session and self.session.get('user').is_in_group(group):
